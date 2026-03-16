@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 
-Route::get('/home', function () {
+Route::get('/', function () {
     return view('home');
 })->name('home');
 
@@ -17,3 +17,19 @@ Route::get('/register', [RegisterController::class, 'create'])->name('register')
 Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/admin/home', function () {
+        return view('admin.home');
+    })->name('admin.home');
+
+    Route::get('/admin/user', function () {
+        return view('admin.user');
+    })->name('admin.user.index');
+
+    Route::get('/user/home', function () {
+        return view('user.home');
+    })->name('user.home');
+});
