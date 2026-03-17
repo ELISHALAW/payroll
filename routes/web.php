@@ -24,15 +24,18 @@ Route::post('/register', [RegisterController::class, 'store'])->name('register.s
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::resource('companies',CompanyController::class);
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::resource('users', UserController::class);
+    Route::prefix('admin')->middleware(['auth'])->group(function () {
+        Route::resource('users', UserController::class);
+        Route::resource('companies', CompanyController::class);
 
-    Route::get('/admin/home', function () {
-        return view('admin.home');
-    })->name('admin.home');
+        Route::get('/home', function () {
+            return view('admin.home');
+        })->name('admin.home');
+    });
+
 
     Route::get('/user/home', function () {
         return view('user.home');
