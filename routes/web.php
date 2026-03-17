@@ -3,10 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CompanyController;
 
 Route::get('/', function () {
     return view('home');
 })->name('home');
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('users', UserController::class);
+});
 
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -18,16 +24,15 @@ Route::post('/register', [RegisterController::class, 'store'])->name('register.s
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::resource('companies',CompanyController::class);
+
 
 Route::middleware(['auth'])->group(function () {
+    Route::resource('users', UserController::class);
 
     Route::get('/admin/home', function () {
         return view('admin.home');
     })->name('admin.home');
-
-    Route::get('/admin/user', function () {
-        return view('admin.user');
-    })->name('admin.user.index');
 
     Route::get('/user/home', function () {
         return view('user.home');
