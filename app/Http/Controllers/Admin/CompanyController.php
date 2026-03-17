@@ -90,7 +90,7 @@ class CompanyController extends Controller
      */
     public function destroy(string $id)
     {
-        $company = Company::findOfFail($id);
+        $company = Company::findOrFail($id);
 
         $company->delete();
 
