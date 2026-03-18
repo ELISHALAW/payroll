@@ -20,42 +20,42 @@
         <li class="mb-2">
             <a href="{{ route('companies.index') }}" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition">
                 {{-- &#128273; 是钥匙 🔑 或者你可以用 &#128100; 是人像 👤 --}}
-                <span class="w-6 text-center mr-3 text-lg">&#127981;</span>
+                <span class="w-6 text-center mr-3 text-xs">&#127981;</span>
                 <span class="text-sm">Companies</span>
             </a>
         </li>   
         <li class="mb-2">
             <a href="#" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition">
                 {{-- &#128273; 是钥匙 🔑 或者你可以用 &#128100; 是人像 👤 --}}
-                <span class="w-6 text-center mr-3 text-lg">&#128101;</span>
+                <span class="w-6 text-center mr-3 text-xs">&#128101;</span>
                 <span class="text-sm">Employee List</span>
             </a>
         </li>
         <li class="mb-2">
             <a href="#" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition">
                 {{-- &#128273; 是钥匙 🔑 或者你可以用 &#128100; 是人像 👤 --}}
-                <span class="w-6 text-center mr-3 text-lg">&#128197;</span>
+                <span class="w-6 text-center mr-3 text-xs">&#128197;</span>
                 <span class="text-sm">Attendence</span>
             </a>
         </li>
         <li class="mb-2">
             <a href="#" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition">
                 {{-- &#128273; 是钥匙 🔑 或者你可以用 &#128100; 是人像 👤 --}}
-                <span class="w-6 text-center mr-3 text-lg">&#128176;</span>
+                <span class="w-6 text-center mr-3 text-xs">&#128176;</span>
                 <span class="text-sm">Payroll Processing</span>
             </a>
         </li>
         <li class="mb-2">
             <a href="#" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition">
                 {{-- &#128273; 是钥匙 🔑 或者你可以用 &#128100; 是人像 👤 --}}
-                <span class="w-6 text-center mr-3 text-lg">&#9993;</span>
+                <span class="w-6 text-center mr-3 text-xs">&#9993;</span>
                 <span class="text-sm">Leave Requests</span>
             </a>
         </li>
         <li class="mb-2">
             <a href="#" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition">
                 {{-- &#128273; 是钥匙 🔑 或者你可以用 &#128100; 是人像 👤 --}}
-                <span class="w-6 text-center mr-3 text-lg">&#9881;</span>
+                <span class="w-6 text-center mr-3 text-xs">&#9881;</span>
                 <span class="text-sm">Settings</span>
             </a>
         </li>
@@ -64,7 +64,7 @@
             <a href="{{ route('logout') }}" 
             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
             class="flex items-center py-2 px-4 text-red-400 hover:bg-red-900 hover:text-white rounded-md transition">
-                <span class="w-6 text-center mr-3 text-lg">&#128682;</span>
+                <span class="w-6 text-center mr-3 text-xs">&#128682;</span>
                 <span class="text-sm">Logout</span>
             </a>
 

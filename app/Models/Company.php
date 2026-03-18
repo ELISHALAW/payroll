@@ -20,4 +20,10 @@ class Company extends Model
         'postcode',
         'sst_no'
     ];
+
+    // 获取公司旗下的所有员工
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'usercompanies');
+    }
 }

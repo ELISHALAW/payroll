@@ -12,17 +12,32 @@
     <div class="overflow-x-auto">
         <table class="w-full text-left">
             <thead>
-                <tr class="bg-gray-50 text-gray-600 text-sm uppercase">
+                <tr class="bg-gray-50 text-gray-600 text-xs uppercase">
+                    <th class="py-3 px-4">Action</th>
                     <th class="py-3 px-4">Name</th>
                     <th class="py-3 px-4">Email</th>
                     <th class="py-3 px-4">Phone</th>
                     <th class="py-3 px-4">Role</th>
-                    <th class="py-3 px-4 text-center">Action</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-100 text-xs uppercase">
                 @foreach($users as $user)
                 <tr class="hover:bg-gray-50 transition">
+                    <td class="py-4 px-4">
+                        <div class="flex items-center space-x-3">
+                            <a href="{{ route('users.edit', $user->id) }}" title="Edit" class="hover:scale-110 transition-transform">
+                                <span class="text-xs">&#128270;</span>
+                            </a>
+                            
+                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Confirm Delete?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" title="Delete" class="hover:scale-110 transition-transform">
+                                    <span class="text-xs">&#10060;</span>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
                     <td class="py-3 px-4 font-medium">{{ $user->name }}</td>
                     <td class="py-3 px-4 text-gray-600">{{ $user->email }}</td>
                     <td class="py-3 px-4">{{ $user->mobile }}</td>
@@ -31,17 +46,7 @@
                             {{ strtoupper($user->role) }}
                         </span>
                     </td>
-                    <td class="py-3 px-4 text-center">
-                        <div class="flex justify-center space-x-2">
-                            <a href="{{ route('users.edit', $user->id) }}" class="text-blue-500 hover:underline">Edit</a>
-                            
-                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Delete this user?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:underline">Delete</button>
-                            </form>
-                        </div>
-                    </td>
+                    
                 </tr>
                 @endforeach
             </tbody>

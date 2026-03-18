@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Auth\ProfileController;
 
 Route::get('/', function () {
     return view('home');
@@ -37,7 +38,11 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
+    Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('user.profile');
+
     Route::get('/user/home', function () {
         return view('user.home');
     })->name('user.home');
+
+    Route::post('/profile/update/{id}', [ProfileController::class, 'update'])->name('user.update');
 });

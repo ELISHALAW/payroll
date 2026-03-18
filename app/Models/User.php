@@ -3,10 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -50,5 +51,15 @@ class User extends Authenticatable
         ];
     }
 
-    
+    public function details():HasMany{
+        return $this->hasMany(UserDetail::class);
+    }
+
+    public function companies(): BelongsToMany{
+        return $this->belongsToMany(Company::class,'usercompanies');
+    }
+
+    public function getDetail(string $key){
+        return $this->details()->where('name',$key)->first()?->value;
+    }
 }

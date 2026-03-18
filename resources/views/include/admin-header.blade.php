@@ -15,7 +15,7 @@
         {{-- 用户资料卡片 --}}
         <div class="flex items-center bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100 hover:shadow-sm transition-shadow">
             <div class="text-right mr-3">
-                <h4 class="text-sm font-bold text-gray-900 leading-none">
+                <h4 class="text-xs font-bold text-gray-900 leading-none">
                     {{ auth()->user()->name }}
                 </h4>
             </div>

@@ -26,7 +26,7 @@
                         <input type="password" name="password" placeholder="Password" class="border border-gray-400 py-1 px-2 w-full">
                     </div>
                     <div class="mt-5">
-                        <input type="text" name="password_confirmation" placeholder="Confirm password" class="border border-gray-400 py-1 px-2 w-full">
+                        <input type="password" name="password_confirmation" placeholder="Confirm password" class="border border-gray-400 py-1 px-2 w-full">
                     </div>
                     @if ($errors->any())
                         <div class="text-red-500 mt-2">

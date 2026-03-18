@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
         {{-- Header --}}
-        <div class="px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-700 flex justify-between items-center">
+        <div class="px-6 py-4 bg-gradient-to-r from-gray-900 to-gray-500 flex justify-between items-center">
             <div>
                 <h2 class="text-xl font-bold text-white">Edit Company Details</h2>
                 <p class="text-blue-100 text-xs mt-1">Modifying: {{ $company->name }}</p>
@@ -87,7 +87,7 @@
             {{-- Action Buttons --}}
             <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-100">
                 <button type="reset" class="text-gray-500 hover:text-gray-700 font-medium">Reset Changes</button>
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-8 rounded-lg shadow-md transition transform hover:-translate-y-0.5">
+                <button type="submit" class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-2.5 px-8 rounded-lg shadow-md transition transform hover:-translate-y-0.5">
                     Update Company
                 </button>
             </div>
