@@ -103,9 +103,92 @@ class ProfileController extends Controller
         return back()->with('success', 'Profile updated successfully!');
     }
 
+    public function updateAddress(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $addressMap = [
+            'address' => 'address',
+            'city' => 'city',
+            'postcode' => 'postcode',
+            'region' => 'region',
+            'country' => 'country'
+        ];
+
+        foreach ($addressMap as $inputKey => $dbLabel) {
+            if ($request->has($inputKey)) {
+                UserDetail::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'name'    => $dbLabel
+                    ],
+                    [
+                        'value'   => $request->get($inputKey),
+                        'remark'  => 'Updated via Address Modal'
+                    ]
+                );
+            }
+        }
+
+        return back()->with('success', 'Address updated successfully!');
+    }
+    public function updateCorrespondenceAddress(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $addressMap = [
+            'correspondence_address' => 'correspondence_address',
+            'correspondence_city' => 'correspondence_city',
+            'correspondence_postcode' => 'correspondence_postcode',
+            'correspondence_region' => 'correspondence_region',
+            'correspondence_country' => 'correspondence_country'
+        ];
+
+        foreach ($addressMap as $inputKey => $dbLabel) {
+            if ($request->has($inputKey)) {
+                UserDetail::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'name'    => $dbLabel
+                    ],
+                    [
+                        'value'   => $request->get($inputKey),
+                        'remark'  => 'Updated via Address Modal'
+                    ]
+                );
+            }
+        }
+
+        return back()->with('success', 'Address updated successfully!');
+    }
+
+    public function updateEmergencyContact(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Map the form input 'name' to the 'name' column in your UserDetail table
+        $emergencyMap = [
+            'emergency_name'         => 'Emergency Contact Name',
+            'emergency_relationship' => 'Emergency Contact Relationship',
+            'emergency_phone'        => 'Emergency Contact Phone',
+        ];
+
+        foreach ($emergencyMap as $inputKey => $dbLabel) {
+            if ($request->filled($inputKey)) {
+                UserDetail::updateOrCreate(
+                    ['user_id' => $user->id, 'name' => $dbLabel],
+                    ['value' => $request->get($inputKey), 'remark' => 'Updated via Emergency Modal']
+                );
+            }
+        }
+
+        return back()->with('success', 'Emergency contact updated successfully!');
+    }
     /**
      * Remove the specified resource from storage.
      */
+
+
     public function destroy(string $id)
     {
         //

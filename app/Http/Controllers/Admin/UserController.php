@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Models\User;
 class UserController extends Controller
 {
     /**
@@ -108,5 +108,19 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully');
+    }
+
+    public function updateEmail(Request $request, $id){
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'email' => 'required|email|unique:users,email,'.$user->id
+        ]);
+
+        $user->update([
+            'email' => $request->email
+        ]);
+
+        return back()->with('success','Email updated successfully!');
     }
 }

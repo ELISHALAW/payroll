@@ -45,4 +45,12 @@ Route::middleware(['auth'])->group(function () {
     })->name('user.home');
 
     Route::post('/profile/update/{id}', [ProfileController::class, 'update'])->name('user.update');
+
+    Route::post('/profile/update-email/{id}', [UserController::class, 'updateEmail'])->name('user.updateEmail');
+
+    Route::post('/profile/update-address/{id}', [ProfileController::class, 'updateAddress'])->name('user.updateAddress');
+
+    Route::post('/profile/update-correspondence-address/{id}', [ProfileController::class, 'updateCorrespondenceAddress'])->name('user.updateCorrespondenceAddress');
+
+    Route::post('/profile/update-emergency-contact/{id}', [ProfileController::class, 'updateEmergencyContact'])->name('user.updateEmergencyContact');
 });

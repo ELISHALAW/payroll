@@ -93,6 +93,135 @@
         </div>
     </div>
 
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-6">
+    {{-- Card Header --}}
+    <div class="px-6 py-5 border-b border-gray-50 flex justify-between items-center">
+        <h3 class="text-xl font-extrabold uppercase tracking-wider text-gray-900">
+            Permanent Address
+        </h3>
+        <button id="openAddressModal" class="px-4 py-1.5 text-xs font-bold text-cyan-500 border-2 border-cyan-500 rounded-md hover:bg-cyan-50 transition-colors">
+            Edit
+        </button>
+    </div>
+
+    {{-- Card Body --}}
+    <div class="px-6 py-6">
+        <div class="space-y-4">
+            {{-- Address Row --}}
+            <div class="grid grid-cols-2 gap-4">
+                <span class="text-sm font-medium text-gray-400">Permanent address</span>
+                <span class="text-sm text-gray-600">{{$user->getDetail('address')}}</span>
+            </div>
+
+            {{-- City Row --}}
+            <div class="grid grid-cols-2 gap-4">
+                <span class="text-sm font-medium text-gray-400">City</span>
+                <span class="text-sm text-gray-600">{{ $user->getDetail('city')}}</span>
+            </div>
+
+            {{-- Postcode Row --}}
+            <div class="grid grid-cols-2 gap-4">
+                <span class="text-sm font-medium text-gray-400">Postcode</span>
+                <span class="text-sm text-gray-600">{{ $user->getDetail('postcode')}}</span>
+            </div>
+
+            {{-- Region Row --}}
+            <div class="grid grid-cols-2 gap-4">
+                <span class="text-sm font-medium text-gray-400">Region</span>
+                <span class="text-sm text-gray-600">{{ $user->getDetail('region')}}</span>
+            </div>
+
+            {{-- Country Row --}}
+            <div class="grid grid-cols-2 gap-4">
+                <span class="text-sm font-medium text-gray-400">Country</span>
+                <span class="text-sm text-gray-600">{{ $user->getDetail('country')}}</span>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-6">
+    {{-- Card Header --}}
+    <div class="px-6 py-5 border-b border-gray-50 flex justify-between items-center">
+        <h3 class="text-xl font-extrabold uppercase tracking-wider text-gray-900">
+            Correspondense Address
+        </h3>
+        <button id="openCorrespondenceModal" class="px-4 py-1.5 text-xs font-bold text-cyan-500 border-2 border-cyan-500 rounded-md hover:bg-cyan-50 transition-colors">
+            Edit
+        </button>
+    </div>
+
+    {{-- Card Body --}}
+    <div class="px-6 py-6">
+        <div class="space-y-4">
+            {{-- Address Row --}}
+            <div class="grid grid-cols-2 gap-4">
+                <span class="text-sm font-medium text-gray-400">Correspondence Address</span>
+                <span class="text-sm text-gray-600">{{$user->getDetail('correspondence_address')}}</span>
+            </div>
+
+            {{-- City Row --}}
+            <div class="grid grid-cols-2 gap-4">
+                <span class="text-sm font-medium text-gray-400">City</span>
+                <span class="text-sm text-gray-600">{{ $user->getDetail('correspondence_city')}}</span>
+            </div>
+
+            {{-- Postcode Row --}}
+            <div class="grid grid-cols-2 gap-4">
+                <span class="text-sm font-medium text-gray-400">Postcode</span>
+                <span class="text-sm text-gray-600">{{ $user->getDetail('correspondence_postcode')}}</span>
+            </div>
+
+            {{-- Region Row --}}
+            <div class="grid grid-cols-2 gap-4">
+                <span class="text-sm font-medium text-gray-400">Region</span>
+                <span class="text-sm text-gray-600">{{ $user->getDetail('correspondence_region')}}</span>
+            </div>
+
+            {{-- Country Row --}}
+            <div class="grid grid-cols-2 gap-4">
+                <span class="text-sm font-medium text-gray-400">Country</span>
+                <span class="text-sm text-gray-600">{{ $user->getDetail('correspondence_country')}}</span>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm mb-6">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <h3 class="text-lg font-bold text-gray-800 uppercase tracking-tight">Emergency Contact</h3>
+        <button id="openEmergencyModal" class="px-4 py-1.5 border-2 border-cyan-500 text-cyan-500 font-bold rounded-lg hover:bg-cyan-50 transition-colors">
+            Edit
+        </button>
+    </div>
+    
+    <div class="px-6 py-6">
+        <div class="space-y-6">
+            {{-- Row 1: Name and Relationship --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="grid grid-cols-2 gap-4 items-center">
+                    <span class="text-sm font-medium text-gray-400">Full Name</span>
+                    <span class="text-sm text-gray-700 font-semibold">{{ $user->getDetail('Emergency Contact Name') ?? '-' }}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4 items-center">
+                    <span class="text-sm font-medium text-gray-400">Relationship</span>
+                    <span class="text-sm text-gray-700 font-semibold">{{ $user->getDetail('Emergency Contact Relationship') ?? '-' }}</span>
+                </div>
+            </div>
+
+            {{-- Row 2: Phone Number --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="grid grid-cols-2 gap-4 items-center">
+                    <span class="text-sm font-medium text-gray-400">Phone Number</span>
+                    <span class="text-sm text-gray-700 font-semibold">{{ $user->getDetail('Emergency Contact Phone') ?? '-' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
     {{-- 2. EDIT PERSONAL INFO MODAL --}}
     <div id="editModal" class="fixed inset-0 z-[100] hidden">
         {{-- 背景遮罩 --}}
@@ -168,6 +297,182 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{{-- 3. EDIT EMAIL MODAL --}}
+<div id="emailModal" class="fixed inset-0 z-[100] hidden">
+    <div class="close-modal absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="px-8 py-6 flex justify-between items-center border-b border-gray-100">
+                <h3 class="text-xl font-extrabold text-gray-900 tracking-tight">UPDATE EMAIL</h3>
+                <button type="button" class="close-modal text-gray-400 hover:text-gray-600">
+                    <i class="las la-times text-2xl"></i>
+                </button>
+            </div>
+            <form action="{{ route('user.updateEmail', $user->id) }}" method="POST" class="p-8">
+                @csrf
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">New Email Address</label>
+                    <input type="email" name="email" value="{{ $user->email }}" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" class="close-modal px-6 py-2 border border-gray-200 rounded-lg text-sm font-bold text-gray-500 hover:bg-gray-50">Cancel</button>
+                    <button type="submit" class="px-6 py-2 bg-gray-900 text-white rounded-lg text-sm font-bold hover:bg-gray-800 shadow-lg">Update Email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+{{-- 4. EDIT ADDRESS MODAL --}}
+<div id="addressModal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" onclick="toggleAddressModal()"></div>
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="px-8 py-6 flex justify-between items-center border-b border-gray-100">
+                <h3 class="text-xl font-extrabold text-gray-900 tracking-tight">EDIT PERMANENT ADDRESS</h3>
+                <button type="button" onclick="toggleAddressModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="las la-times text-2xl"></i>
+                </button>
+            </div>
+
+            <form action="{{ route('user.updateAddress', $user->id )  }}" method="POST" class="p-8">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Permanent Address</label>
+                        <textarea name="address" rows="2" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">{{ $user->getDetail('address') }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-2">City</label>
+                        <input type="text" name="city" value="{{ $user->getDetail('city') }}" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Postcode</label>
+                        <input type="text" name="postcode" value="{{ $user->getDetail('postcode') }}" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Region</label>
+                        <input type="text" name="region" value="{{ $user->getDetail('region') }}" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Country</label>
+                        <input type="text" name="country" value="{{ $user->getDetail('country') }}" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-end gap-3">
+                    <button type="button" id="closeAddressBtn" class="px-6 py-2 border border-gray-200 rounded-lg text-sm font-bold text-gray-500 hover:bg-gray-50">Cancel</button>
+                    <button type="submit" class="px-6 py-2 bg-gray-900 text-white rounded-lg text-sm font-bold hover:bg-gray-800 shadow-lg">Save Address</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="correspondenceAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden transform transition-all border border-gray-100">
+        
+        {{-- Modal Header --}}
+        <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+            <h3 class="text-lg font-extrabold uppercase tracking-wider text-gray-900">Edit Correspondence Address</h3>
+            <button type="button" class="closeModal text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+        </div>
+
+        {{-- Modal Body (The Form) --}}
+        <form  id="correspondenceForm" action="{{ route('user.updateCorrespondenceAddress' , $user->id) }}" method="POST" class="p-6 space-y-4">
+            @csrf
+
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-gray-400 uppercase">Correspondence Address</label>
+                <input type="text" name="correspondence_address" value="{{ $user->getDetail('correspondence_address') }}" 
+                    class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none text-sm text-gray-600 transition-all">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-gray-400 uppercase">City</label>
+                    <input type="text" name="correspondence_city" value="{{ $user->getDetail('correspondence_city') }}" 
+                        class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none text-sm text-gray-600">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-gray-400 uppercase">Postcode</label>
+                    <input type="text" name="correspondence_postcode" value="{{ $user->getDetail('correspondence_postcode') }}" 
+                        class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none text-sm text-gray-600">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-gray-400 uppercase">Region</label>
+                    <input type="text" name="correspondence_region" value="{{ $user->getDetail('correspondence_region') }}" 
+                        class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none text-sm text-gray-600">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-gray-400 uppercase">Country</label>
+                    <input type="text" name="correspondence_country" value="{{ $user->getDetail('correspondence_country') }}" 
+                        class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none text-sm text-gray-600">
+                </div>
+            </div>
+
+            {{-- Modal Footer --}}
+            <div class="pt-4 flex justify-end space-x-3">
+                <button type="button" class="closeModal px-4 py-2 text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" id="saveCorrespondenceBtn" class="px-6 py-2 bg-cyan-500 text-white text-sm font-bold rounded-lg hover:bg-cyan-600 shadow-md transition-all">
+                    Update Address
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="emergencyContactModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/50 backdrop-blur-sm">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative w-full max-w-lg bg-white rounded-xl shadow-2xl">
+            
+            <div class="px-6 py-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-bold text-gray-800">Edit Emergency Contact</h3>
+                <button type="button" class="closeEmergencyModal text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+
+            <form action="{{ route('user.updateEmergencyContact', $user->id) }}" method="POST" class="p-6 space-y-4">
+                @csrf
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Full Name</label>
+                    <input type="text" name="emergency_name" value="{{ $user->getDetail('Emergency Contact Name') }}" 
+                           class="w-full border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Relationship</label>
+                        <input type="text" name="emergency_relationship" value="{{ $user->getDetail('Emergency Contact Relationship') }}"
+                               class="w-full border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Phone Number</label>
+                        <input type="text" name="emergency_phone" value="{{ $user->getDetail('Emergency Contact Phone') }}"
+                               class="w-full border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4 space-x-3">
+                    <button type="button" class="closeEmergencyModal px-4 py-2 text-gray-500 font-medium">Cancel</button>
+                    <button type="submit" class="px-6 py-2 bg-cyan-600 text-white font-bold rounded-lg shadow-lg hover:bg-cyan-700">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
