@@ -50,6 +50,8 @@ class ProfileController extends Controller
         return view('user.profile', compact('user'));
     }
 
+    
+
     /**
      * Show the form for editing the specified resource.
      */

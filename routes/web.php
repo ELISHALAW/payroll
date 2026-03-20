@@ -1,11 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\EmploymentController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\Auth\RegisterController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('home');
@@ -39,6 +40,8 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('user.profile');
+    Route::get('/profile/{id}/employment', [EmploymentController::class, 'show'])->name('user.employment');
+
 
     Route::get('/user/home', function () {
         return view('user.home');

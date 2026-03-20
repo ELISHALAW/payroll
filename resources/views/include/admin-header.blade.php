@@ -19,8 +19,6 @@
                     {{ auth()->user()->name }}
                 </h4>
             </div>
-            
-          
         </div>
     </div>
 </header>

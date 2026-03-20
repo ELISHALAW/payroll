@@ -219,3 +219,38 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+// This function is for employment.blade.php
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Select the elements by ID
+    const modal = document.getElementById('employmentModal');
+    const openBtn = document.getElementById('openEmploymentModal');
+    const cancelBtn = document.getElementById('closeEmploymentModal');
+    const overlay = document.getElementById('modalOverlay');
+
+    // 2. Function to show the form
+    openBtn.addEventListener('click', function() {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Stop background from scrolling
+    });
+
+    // 3. Function to hide the form (Disappear)
+    const hideModal = function() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Re-enable background scrolling
+    };
+
+    // Attach hide function to Cancel button and the gray background overlay
+    cancelBtn.addEventListener('click', hideModal);
+    overlay.addEventListener('click', hideModal);
+
+    // Optional: Close if user presses the 'Escape' key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            hideModal();
+        }
+    });
+});
