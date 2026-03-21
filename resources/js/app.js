@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. 处理表单提交状态 (防止重复点击)
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
-        form.addEventListener('submit', function() {
+        form.addEventListener('submit', function () {
             const saveBtn = this.querySelector('button[type="submit"]');
             if (saveBtn) {
                 saveBtn.disabled = true;
@@ -87,15 +87,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const toggleModal = () => modal.classList.toggle('hidden');
 
     // Open Trigger
-if (openBtn) openBtn.addEventListener('click', toggleModal);
+    if (openBtn) openBtn.addEventListener('click', toggleModal);
 
-// Close Triggers (Triggered by ID)
-if (closeBtn) closeBtn.addEventListener('click', toggleModal);
-if (closeX) closeX.addEventListener('click', toggleModal);
-if (backdrop) backdrop.addEventListener('click', toggleModal);
+    // Close Triggers (Triggered by ID)
+    if (closeBtn) closeBtn.addEventListener('click', toggleModal);
+    if (closeX) closeX.addEventListener('click', toggleModal);
+    if (backdrop) backdrop.addEventListener('click', toggleModal);
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('addressModal');
     const openBtn = document.getElementById('openAddressModal');
     const closeBtn = document.getElementById('closeAddressModal');
@@ -120,43 +120,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-        const modal = document.getElementById('addressModal');
-        const openBtn = document.getElementById('openAddressModal'); // Your existing button ID
-        const closeBtn = document.getElementById('closeAddressModal');
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('addressModal');
+    const openBtn = document.getElementById('openAddressModal'); // Your existing button ID
+    const closeBtn = document.getElementById('closeAddressModal');
 
-        // Open Modal
-        openBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Stop background scrolling
-        });
-
-        // Close Modal
-        closeBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto'; // Re-enable scrolling
-        });
-
-        // Close on background click
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeBtn.click();
-            }
-        });
+    // Open Modal
+    openBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Stop background scrolling
     });
-    
+
+    // Close Modal
+    closeBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Re-enable scrolling
+    });
+
+    // Close on background click
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeBtn.click();
+        }
+    });
+});
 
 
-document.addEventListener('DOMContentLoaded', function() {
+
+document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('correspondenceAddressModal');
     const openBtn = document.getElementById('openCorrespondenceModal');
     const form = document.getElementById('correspondenceForm'); // Get the specific form
-    
+
     if (openBtn && modal) {
         const closeBtns = document.querySelectorAll('.closeModal');
 
-        openBtn.addEventListener('click', function(e) {
+        openBtn.addEventListener('click', function (e) {
             e.preventDefault();
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -179,9 +179,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Optional: Handle the Save Changes button click explicitly if needed
         const saveBtn = document.getElementById('saveCorrespondenceBtn');
         if (saveBtn && form) {
-            saveBtn.addEventListener('click', function(e) {
+            saveBtn.addEventListener('click', function (e) {
                 // If you want to perform validation before sending:
-                console.log("Submitting to: " + form.action); 
+                console.log("Submitting to: " + form.action);
                 // form.submit(); // Standard submit will trigger based on the action attribute
             });
         }
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('emergencyContactModal');
     const openBtn = document.getElementById('openEmergencyModal');
     const closeBtns = document.querySelectorAll('.closeEmergencyModal');
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Only run if the button and modal exist on this page
     if (openBtn && modal) {
         // Show the pop-up
-        openBtn.addEventListener('click', function(e) {
+        openBtn.addEventListener('click', function (e) {
             e.preventDefault();
             modal.classList.remove('hidden'); // Removes 'hidden' to show the modal
             document.body.style.overflow = 'hidden'; // Prevents background scrolling
@@ -224,33 +224,16 @@ document.addEventListener('DOMContentLoaded', function() {
 // This function is for employment.blade.php
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. Select the elements by ID
-    const modal = document.getElementById('employmentModal');
-    const openBtn = document.getElementById('openEmploymentModal');
-    const cancelBtn = document.getElementById('closeEmploymentModal');
-    const overlay = document.getElementById('modalOverlay');
+const modal = document.getElementById('employmentModal');
+const openBtn = document.getElementById('openEmploymentModal');
+const closeBtn = document.getElementById('closeEmploymentModal');
 
-    // 2. Function to show the form
-    openBtn.addEventListener('click', function() {
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Stop background from scrolling
-    });
+openBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
 
-    // 3. Function to hide the form (Disappear)
-    const hideModal = function() {
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto'; // Re-enable background scrolling
-    };
-
-    // Attach hide function to Cancel button and the gray background overlay
-    cancelBtn.addEventListener('click', hideModal);
-    overlay.addEventListener('click', hideModal);
-
-    // Optional: Close if user presses the 'Escape' key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-            hideModal();
-        }
-    });
+// Enable Save button styling (optional logic)
+document.getElementById('employmentForm').addEventListener('input', function () {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.classList.remove('bg-gray-100', 'text-gray-400', 'cursor-allowed');
+    submitBtn.classList.add('bg-cyan-600', 'text-white', 'hover:bg-cyan-700');
 });

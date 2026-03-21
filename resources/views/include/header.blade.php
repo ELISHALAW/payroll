@@ -23,7 +23,7 @@
             </div>
 
             {{-- 2. MIDDLE SECTION: Only appears on Profile Page --}}
-            @if (Route::is('user.profile'))
+            @if (Route::is('user.*'))
                 <div class="flex-1 hidden md:flex justify-center items-center h-full px-8">
                     <div class="flex items-center h-full gap-1">
                         <a href="{{ route('user.profile', Auth::id()) }}"

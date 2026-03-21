@@ -19,38 +19,38 @@
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Employee No.</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Employee No.') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('employee_no') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Employment
                                 Type</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Employment Type') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('employment_type') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Position</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Position') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('position') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Position Level</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Position Level') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('position_level') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Department</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Department') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('department') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Cost Center</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Cost Center') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('cost_center') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Subsidiary</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Subsidiary') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('subsidiary') ?? '-' }}</span>
                         </div>
                     </div>
 
@@ -59,44 +59,44 @@
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Employment
                                 Status</span>
                             <span
-                                class="inline-flex items-center text-sm font-semibold {{ $user->getDetail('Employment Status') == 'Active - Confirmed' ? 'text-green-700' : 'text-gray-800' }}">
+                                class="inline-flex items-center text-sm font-semibold {{ $user->getDetail('employment_status') == 'Active - Confirmed' ? 'text-green-700' : 'text-gray-800' }}">
                                 <span
-                                    class="w-1.5 h-1.5 {{ $user->getDetail('Employment Status') == 'Active - Confirmed' ? 'bg-green-500' : 'bg-gray-400' }} rounded-full mr-2"></span>
-                                {{ $user->getDetail('Employment Status') ?? '-' }}
+                                    class="w-1.5 h-1.5 {{ $user->getDetail('employment_status') == 'Active - Confirmed' ? 'bg-green-500' : 'bg-gray-400' }} rounded-full mr-2"></span>
+                                {{ $user->getDetail('employment_status') ?? '-' }}
                             </span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Date of
                                 Confirmation</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Date of Confirmation') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('date_of_confirmation') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Reports To</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Reports To') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('reports_to') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Location</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Location') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('location') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Pay Group</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Pay Group') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('pay_group') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Functional
                                 Group</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Functional Group') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('functional_group') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Knowledge
                                 Worker</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Knowledge Worker') ?? 'No' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('knowledge_worker') ?? 'No' }}</span>
                         </div>
                     </div>
 
@@ -110,7 +110,7 @@
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Join Date</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Join Date') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('join_date') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Status Effective
@@ -157,10 +157,8 @@
             </div>
 
             <div class="relative bg-white rounded-xl shadow-2xl transform transition-all max-w-4xl w-full overflow-hidden">
-                <form id="employmentForm" method="POST" action="">
+                <form id="employmentForm" method="POST" action="{{ route('user.updateEmploymentInfo', $user->id) }}">
                     @csrf
-                    @method('PUT')
-
                     <div class="px-6 py-4 border-b flex justify-between items-center">
                         <h3 class="text-lg font-bold text-gray-800 uppercase tracking-tight">Edit Employment Info</h3>
                         <button type="button" onclick="toggleEmploymentModal(false)"
@@ -180,14 +178,14 @@
                                 <div>
                                     <label class="block text-sm font-bold text-gray-900 mb-1">Employee No.</label>
                                     <input type="text" name="employee_no" placeholder="i.e. 001"
-                                        value="{{ $user->getDetail('Employee No.') }}"
+                                        value="{{ $user->getDetail('employee_no') }}"
                                         class="w-full border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 text-sm">
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-900 mb-1">Cost Center</label>
                                     <input type="text" name="cost_center" placeholder="i.e. New"
-                                        value="{{ $user->getDetail('Cost Center') }}"
+                                        value="{{ $user->getDetail('cost_detail') }}"
                                         class="w-full border-gray-300 rounded-md shadow-sm text-sm">
                                 </div>
 
@@ -330,13 +328,13 @@
 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-900 mb-1">Position</label>
-                                    <input type="text" name="position" value="{{ $user->getDetail('Position') }}"
+                                    <input type="text" name="position" value="{{ $user->getDetail('position') }}"
                                         class="w-full border-gray-300 rounded-md shadow-sm text-sm">
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-900 mb-1">Department</label>
-                                    <input type="text" name="department" value="{{ $user->getDetail('Department') }}"
+                                    <input type="text" name="department" value="{{ $user->getDetail('department') }}"
                                         class="w-full border-gray-300 rounded-md shadow-sm text-sm">
                                 </div>
 
@@ -367,7 +365,7 @@
                         <button type="button" id="closeEmploymentModal"
                             class="px-6 py-2 text-sm font-bold text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">Cancel</button>
                         <button type="submit"
-                            class="px-8 py-2 bg-gray-100 text-gray-400 font-bold rounded-md cursor-not-allowed"
+                            class="px-8 py-2 bg-gray-100 text-gray-400 font-bold rounded-md cursor-allowed"
                             id="submitBtn">Save</button>
                     </div>
                 </form>

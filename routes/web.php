@@ -40,8 +40,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('user.profile');
-    Route::get('/profile/{id}/employment', [EmploymentController::class, 'show'])->name('user.employment');
-
+    Route::get('/employee/{id}',[ProfileController::class,'showEmployee'])->name('user.employment');
 
     Route::get('/user/home', function () {
         return view('user.home');
@@ -56,4 +55,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/update-correspondence-address/{id}', [ProfileController::class, 'updateCorrespondenceAddress'])->name('user.updateCorrespondenceAddress');
 
     Route::post('/profile/update-emergency-contact/{id}', [ProfileController::class, 'updateEmergencyContact'])->name('user.updateEmergencyContact');
+
+    Route::post('/profile/updateEmployment/{id}', [ProfileController::class, 'updateEmploymentInfo'])->name('user.updateEmploymentInfo');
 });
