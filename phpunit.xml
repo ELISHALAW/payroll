@@ -18,7 +18,7 @@
         </include>
     </source>
     <php>
-        <env name="API_KEY" value="base64:cqUImAMQgllqW2PXs7RpEGupiUQvvbCOqFzHpZ1Afv4="/>
+        <env name="API_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
