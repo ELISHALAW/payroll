@@ -1,0 +1,24 @@
+services:
+  # The Laravel App
+  app:
+    build: .
+    volumes:
+      - .:/var/www
+    environment:
+      - DB_HOST=db
+    depends_on:
+      - db
+
+  # The Main Database (for development)
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_DATABASE=payroll
+      - MYSQL_ROOT_PASSWORD=secret
+
+  # The Testing Database (for your tests)
+  mysql_test:
+    image: mysql:8.0
+    environment:
+      - MYSQL_DATABASE=payroll
+      - MYSQL_ROOT_PASSWORD=secret
