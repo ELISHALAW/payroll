@@ -40,8 +40,10 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('user.profile');
-    Route::get('/employee/{id}',[ProfileController::class,'showEmployee'])->name('user.employment');
-
+    Route::get('/employee/{id}', [ProfileController::class, 'showEmployee'])->name('user.employment');
+    Route::get('/compensation/{id}', [ProfileController::class, 'showCompensation'])->name('user.compensation');
+    Route::get('/organizationalEmployee/{id}', [ProfileController::class, 'showOrganizationalHistory'])->name('user.organizational');
+    Route::get('/leave/{id}', [ProfileController::class, 'showLeave'])->name('user.leave');
     Route::get('/user/home', function () {
         return view('user.home');
     })->name('user.home');
@@ -57,4 +59,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/update-emergency-contact/{id}', [ProfileController::class, 'updateEmergencyContact'])->name('user.updateEmergencyContact');
 
     Route::post('/profile/updateEmployment/{id}', [ProfileController::class, 'updateEmploymentInfo'])->name('user.updateEmploymentInfo');
+
+    Route::post('/profile/updateEmploymentHistory/{id}', [ProfileController::class, 'createOrganizationalDetails'])->name('user.createOrganizationalDetails');
+
+    Route::post('/profile/update-career-progression/{id}', [ProfileController::class, 'createCareerProgression'])->name('user.createCareerProgression');
+
+    Route::post('/profile/updateBankDetail/{id}', [ProfileController::class, 'updateBankDetail'])->name('user.updateBankDetail');
+
+    Route::post('/profile/details/{id}', [ProfileController::class, 'updateCompensationDetails'])->name('user.details');
 });

@@ -237,3 +237,88 @@ document.getElementById('employmentForm').addEventListener('input', function () 
     submitBtn.classList.remove('bg-gray-100', 'text-gray-400', 'cursor-allowed');
     submitBtn.classList.add('bg-cyan-600', 'text-white', 'hover:bg-cyan-700');
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('historyModal');
+    const openBtn = document.getElementById('addHistoryBtn');
+    const closeIcon = document.getElementById('closeIcon');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    // Function to open modal
+    openBtn.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+    });
+
+    // Function to close modal
+    const closeModal = () => {
+        modal.classList.add('hidden');
+    };
+
+    // Event listeners for closing
+    closeIcon.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+
+    // Close when clicking outside the white box (on the backdrop)
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('historyModal');
+    const openBtn = document.getElementById('addHistoryBtn');
+    const closeIcon = document.getElementById('closeModalIcon');
+    const cancelBtn = document.getElementById('cancelModalBtn');
+
+    // Show Modal
+    openBtn.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    });
+
+    // Hide Modal function
+    const hideModal = () => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Re-enable scrolling
+    };
+
+    // Event listeners for closing
+    closeIcon.addEventListener('click', hideModal);
+    cancelBtn.addEventListener('click', hideModal);
+
+    // Close when clicking on the dark background
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) hideModal();
+    });
+});
+
+
+
+
+// Get the elements by their IDs
+const modalcareer = document.getElementById('careerModal');
+const openBtncareer = document.getElementById('addPastJobBtn');
+const closeBtncareer = document.getElementById('closeModalBtn');
+
+// Function to show the modal
+openBtncareer.addEventListener('click', function () {
+    modalcareer.classList.remove('hidden');
+    // Optional: prevent background scrolling
+    document.body.style.overflow = 'hidden';
+});
+
+// Function to hide the modal
+closeBtncareer.addEventListener('click', function () {
+    modalcareer.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+});
+
+// Close modal if user clicks outside the white box
+window.addEventListener('click', function (event) {
+    if (event.target === modal) {
+        modalcarrer.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+});

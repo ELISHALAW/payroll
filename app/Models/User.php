@@ -51,15 +51,42 @@ class User extends Authenticatable
         ];
     }
 
-    public function details():HasMany{
+    public function details(): HasMany
+    {
         return $this->hasMany(UserDetail::class);
     }
 
-    public function companies(): BelongsToMany{
-        return $this->belongsToMany(Company::class,'usercompanies');
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'usercompanies');
     }
 
-    public function getDetail(string $key){
-        return $this->details()->where('name',$key)->first()?->value;
+    public function getDetail(string $key)
+    {
+        return $this->details()->where('name', $key)->first()?->value;
+    }
+
+    public function getOrgHistoryAttribute()
+    {
+        return \App\Models\UserDetail::where('user_id', $this->id)
+            ->where('remark', 'like', 'Updated via Organizational History Modal%')
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->created_at->format('Y-m-d H:i:s');
+            })
+            ->map(function ($group) {
+                return (object)[
+                    'type'       => $group->where('name', 'history_employment_type')->first()->value ?? 'N/A',
+                    'status'     => $group->where('name', 'history_employment_status')->first()->value ?? 'N/A',
+                    'department' => $group->where('name', 'history_department')->first()->value ?? 'N/A',
+                    'position'   => $group->where('name', 'history_position')->first()->value ?? 'N/A',
+                    'level'      => $group->where('name', 'history_position_level')->first()->value ?? 'N/A',
+                ];
+            })
+            ->values();
+    }
+
+    public function getCompensationDetails(){
+        
     }
 }

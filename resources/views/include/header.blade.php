@@ -35,11 +35,11 @@
                             class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
                             Employment
                         </a>
-                        <a href="#"
+                        <a href="{{ route('user.compensation', Auth::id()) }}"
                             class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
                             Compensation
                         </a>
-                        <a href="#"
+                        <a href="{{ route('user.leave', Auth::id())}}"
                             class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
                             Leave
                         </a>
