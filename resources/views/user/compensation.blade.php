@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm relative mb-6">
+        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative mb-6">
             {{-- Header Section --}}
             <div class="flex justify-between items-start mb-6">
                 <h3 class="text-gray-900 font-bold text-lg uppercase tracking-tight">Bank Details</h3>
@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        <div class="bg-white rounded-xl border border-gray-100 p-8 shadow-sm">
+        <div class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
             {{-- Header --}}
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-gray-900 font-bold text-lg uppercase">COMPENSATION DETAILS</h3>
@@ -129,7 +129,7 @@
         </div>
 
 
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mt-10">
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-10">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-bold text-gray-800 uppercase tracking-tight">Income Tax Information</h2>
                 <button id="openTaxModal"
@@ -224,7 +224,7 @@
         </div>
 
 
-        <div class="p-6 rounded-xl border border-gray-100 shadow-sm mt-10">
+        <div class="p-6 rounded-xl border border-gray-2 00 shadow-sm mt-10">
             <div class="flex items-center justify-between mb-8 border-b pb-4">
                 <div class="flex items-center space-x-3">
 
@@ -250,9 +250,16 @@
                                 class="font-medium text-green-600">{{ $user->getDetail('pay_epf') ? 'Yes' : 'No' }}</span>
                         </div>
                         <div class="flex justify-between"><span class="text-gray-500">EPF Borne by Employer</span> <span
-                                class="font-bold text-cyan-600">{{ $user->getDetail('epf_borne_employer') ? 'Yes' : 'No' }}</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">Account No.</span> <span
+                                class="font-bold text-cyan-600">{{ $user->getDetail('epf_borne_employer') ? 'Yes' : 'No' }}</span>
+                        </div>
+                        <div class="flex justify-between"><span class="text-gray-500">EPF Account No.</span> <span
                                 class="font-medium">{{ $user->getDetail('epf_no') }}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">Extra EPF On Top of Normal Employer
+                                EPF</span> <span class="font-medium">{{ $user->getDetail('extra_epf_employer') }}</span>
+                        </div>
+                        <div class="flex justify-between"><span class="text-gray-500">Extra EPF On Top of Normal Employer
+                                EPF</span> <span class="font-medium">{{ $user->getDetail('extra_epf_employee') }}</span>
+                        </div>
                     </div>
                 </div>
 
@@ -286,11 +293,11 @@
                             <p class="text-lg font-bold text-orange-600">RM 0</p>
                         </div>
                         <div>
-                            <p class="text-gray-400 text-xs font-bold uppercase">Start Date</p>
+                            <p class="text-gray-400 text-xs font-bold uppercase">{{ $user->getDetail('ptptn_start') }}</p>
                             <p class="font-medium">-</p>
                         </div>
                         <div>
-                            <p class="text-gray-400 text-xs font-bold uppercase">End Date</p>
+                            <p class="text-gray-400 text-xs font-bold uppercase">{{ $user->getDetail('ptptn_end') }}</p>
                             <p class="font-medium">-</p>
                         </div>
                     </div>

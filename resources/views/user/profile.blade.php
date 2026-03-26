@@ -29,7 +29,7 @@
 
 
         {{-- 1. 展示卡片 (PERSONAL INFO) --}}
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mt-10">
 
             {{-- 卡片头部 --}}
             <div class="px-8 py-6 flex justify-between items-center border-b border-gray-50">
@@ -55,18 +55,30 @@
 
                         <div class="flex justify-between items-start">
                             <span class="text-gray-400 text-sm w-1/2">Preferred Name</span>
-                            <span class="text-gray-900 text-sm font-medium w-1/2">{{ $user->name }}</span>
+                            <span
+                                class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('preferred_name') }}</span>
                         </div>
 
                         <div class="flex justify-between items-start">
                             <span class="text-gray-400 text-sm w-1/2">Phone Number</span>
-                            <span
-                                class="text-gray-900 text-sm font-medium w-1/2">{{ $user->phone ?? '+601133903509' }}</span>
+                            <span class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('phone') }}</span>
                         </div>
 
                         <div class="flex justify-between items-start">
                             <span class="text-gray-400 text-sm w-1/2">Gender</span>
-                            <span class="text-gray-900 text-sm font-medium w-1/2">Male</span>
+                            <span class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('gender') }}</span>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <span class="text-gray-400 text-sm w-1/2">Date Of Birth</span>
+                            <span class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('dob') }}</span>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <span class="text-gray-400 text-sm w-1/2">Race</span>
+                            <span class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('race') }}</span>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <span class="text-gray-400 text-sm w-1/2">Religion</span>
+                            <span class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('religion') }}</span>
                         </div>
                     </div>
 
@@ -74,32 +86,41 @@
                     <div class="space-y-6">
                         <div class="flex justify-between items-start">
                             <span class="text-gray-400 text-sm w-1/2">Passport No.</span>
-                            <span
-                                class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('Passport No.') }}</span>
+                            <span class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('passport') }}</span>
                         </div>
 
                         <div class="flex justify-between items-start">
                             <span class="text-gray-400 text-sm w-1/2">NRIC No.</span>
-                            <span class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('NRIC No.') }}</span>
+                            <span class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('nric') }}</span>
                         </div>
 
                         <div class="flex justify-between items-start">
                             <span class="text-gray-400 text-sm w-1/2">Highest Qualification</span>
                             <span
-                                class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('Highest Qualification') }}</span>
+                                class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('qualification') }}</span>
                         </div>
 
                         <div class="flex justify-between items-start">
                             <span class="text-gray-400 text-sm w-1/2">Marital Status</span>
                             <span
-                                class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('Marital Status') }}</span>
+                                class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('marital_status') }}</span>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <span class="text-gray-400 text-sm w-1/2">Nationality</span>
+                            <span
+                                class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('nationality') }}</span>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <span class="text-gray-400 text-sm w-1/2">Permanent Residence</span>
+                            <span
+                                class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('is_pr') == 1 ? 'Yes' : 'No' }}</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mt-10">
             {{-- Card Header --}}
             <div class="px-6 py-5 border-b border-gray-50 flex justify-between items-center">
                 <h3 class="text-xl font-extrabold uppercase tracking-wider text-gray-900">
@@ -146,7 +167,7 @@
                 </div>
             </div>
         </div>
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mt-10">
             {{-- Card Header --}}
             <div class="px-6 py-5 border-b border-gray-50 flex justify-between items-center">
                 <h3 class="text-xl font-extrabold uppercase tracking-wider text-gray-900">
@@ -195,7 +216,7 @@
         </div>
 
 
-        <div class="bg-white border border-gray-200 rounded-lg shadow-sm mb-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mt-10">
             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                 <h3 class="text-xl font-extrabold uppercase tracking-wider text-gray-900">Emergency Contact</h3>
                 <button id="openEmergencyModal"
@@ -271,7 +292,7 @@
                                 <div>
                                     <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Passport</label>
                                     <input type="text" name="passport" placeholder="i.e. A12345678"
-                                        value="{{ $user->getDetail('Passport No.') }}"
+                                        value="{{ $user->getDetail('passport') }}"
                                         class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
                                 </div>
 
@@ -280,7 +301,7 @@
                                     <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Preferred
                                         Name</label>
                                     <input type="text" name="preferred_name"
-                                        value="{{ $user->preferred_name ?? $user->name }}"
+                                        value="{{ $user->getDetail('preferred_name') }}"
                                         class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
                                 </div>
 
@@ -288,7 +309,7 @@
                                 <div>
                                     <label class="block text-xs font-bold text-gray-700 uppercase mb-2">NRIC No.</label>
                                     <input type="text" name="nric" placeholder="i.e. 900804132244"
-                                        value="{{ $user->getDetail('NRIC No.') }}"
+                                        value="{{ $user->getDetail('nric') }}"
                                         class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
                                 </div>
 
@@ -296,7 +317,7 @@
                                 <div>
                                     <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Date of
                                         Birth</label>
-                                    <input type="date" name="dob" value="{{ $user->dob }}"
+                                    <input type="date" name="dob" value="{{ $user->getDetail('dob') }}"
                                         class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
                                 </div>
 
@@ -305,7 +326,7 @@
                                     <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Phone
                                         Number</label>
                                     <input type="text" name="phone" placeholder="i.e. 0123456789"
-                                        value="{{ $user->phone }}"
+                                        value="{{ $user->getDetail('phone') }}"
                                         class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
                                 </div>
 
@@ -335,7 +356,7 @@
                                 <div>
                                     <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Religion</label>
                                     <input type="text" name="religion" placeholder="i.e. Buddhism"
-                                        value="{{ $user->getDetail('Religion') }}"
+                                        value="{{ $user->getDetail('religion') }}"
                                         class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
                                 </div>
 
@@ -343,7 +364,7 @@
                                 <div>
                                     <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Nationality</label>
                                     <input type="text" name="nationality" placeholder="i.e. Malaysian"
-                                        value="{{ $user->getDetail('Nationality') }}"
+                                        value="{{ $user->getDetail('nationality') }}"
                                         class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
                                 </div>
 
