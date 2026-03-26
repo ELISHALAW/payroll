@@ -108,4 +108,6 @@ class User extends Authenticatable
             })
             ->values(); // Reset keys to a simple 0, 1, 2... array
     }
+
+  
 }

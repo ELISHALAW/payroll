@@ -231,7 +231,7 @@
                     <h2 class="text-lg font-bold text-gray-800 tracking-tight uppercase">Statutory Details</h2>
                 </div>
 
-                <button type="button" id="openTaxModal"
+                <button type="button" id="openTaxesModal"
                     class="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-sm">
                     <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -247,11 +247,12 @@
                     <h3 class="font-bold text-gray-900 mb-4">EPF Details</h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between"><span class="text-gray-500">Pay EPF</span> <span
-                                class="font-medium text-green-600">Yes</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">Employee Rate</span> <span
-                                class="font-bold text-cyan-600">11%</span></div>
+                                class="font-medium text-green-600">{{ $user->getDetail('pay_epf') ? 'Yes' : 'No' }}</span>
+                        </div>
+                        <div class="flex justify-between"><span class="text-gray-500">EPF Borne by Employer</span> <span
+                                class="font-bold text-cyan-600">{{ $user->getDetail('epf_borne_employer') ? 'Yes' : 'No' }}</span></div>
                         <div class="flex justify-between"><span class="text-gray-500">Account No.</span> <span
-                                class="font-medium">-</span></div>
+                                class="font-medium">{{ $user->getDetail('epf_no') }}</span></div>
                     </div>
                 </div>
 
@@ -263,7 +264,7 @@
                         <div class="flex justify-between"><span class="text-gray-500">EIS Borne by Emp.</span> <span
                                 class="font-medium">No</span></div>
                         <div class="flex justify-between"><span class="text-gray-500">SOCSO Acc.</span> <span
-                                class="font-medium">-</span></div>
+                                class="font-medium">{{ $user->getDetail('socso_no') }}</span></div>
                     </div>
                 </div>
 
@@ -511,8 +512,9 @@
 
                 <div class="flex justify-between items-center p-5 border-b bg-white sticky top-0 z-10">
                     <h2 class="text-lg font-bold text-gray-800 uppercase tracking-tight">Edit Income Tax Information</h2>
-                    <button id="closeModalX" class="text-cyan-500 hover:text-cyan-600 border border-cyan-500 rounded p-1">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button type="button" id="closeModalX"
+                        class="text-gray-400 hover:text-gray-600 transition-all p-2 rounded-full hover:bg-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
@@ -534,6 +536,61 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Malaysian Tax Resident</label>
+                                <select name="tax_resident"
+                                    class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Tax Borne By Employer</label>
+                                <select name="pay_tax"
+                                    class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Disabled Person</label>
+                                <select name="tax_resident"
+                                    class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Spouse is working</label>
+                                <select name="pay_tax"
+                                    class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Income Tax No.</label>
+                                <div
+                                    class="flex border border-gray-300 rounded-md overflow-hidden focus-within:ring-1 focus-within:ring-cyan-500">
+                                    <select name="tax_prefix"
+                                        class="bg-gray-50 border-r border-gray-300 px-3 py-2.5 text-sm text-gray-600 outline-none cursor-pointer">
+                                        <option value="IG">IG</option>
+                                        <option value="OG">OG</option>
+                                        <option value="SG">SG</option>
+                                    </select>
+
+                                    <input type="text" name="income_tax_no" placeholder="i.e. IG12345678901"
+                                        class="w-full p-2.5 text-sm outline-none placeholder-gray-300">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Spouse is Disabled</label>
+                                <select name="pay_tax"
+                                    class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">LHDNM State</label>
                                 <select name="tax_resident"
                                     class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
                                     <option value="Yes">Yes</option>
@@ -567,6 +624,37 @@
                                         <td class="p-4"><input type="number" value="0"
                                                 class="w-full border rounded p-1.5 text-center"></td>
                                     </tr>
+                                    <tr>
+                                        <td class="p-4">
+                                            <p class="font-semibold text-gray-800">Disabled Children(Below 18 years old)
+                                            </p>
+                                        </td>
+                                        <td class="p-4"><input type="number" value="0"
+                                                class="w-full border rounded p-1.5 text-center"></td>
+                                        <td class="p-4"><input type="number" value="0"
+                                                class="w-full border rounded p-1.5 text-center"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-4">
+                                            <p class="font-semibold text-gray-800">Children in Tertiary Education(Above 18
+                                                years old)</p>
+
+                                        </td>
+                                        <td class="p-4"><input type="number" value="0"
+                                                class="w-full border rounded p-1.5 text-center"></td>
+                                        <td class="p-4"><input type="number" value="0"
+                                                class="w-full border rounded p-1.5 text-center"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-4">
+                                            <p class="font-semibold text-gray-800">Disabled Children in Tertiary Education
+                                                (Below 18 years old)</p>
+                                        </td>
+                                        <td class="p-4"><input type="number" value="0"
+                                                class="w-full border rounded p-1.5 text-center"></td>
+                                        <td class="p-4"><input type="number" value="0"
+                                                class="w-full border rounded p-1.5 text-center"></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -585,157 +673,251 @@
     </div>
 
 
-    <div id="taxModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-        <div id="modalBackdrop" class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+
+
+    <div id="statutory-modal-container" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div id="statutory-modal-backdrop"
+            class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm transition-opacity"></div>
 
         <div class="relative flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-2xl w-full max-w-4xl overflow-hidden transform transition-all">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden transform transition-all">
 
-                <div class="flex justify-between items-center p-5 border-b">
-                    <h2 class="text-lg font-bold text-gray-800 uppercase tracking-tight">Edit Income Tax Information</h2>
-
+                <div class="flex justify-between items-center p-6 border-b bg-gray-50">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800 uppercase tracking-tight">Edit Statutory Details</h2>
+                        <p class="text-xs text-gray-500 mt-1">Update employee contributions and account numbers.</p>
+                    </div>
+                    <button type="button" id="statutory-modal-x"
+                        class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
 
-                <form id="taxUpdateForm" class="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
-                    <div>
-                        <h3 class="text-sm font-bold text-gray-900 border-b-2 border-gray-900 inline-block mb-6 pb-1">
-                            Income Tax Details</h3>
-                        <div class="grid grid-cols-2 gap-x-10 gap-y-6 text-sm">
+                <form action="{{ route('user.updateStatutory', $user->id) }}" method="POST" id="statutory-form"
+                    class="p-8 space-y-10 max-h-[70vh] overflow-y-auto">
+                    @csrf
+
+                    <section>
+                        <div class="flex items-center space-x-2 mb-6 border-b border-cyan-100 pb-2">
+                            <span class="w-2 h-6 bg-cyan-500 rounded-full"></span>
+                            <h3 class="font-bold text-gray-800 uppercase text-sm tracking-wider">EPF Details</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                             <div class="flex flex-col">
-                                <label class="font-bold text-gray-700 mb-2">Pay Tax</label>
-                                <select
-                                    class="border border-gray-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-cyan-500">
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
+                                <label class="text-xs font-bold text-gray-600 mb-3">Pay EPF</label>
+                                <div class="flex items-center space-x-6">
+                                    <label class="flex items-center space-x-2 cursor-pointer group">
+                                        <input type="radio" name="pay_epf" value="1"
+                                            class="w-4 h-4 text-cyan-600 focus:ring-cyan-500"
+                                            {{ $user->getDetail('pay_epf') == 1 ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium text-gray-700">Yes</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer group">
+                                        <input type="radio" name="pay_epf" value="0"
+                                            class="w-4 h-4 text-cyan-600 focus:ring-cyan-500"
+                                            {{ $user->getDetail('pay_epf') == 0 ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium text-gray-700">No</span>
+                                    </label>
+                                </div>
                             </div>
+
                             <div class="flex flex-col">
-                                <label class="font-bold text-gray-700 mb-2">Malaysian Tax Resident</label>
-                                <select
-                                    class="border border-gray-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-cyan-500">
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
+                                <label class="text-xs font-bold text-gray-600 mb-3">EPF Borne by Employer</label>
+                                <div class="flex items-center space-x-6">
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="radio" name="epf_borne_employer" value="1"
+                                            class="w-4 h-4 text-cyan-600"
+                                            {{ $user->getDetail('epf_borne_employer') == 1 ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium text-gray-700">Yes</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="radio" name="epf_borne_employer" value="0"
+                                            class="w-4 h-4 text-cyan-600"
+                                            {{ $user->getDetail('epf_borne_employer') == 0 ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium text-gray-700">No</span>
+                                    </label>
+                                </div>
                             </div>
+
                             <div class="flex flex-col">
-                                <label class="font-bold text-gray-700 mb-2">Tax Borneo By Employee</label>
-                                <select
-                                    class="border border-gray-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-cyan-500">
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
+                                <label class="text-xs font-bold text-gray-600 mb-2">EPF Account Number</label>
+                                <input type="text" name="epf_no" value="{{ $user->getDetail('epf_no') }}"
+                                    placeholder="EPF number can only contain numeric values"
+                                    class="border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none text-sm">
                             </div>
+
                             <div class="flex flex-col">
-                                <label class="font-bold text-gray-700 mb-2">Disabled person</label>
-                                <select
-                                    class="border border-gray-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-cyan-500">
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
+                                <label class="text-xs font-bold text-gray-600 mb-2">Extra EPF On Top Of Normal
+                                    Employer</label>
+                                <input type="number" name="extra_epf_employer"
+                                    value="{{ $user->getDetail('extra_epf_employer') ?? 0 }}"
+                                    class="border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none text-sm">
                             </div>
-                            <div class="flex flex-col">
-                                <label class="font-bold text-gray-700 mb-2">Spouse is working</label>
-                                <select
-                                    class="border border-gray-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-cyan-500">
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
-                            </div>
-                            <div class="flex flex-col">
-                                <label class="font-bold text-gray-700 mb-2">Income Tax Number</label>
-                                <select
-                                    class="border border-gray-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-cyan-500">
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
-                            </div>
-                            <div class="flex flex-col">
-                                <label class="font-bold text-gray-700 mb-2">Spouse is Disabled</label>
-                                <select
-                                    class="border border-gray-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-cyan-500">
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
-                            </div>
-                            <div class="flex flex-col">
-                                <label class="font-bold text-gray-700 mb-2">LHDNM State</label>
-                                <select
-                                    class="border border-gray-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-cyan-500">
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
+
+                            <div class="flex flex-col md:col-span-2">
+                                <label class="text-xs font-bold text-gray-600 mb-2">Extra EPF On Top Of Normal Employee
+                                    EPF</label>
+                                <input type="number" name="extra_epf_employee"
+                                    value="{{ $user->getDetail('extra_epf_employee') ?? 0 }}"
+                                    class=" border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none text-sm">
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div>
-                        <h3 class="text-sm font-bold text-gray-900 border-b-2 border-gray-900 inline-block mb-4 pb-1">Child
-                            Relief</h3>
-                        <div class="border rounded-lg overflow-hidden">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-gray-100 text-gray-800 font-bold">
-                                    <tr>
-                                        <th class="p-4">Condition</th>
-                                        <th class="p-4 text-center w-32">100%</th>
-                                        <th class="p-4 text-center w-32">50%</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-100">
-                                    <tr>
-                                        <td class="p-4">
-                                            <p class="font-semibold">Children (Below 18 years old)</p>
-                                            <p class="text-[10px] text-gray-400 mt-1 leading-tight">Same relief point as 18
-                                                years and above and studying...</p>
-                                        </td>
-                                        <td class="p-4 text-center"><input type="number" value="0"
-                                                class="w-20 border rounded p-1 text-center"></td>
-                                        <td class="p-4 text-center"><input type="number" value="0"
-                                                class="w-20 border rounded p-1 text-center"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-4">
-                                            <p class="font-semibold">Disabled Children (Below 18 years old)</p>
-
-                                        </td>
-                                        <td class="p-4 text-center"><input type="number" value="0"
-                                                class="w-20 border rounded p-1 text-center"></td>
-                                        <td class="p-4 text-center"><input type="number" value="0"
-                                                class="w-20 border rounded p-1 text-center"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-4">
-                                            <p class="font-semibold">Children in Tertiary Education (Above 18 years old)
-                                            </p>
-
-                                        </td>
-                                        <td class="p-4 text-center"><input type="number" value="0"
-                                                class="w-20 border rounded p-1 text-center"></td>
-                                        <td class="p-4 text-center"><input type="number" value="0"
-                                                class="w-20 border rounded p-1 text-center"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-4">
-                                            <p class="font-semibold">Disabled Children in Tertiary Education(Above 18 years
-                                                old)</p>
-
-                                        </td>
-                                        <td class="p-4 text-center"><input type="number" value="0"
-                                                class="w-20 border rounded p-1 text-center"></td>
-                                        <td class="p-4 text-center"><input type="number" value="0"
-                                                class="w-20 border rounded p-1 text-center"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <section>
+                        <div class="flex items-center space-x-2 mb-6 border-b border-blue-100 pb-2">
+                            <span class="w-2 h-6 bg-blue-500 rounded-full"></span>
+                            <h3 class="font-bold text-gray-800 uppercase text-sm tracking-wider">SOCSO Details</h3>
                         </div>
-                    </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+                            <div class="flex flex-col">
+                                <label class="text-xs font-bold text-gray-600 mb-3">Pay SOCSO</label>
+                                <div class="flex items-center space-x-6">
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="radio" name="pay_socso" value="1"
+                                            class="w-4 h-4 text-blue-600"
+                                            {{ $user->getDetail('pay_socso') == 1 ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium text-gray-700">Yes</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="radio" name="pay_socso" value="0"
+                                            class="w-4 h-4 text-blue-600"
+                                            {{ $user->getDetail('pay_socso') == 0 ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium text-gray-700">No</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <label class="text-xs font-bold text-gray-600 mb-3">SOCSO Borne By Employer</label>
+                                <div class="flex items-center space-x-6">
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="radio" name="socso_borne_employer" value="1"
+                                            class="w-4 h-4 text-blue-600"
+                                            {{ $user->getDetail('socso_borne_employer') == 1 ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium text-gray-700">Yes</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="radio" name="socso_borne_employer" value="0"
+                                            class="w-4 h-4 text-blue-600"
+                                            {{ $user->getDetail('socso_borne_employer') == 0 ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium text-gray-700">No</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col md:col-span-2">
+                                <label class="text-xs font-bold text-gray-600 mb-2">SOCSO Account No.</label>
+                                <input type="text" name="socso_no" value="{{ $user->getDetail('socso_no') }}"
+                                    placeholder="e.g. 910304119999"
+                                    class="border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div>
+                                <div class="flex items-center space-x-2 mb-6 border-b border-emerald-100 pb-2">
+                                    <span class="w-2 h-6 bg-emerald-500 rounded-full"></span>
+                                    <h3 class="font-bold text-gray-800 uppercase text-sm tracking-wider">Zakat Details</h3>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="flex flex-col">
+                                        <label class="text-xs font-bold text-gray-600 mb-2">Pay Zakat (Monthly RM)</label>
+                                        <input type="number" name="zakat_amount" step="0.01"
+                                            value="{{ $user->getDetail('zakat_amount') ?? 0 }}"
+                                            class="border border-gray-300 rounded-lg p-2.5 text-sm">
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <label class="text-xs font-bold text-gray-600 mb-2">Zakat Account No.</label>
+                                        <input type="text" name="zakat_no" value="{{ $user->getDetail('zakat_no') }}"
+                                            placeholder="e.g. 0040001024999"
+                                            class="border border-gray-300 rounded-lg p-2.5 text-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-10">
+                                <div>
+                                    <div class="flex items-center space-x-2 mb-4 border-b border-gray-100 pb-2">
+                                        <h3 class="font-bold text-gray-800 uppercase text-sm">EIS Details</h3>
+                                    </div>
+                                    <label class="text-xs font-bold text-gray-600 mb-3 block">EIS Borne by Employer</label>
+                                    <div class="flex items-center space-x-6">
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="radio" name="eis_borne_employer" value="1"
+                                                class="w-4 h-4"
+                                                {{ $user->getDetail('eis_borne_employer') == 1 ? 'checked' : '' }}>
+                                            <span class="text-sm">Yes</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="radio" name="eis_borne_employer" value="0"
+                                                class="w-4 h-4"
+                                                {{ $user->getDetail('eis_borne_employer') == 0 ? 'checked' : '' }}>
+                                            <span class="text-sm">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex items-center space-x-2 mb-4 border-b border-gray-100 pb-2">
+                                        <h3 class="font-bold text-gray-800 uppercase text-sm">HRDF Details</h3>
+                                    </div>
+                                    <label class="text-xs font-bold text-gray-600 mb-3 block">Pay HRDF</label>
+                                    <div class="flex items-center space-x-6">
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="radio" name="pay_hrdf" value="1" class="w-4 h-4"
+                                                {{ $user->getDetail('pay_hrdf') == 1 ? 'checked' : '' }}>
+                                            <span class="text-sm">Yes</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="radio" name="pay_hrdf" value="0" class="w-4 h-4"
+                                                {{ $user->getDetail('pay_hrdf') == 0 ? 'checked' : '' }}>
+                                            <span class="text-sm">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-orange-50 p-6 rounded-xl border border-orange-100">
+                        <div class="flex items-center space-x-2 mb-6 border-b border-orange-200 pb-2">
+                            <span class="w-2 h-6 bg-orange-400 rounded-full"></span>
+                            <h3 class="font-bold text-gray-800 uppercase text-sm tracking-wider">PTPTN Repayment</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="flex flex-col">
+                                <label class="text-xs font-bold text-gray-600 mb-2">Monthly Amount (RM)</label>
+                                <input type="number" name="ptptn_amount" step="0.01"
+                                    value="{{ $user->getDetail('ptptn_amount') ?? 0 }}"
+                                    class="border border-gray-300 rounded-lg p-2.5 text-sm bg-white">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="text-xs font-bold text-gray-600 mb-2">Start Date</label>
+                                <input type="date" name="ptptn_start" value="{{ $user->getDetail('ptptn_start') }}"
+                                    class="border border-gray-300 rounded-lg p-2.5 text-sm bg-white">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="text-xs font-bold text-gray-600 mb-2">End Date</label>
+                                <input type="date" name="ptptn_end" value="{{ $user->getDetail('ptptn_end') }}"
+                                    class="border border-gray-300 rounded-lg p-2.5 text-sm bg-white">
+                            </div>
+                        </div>
+                    </section>
                 </form>
 
-                <div class="flex justify-end space-x-3 p-5 border-t bg-gray-50">
-                    <button type="button" id="closeTaxModal"
-                        class="px-8 py-2 border rounded-md text-gray-600 hover:bg-gray-100 font-semibold transition-colors">Cancel</button>
-                    <button type="submit" form="taxUpdateForm"
-                        class="px-8 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 font-semibold shadow-md transition-colors">Save
+                <div class="flex justify-end items-center space-x-4 p-6 border-t bg-gray-50">
+                    <button type="button" id="statutory-modal-cancel"
+                        class="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Discard
                         Changes</button>
+                    <button type="submit" form="statutory-form"
+                        class="px-10 py-2.5 bg-cyan-600 text-white rounded-lg font-bold text-sm shadow-lg shadow-cyan-100 hover:bg-cyan-700 active:scale-95 transition-all">
+                        Save Changes
+                    </button>
                 </div>
             </div>
         </div>

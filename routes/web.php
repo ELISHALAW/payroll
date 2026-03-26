@@ -67,4 +67,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/updateBankDetail/{id}', [ProfileController::class, 'updateBankDetail'])->name('user.updateBankDetail');
 
     Route::post('/profile/details/{id}', [ProfileController::class, 'updateCompensationDetails'])->name('user.details');
+
+    Route::post('/statutory/{id}', [ProfileController::class, 'updateStatutory'])->name('user.updateStatutory');
 });

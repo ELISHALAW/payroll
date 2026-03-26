@@ -98,41 +98,72 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Get elements by ID
-    const modal = document.getElementById('taxModal');
-    const openBtn = document.getElementById('openTaxModal'); // Your specific button ID
-    const closeBtn = document.getElementById('closeTaxModal');
+    const modal = document.getElementById('incomeTaxModal');
+    const openBtn = document.getElementById('openTaxModal');
+    const closeBtn = document.getElementById('cancelBtn');
     const closeX = document.getElementById('closeModalX');
     const backdrop = document.getElementById('modalBackdrop');
 
-    // Function to show the pop-up
-
-
-    // Shared function to hide the pop-up
     const closeModal = () => {
-
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Restore background scrolling
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
     };
 
-
+    // Open Modal logic
     if (openBtn && modal) {
-        openBtn.addEventListener('click', function () {
+        openBtn.addEventListener('click', () => {
             modal.style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Stop background scrolling
+            document.body.style.overflow = 'hidden';
         });
     }
 
-    // Attach close events
+    // Individual click listeners with safety checks
     if (closeX) closeX.addEventListener('click', closeModal);
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (backdrop) backdrop.addEventListener('click', closeModal);
 
-    // Close when user presses 'Escape' key
+    // Keyboard support
     document.addEventListener('keydown', (e) => {
-        if (e.key === "Escape" && modal.style.display === 'block') {
+        if (e.key === "Escape" && modal && modal.style.display === 'block') {
             closeModal();
         }
     });
+});
 
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('statutory-modal-container');
+    const openBtn = document.getElementById('openTaxesModal');
+    const cancelBtn = document.getElementById('statutory-modal-cancel');
+    const closeX = document.getElementById('statutory-modal-x');
+    const backdrop = document.getElementById('statutory-modal-backdrop');
+
+    // Reusable close function
+    const closeModal = () => {
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    };
+
+    // Open Trigger
+    if (openBtn && modal) {
+        openBtn.addEventListener('click', () => {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevents background scroll
+        });
+    }
+
+    // Multiple Close Triggers (Null-safe)
+    [cancelBtn, closeX, backdrop].forEach(el => {
+        if (el) el.addEventListener('click', closeModal);
+    });
+
+    // Keyboard Accessibility (ESC key)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape" && modal && modal.style.display === 'block') {
+            closeModal();
+        }
+    });
 });

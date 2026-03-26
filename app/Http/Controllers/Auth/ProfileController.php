@@ -39,6 +39,21 @@ class ProfileController extends Controller
         return view('user.compensation', compact('user'));
     }
 
+    public function showStatutory(string $id)
+    {
+        if (auth()->id() != $id) {
+            abort(403, 'Unauthorized access.');
+        }
+
+        // 获取当前用户数据
+        $user = \App\Models\User::findOrFail($id);
+
+        // 返回 user 文件夹下的 profile.blade.php
+        return view('user.compensation', compact('user'));
+    }
+
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -122,35 +137,41 @@ class ProfileController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // 1. 更新 users 表的基础信息 (name)
+        // 1. Update basic fields in the 'users' table
+        // Added 'phone' here as it's usually a column in the users table
         $user->update([
             'name' => $request->name,
         ]);
 
-        // 2. 定义【翻译清单】：表单 input 名字 => 数据库记录名字
+        // 2. Updated [Mapping List]: Form input name => Database label
         $detailsMap = [
-            'preferred_name' => 'Preferred Name',
-            'passport'       => 'Passport No.',
-            'nric'           => 'NRIC No.',
-            'qualification'  => 'Highest Qualification',
-            'gender'         => 'Gender',
-            'marital_status' => 'Marital Status',
-            'nationality'    => 'Nationality',
-            'race'           => 'Race',
-            'religion'       => 'Religion',
+            'preferred_name' => 'preferred_name',
+            'passport'       => 'passport',
+            'nric'           => 'nric',
+            'dob'            => 'dob',
+            'phone'          => 'phone',
+            'gender'         => 'gender',
+            'race'           => 'race',
+            'religion'       => 'religion',
+            'nationality'    => 'nationality',
+            'is_pr'          => 'is_pr',
+            'qualification'  => 'qualification',
+            'marital_status' => 'marital_status'
         ];
 
-        // 3. 【循环搬运】：一行一行地处理数据
+        // 3. [Loop & Save]: Handle each detail one by one
         foreach ($detailsMap as $inputKey => $dbLabel) {
-            // 只有当用户在网页上填了内容，我们才处理
-            if ($request->filled($inputKey)) {
+
+            // Use has() or input() instead of filled() if you want to allow 
+            // resetting values to empty, but filled() is safer for required info.
+            if ($request->has($inputKey)) {
                 UserDetail::updateOrCreate(
                     [
                         'user_id' => $user->id,
-                        'name'    => $dbLabel // 寻找数据库里是否已有这个标签的记录
+                        'name'    => $dbLabel
                     ],
                     [
-                        'value'   => $request->get($inputKey), // 插入用户填的实际内容
+                        'value'   => $request->get($inputKey),
                         'remark'  => 'Updated via Profile'
                     ]
                 );
@@ -159,7 +180,6 @@ class ProfileController extends Controller
 
         return back()->with('success', 'Profile updated successfully!');
     }
-
     public function updateAddress(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -479,4 +499,70 @@ class ProfileController extends Controller
         }
     }
 
+
+    public function updateStatutory(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            // EPF
+            'pay_epf'               => 'required|boolean',
+            'epf_borne_employer'    => 'required|boolean',
+            'epf_no'                => 'nullable|string|max:25',
+            'extra_epf_employer'    => 'nullable|numeric|min:0',
+            'extra_epf_employee'    => 'nullable|numeric|min:0',
+
+            // SOCSO & EIS
+            'pay_socso'             => 'required|boolean',
+            'socso_borne_employer'  => 'required|boolean',
+            'socso_no'              => 'nullable|string|max:25',
+            'eis_borne_employer'    => 'required|boolean',
+
+            // HRDF & Zakat
+            'pay_hrdf'              => 'required|boolean',
+            'zakat_amount'          => 'nullable|numeric|min:0',
+            'zakat_no'              => 'nullable|string|max:30',
+
+            // PTPTN
+            'ptptn_amount'          => 'nullable|numeric|min:0',
+            'ptptn_start'           => 'nullable|date',
+            'ptptn_end'             => 'nullable|date|after_or_equal:ptptn_start',
+        ]);
+
+        // Define all fields to be saved
+        $fields = [
+            'pay_epf',
+            'epf_borne_employer',
+            'epf_no',
+            'extra_epf_employer',
+            'extra_epf_employee',
+            'pay_socso',
+            'socso_borne_employer',
+            'socso_no',
+            'eis_borne_employer',
+            'pay_hrdf',
+            'zakat_amount',
+            'zakat_no',
+            'ptptn_amount',
+            'ptptn_start',
+            'ptptn_end'
+        ];
+
+        foreach ($fields as $field) {
+            UserDetail::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'name'    => $field,
+                ],
+                [
+                    // If it's not in validated (null/empty), we fetch it from request with a default of 0
+                    'value'   => $request->input($field, 0),
+                    'remark'  => 'Statutory Detail Update'
+                ]
+            );
+        }
+
+        return redirect()->route('user.compensation', $id)
+            ->with('success', 'Statutory details updated successfully!');
+    }
 }

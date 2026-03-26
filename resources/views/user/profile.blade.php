@@ -256,66 +256,142 @@
                     {{-- 表单内容 --}}
                     <form action="{{ route('user.update', $user->id) }}" method="POST" class="p-8">
                         @csrf
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {{-- Official Full Name --}}
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Official Full
-                                    Name</label>
-                                <input type="text" name="name" value="{{ $user->name }}"
-                                    class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
-                            </div>
+                        {{-- Container for the fields - Scrollable --}}
+                        <div class="max-h-[60vh] overflow-y-auto px-8 py-2 custom-scrollbar">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {{-- Official Full Name --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Official Full
+                                        Name</label>
+                                    <input type="text" name="name" value="{{ $user->name }}"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
+                                </div>
 
-                            {{-- Passport --}}
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Passport</label>
-                                <input type="text" name="passport" placeholder="i.e. A12345678"
-                                    value="{{ $user->getDetail('Passport No.') }}"
-                                    class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
-                            </div>
+                                {{-- Passport --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Passport</label>
+                                    <input type="text" name="passport" placeholder="i.e. A12345678"
+                                        value="{{ $user->getDetail('Passport No.') }}"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
+                                </div>
 
-                            {{-- Preferred Name --}}
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Preferred Name</label>
-                                <input type="text" name="preferred_name" value="{{ $user->name }}"
-                                    class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
-                            </div>
+                                {{-- Preferred Name --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Preferred
+                                        Name</label>
+                                    <input type="text" name="preferred_name"
+                                        value="{{ $user->preferred_name ?? $user->name }}"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
+                                </div>
 
-                            {{-- NRIC No. --}}
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-2">NRIC No.</label>
-                                <input type="text" name="nric" placeholder="i.e. 900804132244"
-                                    value="{{ $user->getDetail('NRIC No.') }}"
-                                    class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
-                            </div>
+                                {{-- NRIC No. --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">NRIC No.</label>
+                                    <input type="text" name="nric" placeholder="i.e. 900804132244"
+                                        value="{{ $user->getDetail('NRIC No.') }}"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
+                                </div>
 
-                            {{-- Highest Qualification --}}
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Highest
-                                    Qualification</label>
-                                <select name="qualification"
-                                    class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
-                                    <option value="Diploma" {{ $user->qualification == 'Diploma' ? 'selected' : '' }}>
-                                        Diploma</option>
-                                    <option value="Degree" {{ $user->qualification == 'Degree' ? 'selected' : '' }}>Degree
-                                    </option>
-                                </select>
-                            </div>
+                                {{-- Date of Birth --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Date of
+                                        Birth</label>
+                                    <input type="date" name="dob" value="{{ $user->dob }}"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
+                                </div>
 
-                            {{-- Marital Status --}}
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Marital Status</label>
-                                <select name="marital_status"
-                                    class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
-                                    <option value="Single">Single</option>
-                                    <option value="Married">Married</option>
-                                </select>
+                                {{-- Phone Number --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Phone
+                                        Number</label>
+                                    <input type="text" name="phone" placeholder="i.e. 0123456789"
+                                        value="{{ $user->phone }}"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
+                                </div>
+
+                                {{-- Gender --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Gender</label>
+                                    <select name="gender"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+                                        <option value="Male" {{ $user->gender == 'Male' ? 'selected' : '' }}>Male
+                                        </option>
+                                        <option value="Female" {{ $user->gender == 'Female' ? 'selected' : '' }}>Female
+                                        </option>
+                                        <option value="Other" {{ $user->gender == 'Other' ? 'selected' : '' }}>Other
+                                        </option>
+                                    </select>
+                                </div>
+
+                                {{-- Race --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Race</label>
+                                    <input type="text" name="race" placeholder="i.e. Chinese"
+                                        value="{{ $user->getDetail('Race') }}"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
+                                </div>
+
+                                {{-- Religion --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Religion</label>
+                                    <input type="text" name="religion" placeholder="i.e. Buddhism"
+                                        value="{{ $user->getDetail('Religion') }}"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
+                                </div>
+
+                                {{-- Nationality --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Nationality</label>
+                                    <input type="text" name="nationality" placeholder="i.e. Malaysian"
+                                        value="{{ $user->getDetail('Nationality') }}"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
+                                </div>
+
+                                {{-- Permanent Resident --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Permanent
+                                        Resident</label>
+                                    <select name="is_pr"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+                                        <option value="0" {{ $user->getDetail('is_pr') == '0' ? 'selected' : '' }}>No
+                                        </option>
+                                        <option value="1" {{ $user->getDetail('is_pr') == '1' ? 'selected' : '' }}>
+                                            Yes</option>
+                                    </select>
+                                </div>
+
+                                {{-- Highest Qualification --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Highest
+                                        Qualification</label>
+                                    <select name="qualification"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+                                        <option value="Diploma" {{ $user->qualification == 'Diploma' ? 'selected' : '' }}>
+                                            Diploma</option>
+                                        <option value="Degree" {{ $user->qualification == 'Degree' ? 'selected' : '' }}>
+                                            Degree</option>
+                                    </select>
+                                </div>
+
+                                {{-- Marital Status --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Marital
+                                        Status</label>
+                                    <select name="marital_status"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+                                        <option value="Single" {{ $user->marital_status == 'Single' ? 'selected' : '' }}>
+                                            Single</option>
+                                        <option value="Married"
+                                            {{ $user->marital_status == 'Married' ? 'selected' : '' }}>Married</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
-                        {{-- 底部按钮 --}}
-                        <div class="mt-8 flex justify-end gap-3">
+                        {{-- Footer Buttons - Fixed (Outside the scrollable div) --}}
+                        <div class="px-8 py-6 flex justify-end gap-3 border-t border-gray-100 bg-gray-50/50">
                             <button type="button" id="cancelBtn"
-                                class="px-6 py-2 border border-gray-200 rounded-lg text-sm font-bold text-gray-500 hover:bg-gray-50 transition-all">
+                                class="px-6 py-2 border border-gray-200 rounded-lg text-sm font-bold text-gray-500 hover:bg-white transition-all">
                                 Cancel
                             </button>
                             <button type="submit" id="saveBtn"
