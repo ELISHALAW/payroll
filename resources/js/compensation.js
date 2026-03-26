@@ -95,3 +95,44 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Get elements by ID
+    const modal = document.getElementById('taxModal');
+    const openBtn = document.getElementById('openTaxModal'); // Your specific button ID
+    const closeBtn = document.getElementById('closeTaxModal');
+    const closeX = document.getElementById('closeModalX');
+    const backdrop = document.getElementById('modalBackdrop');
+
+    // Function to show the pop-up
+
+
+    // Shared function to hide the pop-up
+    const closeModal = () => {
+
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore background scrolling
+    };
+
+
+    if (openBtn && modal) {
+        openBtn.addEventListener('click', function () {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Stop background scrolling
+        });
+    }
+
+    // Attach close events
+    if (closeX) closeX.addEventListener('click', closeModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (backdrop) backdrop.addEventListener('click', closeModal);
+
+    // Close when user presses 'Escape' key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape" && modal.style.display === 'block') {
+            closeModal();
+        }
+    });
+
+});

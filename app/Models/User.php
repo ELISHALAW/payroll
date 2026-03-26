@@ -86,7 +86,26 @@ class User extends Authenticatable
             ->values();
     }
 
-    public function getCompensationDetails(){
-        
+    public function getCompensationHistoryAttribute()
+    {
+        return \App\Models\UserDetail::where('user_id', $this->id)
+            ->where('remark', 'Updated via Compensation Details Modal')
+            ->latest()
+            ->get()
+            ->groupBy(function ($item) {
+                // Group by the exact second it was saved
+                return $item->created_at->format('Y-m-d H:i:s');
+            })
+            ->map(function ($group) {
+                return (object)[
+                    'date'        => $group->first()->created_at->format('Y-m-d'),
+                    'salary_type' => $group->where('name', 'salary_type')->first()->value ?? 'N/A',
+                    'attendance'  => $group->where('name', 'pay_by_attendance')->first()->value ?? 'N/A',
+                    'payment'     => $group->where('name', 'payment_method')->first()->value ?? 'N/A',
+                    'salary'      => $group->where('name', 'salary')->first()->value ?? 0,
+                    'reason'      => $group->where('name', 'reason')->first()->value ?? 'N/A',
+                ];
+            })
+            ->values(); // Reset keys to a simple 0, 1, 2... array
     }
 }

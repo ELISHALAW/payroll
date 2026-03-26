@@ -430,9 +430,7 @@ class ProfileController extends Controller
                 \App\Models\UserDetail::create(
                     [
                         'user_id' => $id,
-                        'name' => $key
-                    ],
-                    [
+                        'name' => $key,
                         'value' => $value ?? '-',
                         'remark' => 'Updated via Compensation Details Modal'
                     ]
@@ -480,4 +478,5 @@ class ProfileController extends Controller
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
+
 }
