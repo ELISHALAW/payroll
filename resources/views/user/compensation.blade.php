@@ -260,6 +260,9 @@
                         <div class="flex justify-between"><span class="text-gray-500">Extra EPF On Top of Normal Employer
                                 EPF</span> <span class="font-medium">{{ $user->getDetail('extra_epf_employee') }}</span>
                         </div>
+                        <div class="flex justify-between"><span class="text-gray-500">EPF Employee Rate
+                                EPF</span> <span class="font-medium">{{ ($user->epf_rate) * 100  }}%</span>
+                        </div>
                     </div>
                 </div>
 
@@ -267,9 +270,11 @@
                     <h3 class="font-bold text-gray-900 mb-4">SOCSO & EIS</h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between"><span class="text-gray-500">Pay SOCSO</span> <span
-                                class="font-medium text-green-600">Yes</span></div>
+                                class="font-medium text-green-600">{{ $user->getDetail('pay_socso') == 1 ? 'Yes' : 'No' }}</span>
+                        </div>
                         <div class="flex justify-between"><span class="text-gray-500">EIS Borne by Emp.</span> <span
-                                class="font-medium">No</span></div>
+                                class="font-medium">{{ $user->getDetail('socso_borne_employer') == 1 ? 'Yes' : 'No' }}</span>
+                        </div>
                         <div class="flex justify-between"><span class="text-gray-500">SOCSO Acc.</span> <span
                                 class="font-medium">{{ $user->getDetail('socso_no') }}</span></div>
                     </div>
@@ -279,9 +284,12 @@
                     <h3 class="font-bold text-gray-900 mb-4">Zakat & HRDF</h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between"><span class="text-gray-500">Pay Zakat</span> <span
-                                class="font-medium">RM 0</span></div>
+                                class="font-medium">{{ $user->getDetail('zakat_amount') }}</span></div>
                         <div class="flex justify-between"><span class="text-gray-500">Pay HRDF</span> <span
-                                class="font-medium text-green-600">Yes</span></div>
+                                class="font-medium text-green-600">{{ $user->getDetail('pay_hrdf') == 1 ? 'Yes' : 'No' }}</span>
+                        </div>
+                        <div class="flex justify-between"><span class="text-gray-500">Zakar Account</span> <span
+                                class="font-medium">{{ $user->getDetail('zakat_no') }}</span></div>
                     </div>
                 </div>
 
@@ -290,15 +298,15 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm bg-gray-50 p-4 rounded-md">
                         <div>
                             <p class="text-gray-400 text-xs font-bold uppercase">Monthly</p>
-                            <p class="text-lg font-bold text-orange-600">RM 0</p>
+                            <p class="text-lg font-bold text-orange-600">RM {{ $user->getDetail('ptptn_amount') }}</p>
                         </div>
                         <div>
-                            <p class="text-gray-400 text-xs font-bold uppercase">{{ $user->getDetail('ptptn_start') }}</p>
-                            <p class="font-medium">-</p>
+                            <p class="text-gray-400 text-xs font-bold uppercase">Start Date</p>
+                            <p class="text-lg font-bold text-orange-600">{{ $user->getDetail('ptptn_start') }}</p>
                         </div>
                         <div>
-                            <p class="text-gray-400 text-xs font-bold uppercase">{{ $user->getDetail('ptptn_end') }}</p>
-                            <p class="font-medium">-</p>
+                            <p class="text-gray-400 text-xs font-bold uppercase">End Date</p>
+                            <p class="text-lg font-bold text-orange-600">{{ $user->getDetail('ptptn_end') }}</p>
                         </div>
                     </div>
                 </div>
@@ -771,6 +779,7 @@
                                     value="{{ $user->getDetail('extra_epf_employee') ?? 0 }}"
                                     class=" border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none text-sm">
                             </div>
+
                         </div>
                     </section>
 

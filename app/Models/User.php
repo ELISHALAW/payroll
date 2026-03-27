@@ -3,14 +3,18 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Classes\Hasher;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
+    protected $appends = ['epf_rate'];
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
@@ -37,6 +41,16 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    // public function getRouteKey()
+    // {
+    //     return Hasher::encode($this->getKey());
+    // }
+
+    // public function resolveRouteBinding($value, $field = null)
+    // {
+    //     return $this->where('id', Hasher::decode($value))->firstOrFail();
+    // }
 
     /**
      * Get the attributes that should be cast.
@@ -109,5 +123,31 @@ class User extends Authenticatable
             ->values(); // Reset keys to a simple 0, 1, 2... array
     }
 
-  
+    protected function epfRate(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $nationality = strtolower($this->getDetail('nationality') ?? '');
+
+
+                if (!str_contains($nationality, 'malaysian')) {
+                    return 0.0;
+                }
+
+                $dob =  $this->getDetail('dob');
+
+                if (!$dob) {
+                    return 0.11;
+                }
+
+                $age = \Carbon\Carbon::parse($dob)->age;
+
+                if ($age >= 60) {
+                    return 0.0;
+                }
+
+                return 0.11;
+            }
+        );
+    }
 }

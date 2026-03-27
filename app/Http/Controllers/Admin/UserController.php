@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+
 class UserController extends Controller
 {
     /**
@@ -12,7 +13,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = \App\Models\User::all();
+        $users = User::all();
 
         return view('admin.users.index', compact('users'));
     }
@@ -37,7 +38,7 @@ class UserController extends Controller
             'password' => 'required|min:6'
         ]);
 
-        \App\Models\User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
@@ -61,7 +62,7 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         return view('admin.users.edit', compact('user'));
     }
@@ -71,7 +72,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -98,7 +99,7 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
 
         if ($user->id === auth()->id()) {
@@ -110,17 +111,18 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User deleted successfully');
     }
 
-    public function updateEmail(Request $request, $id){
+    public function updateEmail(Request $request, $id)
+    {
         $user = User::findOrFail($id);
 
         $request->validate([
-            'email' => 'required|email|unique:users,email,'.$user->id
+            'email' => 'required|email|unique:users,email,' . $user->id
         ]);
 
         $user->update([
             'email' => $request->email
         ]);
 
-        return back()->with('success','Email updated successfully!');
+        return back()->with('success', 'Email updated successfully!');
     }
 }

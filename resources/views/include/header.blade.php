@@ -39,7 +39,7 @@
                             class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
                             Compensation
                         </a>
-                        <a href="{{ route('user.leave', Auth::id())}}"
+                        <a href="{{ route('user.leave', Auth::id()) }}"
                             class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
                             Leave
                         </a>

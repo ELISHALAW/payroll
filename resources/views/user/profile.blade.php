@@ -70,7 +70,8 @@
                         </div>
                         <div class="flex justify-between items-start">
                             <span class="text-gray-400 text-sm w-1/2">Date Of Birth</span>
-                            <span class="text-gray-900 text-sm font-medium w-1/2">{{ $user->getDetail('dob') }}</span>
+                            <span
+                                class="text-gray-900 text-sm font-medium w-1/2">{{ \Carbon\Carbon::parse($user->getDetail('dob'))->format('d M Y') }}</span>
                         </div>
                         <div class="flex justify-between items-start">
                             <span class="text-gray-400 text-sm w-1/2">Race</span>
@@ -317,7 +318,8 @@
                                 <div>
                                     <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Date of
                                         Birth</label>
-                                    <input type="date" name="dob" value="{{ $user->getDetail('dob') }}"
+                                    <input type="date" name="dob"
+                                        value="{{ \Carbon\Carbon::parse($user->getDetail('dob'))->format('d M Y') }}"
                                         class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
                                 </div>
 

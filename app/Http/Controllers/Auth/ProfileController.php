@@ -33,7 +33,7 @@ class ProfileController extends Controller
         }
 
         // 获取当前用户数据
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         // 返回 user 文件夹下的 profile.blade.php
         return view('user.compensation', compact('user'));
@@ -80,7 +80,7 @@ class ProfileController extends Controller
         }
 
         // 获取当前用户数据
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         // 返回 user 文件夹下的 profile.blade.php
         return view('user.profile', compact('user'));
@@ -94,7 +94,7 @@ class ProfileController extends Controller
             abort(403, 'Unauthorized access.');
         }
 
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         // 1. Fetch and group the data EXACTLY like you did in your other working method
         $careerHistory = UserDetail::where('user_id', $id)
