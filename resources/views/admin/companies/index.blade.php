@@ -4,7 +4,7 @@
     <div class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-xl font-bold text-gray-800">Company Management</h1>
-            <a href="{{ route('companies.create') }}"
+            <a href="{{ route('admin.companies.create') }}"
                 class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded transition duration-200 text-xs">
                 + Add New Company
             </a>

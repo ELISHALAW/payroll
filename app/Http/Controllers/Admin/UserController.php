@@ -24,6 +24,7 @@ class UserController extends Controller
     public function create()
     {
         //
+        $user = User::findOrFail($id);
         return view('admin.users.create');
     }
 

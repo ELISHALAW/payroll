@@ -27,4 +27,9 @@ class UserDetail extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public static function getValue($chunk, $name)
+    {
+        return $chunk->where('name', $name)->value('value') ?? '-';
+    }
 }

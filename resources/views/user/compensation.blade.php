@@ -1,6 +1,8 @@
+@php 
+    use Carbon\Carbon;
+@endphp
+
 @extends('output.layout')
-
-
 
 @section('content')
     <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -66,7 +68,8 @@
                 <div class="grid grid-cols-2 gap-x-12 gap-y-4">
                     <div class="space-y-4">
                         <div class="flex"><span class="w-1/2 text-gray-400">Effective Date</span><span
-                                class="w-1/2 font-semibold">{{ $user->getDetail('effective_date') }}</span></div>
+                                class="w-1/2 font-semibold">{{ Carbon::parse($user->getDetail('effective_date'))->format('d-M-Y') }}</span>
+                        </div>
                         <div class="flex"><span class="w-1/2 text-gray-400">Salary Type</span><span
                                 class="w-1/2 font-semibold">{{ $user->getDetail('salary_type') }}</span></div>
                         <div class="flex"><span class="w-1/2 text-gray-400">Reason</span><span
@@ -147,41 +150,41 @@
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span class="text-gray-400">Pay Tax</span>
-                            <span class="font-semibold text-gray-700">Yes</span>
+                            <span class="font-semibold text-gray-700">{{ $user->getDetail('pay_tax') }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-400">Tax Borne By Employer</span>
-                            <span class="font-semibold text-gray-700">No</span>
+                            <span class="font-semibold text-gray-700">{{ $user->getDetail('tax_borne_exployer') }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-400">Spouse is Working</span>
-                            <span class="font-semibold text-gray-700">No</span>
+                            <span class="font-semibold text-gray-700">{{ $user->getDetail('spouse_working') }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-400">Spouse is Disabled</span>
-                            <span class="font-semibold text-gray-700">No</span>
+                            <span class="font-semibold text-gray-700">{{ $user->getDetail('spouse_disabled') }}</span>
                         </div>
                     </div>
 
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span class="text-gray-400">Income Tax No.</span>
-                            <span class="font-semibold text-gray-700">-</span>
+                            <span class="font-semibold text-gray-700">{{ $user->getDetail('income_tax_no') }}</span>
                         </div>
                         <div class="flex justify-between items-center group relative">
                             <span class="text-gray-400">Malaysian Tax Resident</span>
                             <div class="flex items-center gap-1">
-                                <span class="font-semibold text-gray-700">Yes</span>
+                                <span class="font-semibold text-gray-700">{{ $user->getDetail('tax_resident') }}</span>
                                 <i class="fas fa-info-circle text-orange-400 text-xs"></i>
                             </div>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-400">Disabled Person</span>
-                            <span class="font-semibold text-gray-700">No</span>
+                            <span class="font-semibold text-gray-700">{{ $user->getDetail('disabled_person') }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-400">LHDNM State</span>
-                            <span class="font-semibold text-gray-700">-</span>
+                            <span class="font-semibold text-gray-700">{{ $user->getDetail('LHDNM_state') }}</span>
                         </div>
                     </div>
                 </div>
@@ -196,27 +199,30 @@
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span class="text-gray-400">Children (Below 18 years)</span>
-                            <span class="font-semibold text-gray-700">0</span>
+                            <span class="font-semibold text-gray-700">{{ $totalChildrenUnder18 }}</span>
                         </div>
                         <div class="flex justify-between text-left">
                             <span class="text-gray-400 w-2/3">Disabled Children in Tertiary Education (Above 18
                                 years)</span>
-                            <span class="font-semibold text-gray-700 w-1/3 text-right">0</span>
+                            <span
+                                class="font-semibold text-gray-700 w-1/3 text-right">{{ $totalChildrenOver18EduDisabled }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-400">Deductible Child Relief Point</span>
-                            <span class="font-semibold text-gray-700">0</span>
+                            <span class="font-semibold text-gray-700">{{ $reliefPoints }}</span>
                         </div>
                     </div>
 
                     <div class="space-y-3">
                         <div class="flex justify-between text-left">
                             <span class="text-gray-400 w-2/3">Children in Tertiary Education (Above 18 years)</span>
-                            <span class="font-semibold text-gray-700 w-1/3 text-right">0</span>
+                            <span
+                                class="font-semibold text-gray-700 w-1/3 text-right">{{ $totalChildrenOver18Edu }}</span>
                         </div>
                         <div class="flex justify-between text-left">
                             <span class="text-gray-400 w-2/3">Disabled Children (Below 18 years)</span>
-                            <span class="font-semibold text-gray-700 w-1/3 text-right">0</span>
+                            <span
+                                class="font-semibold text-gray-700 w-1/3 text-right">{{ $totalDisabledChildrenUnder18 }}</span>
                         </div>
                     </div>
                 </div>
@@ -261,7 +267,7 @@
                                 EPF</span> <span class="font-medium">{{ $user->getDetail('extra_epf_employee') }}</span>
                         </div>
                         <div class="flex justify-between"><span class="text-gray-500">EPF Employee Rate
-                                EPF</span> <span class="font-medium">{{ ($user->epf_rate) * 100  }}%</span>
+                                EPF</span> <span class="font-medium">{{ $user->epf_rate * 100 }}%</span>
                         </div>
                     </div>
                 </div>
@@ -302,11 +308,11 @@
                         </div>
                         <div>
                             <p class="text-gray-400 text-xs font-bold uppercase">Start Date</p>
-                            <p class="text-lg font-bold text-orange-600">{{ $user->getDetail('ptptn_start') }}</p>
+                            <p class="text-lg font-bold text-orange-600">{{ Carbon::parse($user->getDetail('ptptn_start'))->format('d-M-Y') }}</p>
                         </div>
                         <div>
                             <p class="text-gray-400 text-xs font-bold uppercase">End Date</p>
-                            <p class="text-lg font-bold text-orange-600">{{ $user->getDetail('ptptn_end') }}</p>
+                            <p class="text-lg font-bold text-orange-600">{{ Carbon::parse($user->getDetail('ptptn_end'))->format('d-M-Y') }}</p>
                         </div>
                     </div>
                 </div>
@@ -536,7 +542,18 @@
                     </button>
                 </div>
 
-                <form id="taxUpdateForm" class="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
+                <form id="taxUpdateForm" method="POST" action="{{ route('user.updateIncomeTax', $user->id) }}"
+                    class="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
+                    @csrf
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <div>
                         <h3 class="text-sm font-bold text-gray-900 border-b-2 border-gray-900 inline-block mb-6 pb-1">
                             Income Tax Details</h3>
@@ -545,71 +562,90 @@
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Pay Tax</label>
                                 <select name="pay_tax"
                                     class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
+                                    <option value="Yes" {{ $user->getDetail('pay_tax') == 'Yes' ? 'selected' : '' }}>
+                                        Yes</option>
+                                    <option value="No" {{ $user->getDetail('pay_tax') == 'No' ? 'selected' : '' }}>No
+                                    </option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Malaysian Tax Resident</label>
                                 <select name="tax_resident"
                                     class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
+                                    <option value="Yes"
+                                        {{ $user->getDetail('tax_resident') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                                    <option value="No"
+                                        {{ $user->getDetail('tax_resident') == 'No' ? 'selected' : '' }}>No</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Tax Borne By Employer</label>
-                                <select name="pay_tax"
+                                <select name="tax_borne_exployer"
                                     class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
+                                    <option value="Yes"
+                                        {{ $user->getDetail('tax_borne_employer') == 'Yes' ? 'selected' : '' }}>Yes
+                                    </option>
+                                    <option value="No"
+                                        {{ $user->getDetail('tax_borne_employer') == 'No' ? 'selected' : '' }}>No</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Disabled Person</label>
-                                <select name="tax_resident"
+                                <select name="disabled_person"
                                     class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
+                                    <option value="Yes"
+                                        {{ $user->getDetail('disabled_person') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                                    <option value="No"
+                                        {{ $user->getDetail('disabled_person') == 'No' ? 'selected' : '' }}>No</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Spouse is working</label>
-                                <select name="pay_tax"
+                                <select name="spouse_working"
                                     class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
+                                    <option value="Yes"
+                                        {{ $user->getDetail('spouse_working') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                                    <option value="No"
+                                        {{ $user->getDetail('spouse_working') == 'No' ? 'selected' : '' }}>No</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Income Tax No.</label>
                                 <div
                                     class="flex border border-gray-300 rounded-md overflow-hidden focus-within:ring-1 focus-within:ring-cyan-500">
-                                    <select name="tax_prefix"
+                                    <select name="tax_no"
                                         class="bg-gray-50 border-r border-gray-300 px-3 py-2.5 text-sm text-gray-600 outline-none cursor-pointer">
-                                        <option value="IG">IG</option>
-                                        <option value="OG">OG</option>
-                                        <option value="SG">SG</option>
+                                        <option value="IG" {{ $user->getDetail('tax_no') == 'IG' ? 'selected' : '' }}>
+                                            IG</option>
+                                        <option value="OG" {{ $user->getDetail('tax_no') == 'OG' ? 'selected' : '' }}>
+                                            OG</option>
+                                        <option value="SG" {{ $user->getDetail('tax_no') == 'SG' ? 'selected' : '' }}>
+                                            SG</option>
                                     </select>
 
                                     <input type="text" name="income_tax_no" placeholder="i.e. IG12345678901"
-                                        class="w-full p-2.5 text-sm outline-none placeholder-gray-300">
+                                        class="w-full p-2.5 text-sm outline-none placeholder-gray-300"
+                                        value="{{ $user->getDetail('income_tax_no') }}">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Spouse is Disabled</label>
-                                <select name="pay_tax"
+                                <select name="spouse_disabled"
                                     class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
+                                    <option value="Yes"
+                                        {{ $user->getDetail('spouse_disabled') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                                    <option value="No"
+                                        {{ $user->getDetail('spouse_disabled') == 'No' ? 'selected' : '' }}>No</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">LHDNM State</label>
-                                <select name="tax_resident"
+                                <select name="LHDNM_state"
                                     class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-cyan-500 outline-none">
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
+                                    <option value="Yes"
+                                        {{ $user->getDetail('LHDNM_state') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                                    <option value="No"
+                                        {{ $user->getDetail('LHDNM_state') == 'No' ? 'selected' : '' }}>No</option>
                                 </select>
                             </div>
                         </div>
@@ -634,9 +670,11 @@
                                             <p class="text-[11px] text-gray-400 mt-1 leading-tight">Same relief point as 18
                                                 years and above and studying (included certificate/matriculation)</p>
                                         </td>
-                                        <td class="p-4"><input type="number" value="0"
+                                        <td class="p-4"><input type="number" name="child_under_18_full"
+                                                value="{{ $user->getDetail('child_under_18_full') }}"
                                                 class="w-full border rounded p-1.5 text-center"></td>
-                                        <td class="p-4"><input type="number" value="0"
+                                        <td class="p-4"><input type="number" name="child_under_18_half"
+                                                value="{{ $user->getDetail('child_under_18_half') }}"
                                                 class="w-full border rounded p-1.5 text-center"></td>
                                     </tr>
                                     <tr>
@@ -644,9 +682,13 @@
                                             <p class="font-semibold text-gray-800">Disabled Children(Below 18 years old)
                                             </p>
                                         </td>
-                                        <td class="p-4"><input type="number" value="0"
+                                        <td class="p-4"><input type="number"
+                                                value="{{ $user->getDetail('disabled_child_under_18_full') }}"
+                                                name="disabled_child_under_18_full"
                                                 class="w-full border rounded p-1.5 text-center"></td>
-                                        <td class="p-4"><input type="number" value="0"
+                                        <td class="p-4"><input type="number"
+                                                value="{{ $user->getDetail('disabled_child_under_18_half') }}"
+                                                name="disabled_child_under_18_half"
                                                 class="w-full border rounded p-1.5 text-center"></td>
                                     </tr>
                                     <tr>
@@ -655,9 +697,13 @@
                                                 years old)</p>
 
                                         </td>
-                                        <td class="p-4"><input type="number" value="0"
+                                        <td class="p-4"><input type="number"
+                                                value="{{ $user->getDetail('child_over_18_edu_full') }}"
+                                                name="child_over_18_edu_full"
                                                 class="w-full border rounded p-1.5 text-center"></td>
-                                        <td class="p-4"><input type="number" value="0"
+                                        <td class="p-4"><input type="number"
+                                                value="{{ $user->getDetail('child_over_18_edu_half') }}"
+                                                name="child_over_18_edu_half"
                                                 class="w-full border rounded p-1.5 text-center"></td>
                                     </tr>
                                     <tr>
@@ -665,9 +711,13 @@
                                             <p class="font-semibold text-gray-800">Disabled Children in Tertiary Education
                                                 (Below 18 years old)</p>
                                         </td>
-                                        <td class="p-4"><input type="number" value="0"
+                                        <td class="p-4"><input type="number"
+                                                value="{{ $user->getDetail('disabled_child_over_18_edu_full') }}"
+                                                name="disabled_child_over_18_edu_full"
                                                 class="w-full border rounded p-1.5 text-center"></td>
-                                        <td class="p-4"><input type="number" value="0"
+                                        <td class="p-4"><input type="number"
+                                                value="{{ $user->getDetail('disabled_child_over_18_edu_half') }}"
+                                                name="disabled_child_over_18_edu_half"
                                                 class="w-full border rounded p-1.5 text-center"></td>
                                     </tr>
                                 </tbody>
@@ -850,8 +900,8 @@
                                     </div>
                                     <div class="flex flex-col">
                                         <label class="text-xs font-bold text-gray-600 mb-2">Zakat Account No.</label>
-                                        <input type="text" name="zakat_no" value="{{ $user->getDetail('zakat_no') }}"
-                                            placeholder="e.g. 0040001024999"
+                                        <input type="text" name="zakat_no"
+                                            value="{{ $user->getDetail('zakat_no') }}" placeholder="e.g. 0040001024999"
                                             class="border border-gray-300 rounded-lg p-2.5 text-sm">
                                     </div>
                                 </div>

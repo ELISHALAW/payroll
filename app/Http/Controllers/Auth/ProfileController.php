@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use id;
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserDetail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
@@ -19,7 +21,7 @@ class ProfileController extends Controller
         if (auth()->id() != $id) {
             abort(403, 'Unauthorized access');
         }
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         // 返回 user 文件夹下的 profile.blade.php
         return view('user.leave', compact('user'));
@@ -27,6 +29,71 @@ class ProfileController extends Controller
 
 
     public function showCompensation(string $id)
+    {
+        if (auth()->id() != $id) {
+            abort(403, 'Unauthorized access.');
+        }
+        // 获取当前用户数据
+        $user = User::findOrFail($id);
+
+        $userDetails = UserDetail::where('user_id', $id)->pluck('value', 'name')->toArray();
+
+        $totalChildrenUnder18 = (int)($userDetails['child_under_18_full'] ?? 0) + ($userDetails['child_under_18_half'] ?? 0);
+        $totalDisabledChildrenUnder18 = (int)($userDetails['disabled_child_under_18_full'] ?? 0) + ($userDetails['disabled_child_under_18_half'] ?? 0);
+        $totalChildrenOver18Edu = (int)($userDetails['child_over_18_edu_full'] ?? 0) + ($userDetails['child_over_18_edu_half'] ?? 0);
+        $totalChildrenOver18EduDisabled = (int)($userDetails['disabled_child_over_18_edu_full'] ?? 0) + ($userDetails['disabled_child_over_18_edu_half'] ?? 0);
+
+        $weight = [
+            'under_18' => 1,
+            'tertiary_edu' => 4,
+            'disabled' => 3,
+            'disabled_edu' => 7
+        ];
+
+        $reliefPoints = 0;
+        $reliefPoints += ((int)($userDetails['child_under_18_full'] ?? 0) * $weight['under_18']);
+        $reliefPoints += ((int)($userDetails['child_under_18_half'] ?? 0) * ($weight['under_18'] / 2));
+
+        $reliefPoints += ((int)($userDetails['child_over_18_edu_full'] ?? 0) * $weight['tertiary_edu']);
+        $reliefPoints += ((int)($userDetails['child_over_18_edu_half'] ?? 0) * ($weight['tertiary_edu'] / 2));
+
+        $reliefPoints += ((int)($userDetails['disabled_child_under_18_full'] ?? 0) * $weight['disabled']);
+        $reliefPoints += ((int)($userDetails['disabled_child_under_18_half'] ?? 0) * ($weight['disabled'] / 2));
+
+        $reliefPoints += ((int)($userDetails['disabled_child_over_18_edu_full'] ?? 0) * $weight['disabled_edu']);
+        $reliefPoints += ((int)($userDetails['disabled_child_over_18_edu_half'] ?? 0) * ($weight['disabled_edu'] / 2));
+
+        return view('user.compensation', compact('user', 'userDetails', 'totalChildrenUnder18', 'totalDisabledChildrenUnder18', 'totalChildrenOver18Edu', 'totalChildrenOver18EduDisabled', 'reliefPoints'));
+    }
+
+    public function showfamily(string $id)
+    {
+        $user = User::findOrFail($id);
+
+        $familyMembers = UserDetail::where('user_id', $id)
+            ->whereIn('name', ['family_name', 'relationship', 'family_nationality', 'family_dob', 'family_phone', 'family_nric'])
+            ->get()
+            // Group by created_at to keep each person's data together
+            ->groupBy(function ($item) {
+                return $item->created_at->format('Y-m-d H:i:s');
+            })
+            // Map the group into a clean object
+            ->map(function ($group) {
+                return (object)[
+                    'name'         => $group->where('name', 'family_name')->first()->value ?? 'N/A',
+                    'relationship' => $group->where('name', 'relationship')->first()->value ?? 'Member',
+                    'nationality'  => $group->where('name', 'family_nationality')->first()->value ?? '-',
+                    'dob'          => $group->where('name', 'family_dob')->first()->value ?? '-',
+                    'phone'        => $group->where('name', 'family_phone')->first()->value ?? '-',
+                    'nric'         => $group->where('name', 'family_nric')->first()->value ?? '-',
+                    'created_at'   => $group->first()->created_at // Useful for the Delete function later
+                ];
+            });
+
+        return view('user.family', compact('user', 'familyMembers'));
+    }
+
+    public function showStatutory(string $id)
     {
         if (auth()->id() != $id) {
             abort(403, 'Unauthorized access.');
@@ -39,40 +106,7 @@ class ProfileController extends Controller
         return view('user.compensation', compact('user'));
     }
 
-    public function showStatutory(string $id)
-    {
-        if (auth()->id() != $id) {
-            abort(403, 'Unauthorized access.');
-        }
 
-        // 获取当前用户数据
-        $user = \App\Models\User::findOrFail($id);
-
-        // 返回 user 文件夹下的 profile.blade.php
-        return view('user.compensation', compact('user'));
-    }
-
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         if (auth()->id() != $id) {
@@ -112,38 +146,42 @@ class ProfileController extends Controller
                 ];
             });
 
+
+
         // 2. Pass the variable to the view
         return view('user.employment', compact('user', 'careerHistory'));
     }
-
-
-
-
-
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
     {
+        // 1. Validation Logic
+        $request->validate([
+            'name'           => 'required|string|max:255',
+            'preferred_name' => 'nullable|string|max:255',
+            'passport'       => 'nullable|string|max:20',
+            'nric'           => 'required|string|size:12', // Standard 12-digit Malaysian NRIC
+            'dob'            => 'required|date|before:today',
+            'phone'          => 'required|string|min:10|max:15',
+            'gender'         => 'required|in:Male,Female',
+            'race'           => 'nullable|string',
+            'religion'       => 'nullable|string',
+            'nationality'    => 'required|string',
+            'is_pr'          => 'required|boolean',
+            'qualification'  => 'nullable|string',
+            'marital_status' => 'required|in:Single,Married,Divorced,Widowed',
+        ]);
+
         $user = User::findOrFail($id);
 
-        // 1. Update basic fields in the 'users' table
-        // Added 'phone' here as it's usually a column in the users table
+        // 2. Update basic fields in the 'users' table
         $user->update([
             'name' => $request->name,
         ]);
 
-        // 2. Updated [Mapping List]: Form input name => Database label
+        // 3. Mapping List
         $detailsMap = [
             'preferred_name' => 'preferred_name',
             'passport'       => 'passport',
@@ -159,11 +197,8 @@ class ProfileController extends Controller
             'marital_status' => 'marital_status'
         ];
 
-        // 3. [Loop & Save]: Handle each detail one by one
+        // 4. [Loop & Save]: Handle each detail one by one
         foreach ($detailsMap as $inputKey => $dbLabel) {
-
-            // Use has() or input() instead of filled() if you want to allow 
-            // resetting values to empty, but filled() is safer for required info.
             if ($request->has($inputKey)) {
                 UserDetail::updateOrCreate(
                     [
@@ -182,14 +217,23 @@ class ProfileController extends Controller
     }
     public function updateAddress(Request $request, $id)
     {
+        // 1. Validation Logic
+        $request->validate([
+            'address'  => 'required|string|max:500',
+            'city'     => 'required|string|max:100',
+            'postcode' => 'required|string|digits:5', // Malaysian postcodes are 5 digits
+            'region'   => 'required|string|max:100', // Usually the State (e.g., Selangor, KL)
+            'country'  => 'required|string|max:100',
+        ]);
+
         $user = User::findOrFail($id);
 
         $addressMap = [
-            'address' => 'address',
-            'city' => 'city',
+            'address'  => 'address',
+            'city'     => 'city',
             'postcode' => 'postcode',
-            'region' => 'region',
-            'country' => 'country'
+            'region'   => 'region',
+            'country'  => 'country'
         ];
 
         foreach ($addressMap as $inputKey => $dbLabel) {
@@ -213,6 +257,13 @@ class ProfileController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $request->validate([
+            'correspondence_address'  => 'required|string|max:500',
+            'correspondence_city'     => 'required|string|max:100',
+            'correspondence_postcode' => 'required|string|digits:5', // Malaysian postcodes are 5 digits
+            'correspondence_region'   => 'required|string|max:100', // Usually the State (e.g., Selangor, KL)
+            'correspondence_country'  => 'required|string|max:100',
+        ]);
         $addressMap = [
             'correspondence_address' => 'correspondence_address',
             'correspondence_city' => 'correspondence_city',
@@ -242,6 +293,12 @@ class ProfileController extends Controller
     public function updateEmergencyContact(Request $request, $id)
     {
         $user = User::findOrFail($id);
+
+        $request->validate([
+            'emergency_name'         => 'required|string|max:255',
+            'emergency_relationship' => 'required|string|max:255',
+            'emergency_phone'        => 'required|string|max:20',
+        ]);
 
         // Map the form input 'name' to the 'name' column in your UserDetail table
         $emergencyMap = [
@@ -381,8 +438,8 @@ class ProfileController extends Controller
 
         // 1. Validation
         $request->validate([
-            'history_effective_from'    => 'nullable|string',
-            'history_effective_to'      => 'nullable|string',
+            'history_effective_from'    => 'nullable|date',
+            'history_effective_to'      => 'nullable|date|after_or_equal:history_effective_from',
             'history_employment_type'   => 'nullable|string',
             'history_employment_status' => 'nullable|string',
             'history_position'          => 'nullable|string',
@@ -564,5 +621,215 @@ class ProfileController extends Controller
 
         return redirect()->route('user.compensation', $id)
             ->with('success', 'Statutory details updated successfully!');
+    }
+
+
+
+    public function updateIncomeTax(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        // 1. Validation Logic
+        $validator = Validator::make($request->all(), [
+            'pay_tax'                         => 'required|in:Yes,No',
+            'tax_resident'                    => 'required|in:Yes,No',
+            'tax_borne_exployer'              => 'nullable|in:Yes,No',
+            'disabled_person'                 => 'nullable|in:Yes,No',
+            'spouse_working'                  => 'nullable|in:Yes,No',
+            'spouse_disabled'                 => 'nullable|in:Yes,No',
+            'tax_no'                          => 'required|in:IG,OG,SG',
+            'income_tax_no'                   => 'required|string|min:10|max:15',
+            'LHDNM_state'                     => 'required|string',
+            'child_under_18_full'             => 'nullable|integer|min:0',
+            'child_under_18_half'             => 'nullable|integer|min:0',
+            'disabled_child_under_18_full'    => 'nullable|integer|min:0',
+            'disabled_child_under_18_half'    => 'nullable|integer|min:0',
+            'child_over_18_edu_full'          => 'nullable|integer|min:0',
+            'child_over_18_edu_half'          => 'nullable|integer|min:0',
+            'disabled_child_over_18_edu_full' => 'nullable|integer|min:0',
+            'disabled_child_over_18_edu_half' => 'nullable|integer|min:0',
+        ]);
+
+        // If validation fails, redirect back with error messages and old input
+        if ($validator->fails()) {
+            Log::warning('Validation Failed for user ' . $id, $validator->errors()->toArray());
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // 2. Data Preparation
+        $taxData = [
+            'pay_tax'                         => $request->pay_tax,
+            'tax_resident'                    => $request->tax_resident,
+            'tax_borne_exployer'              => $request->tax_borne_exployer,
+            'disabled_person'                 => $request->disabled_person,
+            'spouse_working'                  => $request->spouse_working,
+            'spouse_disabled'                 => $request->spouse_disabled,
+            'LHDNM_state'                     => $request->LHDNM_state,
+            'income_tax_no'                   => $request->tax_no . $request->income_tax_no, // Prefix + Number
+            'child_under_18_full'             => $request->child_under_18_full ?? 0,
+            'child_under_18_half'             => $request->child_under_18_half ?? 0,
+            'disabled_child_under_18_full'    => $request->disabled_child_under_18_full ?? 0,
+            'disabled_child_under_18_half'    => $request->disabled_child_under_18_half ?? 0,
+            'child_over_18_edu_full'          => $request->child_over_18_edu_full ?? 0,
+            'child_over_18_edu_half'          => $request->child_over_18_edu_half ?? 0,
+            'disabled_child_over_18_edu_full' => $request->disabled_child_over_18_edu_full ?? 0,
+            'disabled_child_over_18_edu_half' => $request->disabled_child_over_18_edu_half ?? 0,
+        ];
+
+        DB::beginTransaction();
+        try {
+            // 3. Loop and UpdateOrCreate
+            foreach ($taxData as $key => $value) {
+                UserDetail::updateOrCreate(
+                    ['user_id' => $id, 'name' => $key],
+                    [
+                        'value'  => $value ?? '0',
+                        'remark' => 'Updated via Income Tax Modal'
+                    ]
+                );
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'LHDN records updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Database Error in updateIncomeTax: ' . $e->getMessage(), [
+                'user_id' => $id,
+                'line'    => $e->getLine()
+            ]);
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'System Error: ' . $e->getMessage());
+        }
+    }
+
+
+    public function updateDaysTaken(Request $request, string $id)
+    {
+
+        $user = User::findOrFail($id);
+        info('updateDaysTaken method', ['method' => $request->method()]);
+        $request->validate([
+            'days_taken' => 'required|numeric|min:0'
+        ]);
+
+        try {
+            UserDetail::updateOrCreate(
+                ['user_id' => $id, 'name' => 'days_taken'],
+                ['value' => $request->days_taken, 'remark' => 'Updated via Leave Modal']
+            );
+
+            return redirect()->back()->with('success', 'Leave days updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+
+    public function updateHospitalizationDays(Request $request, string $id)
+    {
+
+
+        $request->validate([
+            'hosp_days_taken' => 'required|numeric|min:0'
+        ]);
+
+        try {
+            UserDetail::updateOrCreate(
+                ['user_id' => $id, 'name' => 'hospitalization_days'],
+                ['value' => $request->hosp_days_taken, 'remark' => 'Updated via Hospitalization Modal']
+            );
+
+            return redirect()->back()->with('success', 'Hospitalization days updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+
+
+    public function updateSickDays(Request $request, string $id)
+    {
+        $request->validate([
+            'sick_days_taken' => 'required|numeric|min:0'
+        ]);
+
+        try {
+            UserDetail::updateOrCreate(
+                ['user_id' => $id, 'name' => 'sick_days_taken'],
+                ['value' => $request->sick_days_taken, 'remark' => 'Updated via Sick Leave Modal']
+            );
+
+            return redirect()->back()->with('success', 'Sick leave days updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+
+
+    public function updateNextOfKin(Request $request, string $id)
+    {
+        User::findOrFail($id);
+        $data = $request->validate([
+            'nok_name'         => 'required|string|max:255',
+            'nok_relationship' => 'required|string|max:255',
+            'nok_phone'        => 'required|string|max:20',
+        ]);
+
+        try {
+            // 2. Loop through the validated data to update the database
+            foreach ($data as $key => $value) {
+                UserDetail::updateOrCreate(
+                    ['user_id' => $id, 'name' => $key],
+                    ['value' => $value, 'remark' => 'Updated via Next of Kin Modal']
+                );
+            }
+
+            return redirect()->back()->with('success', 'Family details updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Update failed. Please try again.');
+        }
+    }
+
+    public function updateFamilyDetails(Request $request, string $id)
+    {
+        User::findOrFail($id);
+
+        $request->validate([
+            'relationship' => 'required|string|max:255',
+            'family_name' => 'required|string|max:255',
+            'family_nationality' => 'required|string|max:255',
+            'family_dob' => 'required|date|before:today',
+            'family_phone' => 'required|string|max:20',
+            'family_nric' => 'required|string|max:20'
+        ]);
+
+        $familyData = [
+            'relationship' => $request->relationship,
+            'family_name' => $request->family_name,
+            'family_nationality' => $request->family_nationality,
+            'family_dob' => $request->family_dob,
+            'family_phone' => $request->family_phone,
+            'family_nric' => $request->family_nric
+        ];
+
+        try {
+            foreach ($familyData as $key => $value) {
+                UserDetail::create(
+                    [
+                        'user_id' => $id,
+                        'name' => $key,
+                        'value' => $value,
+                        'remark' => 'Updated via Family Details Modal'
+                    ]
+                );
+            }
+
+            return redirect()->back()->with('success', 'Family details updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Update failed. Please try again.');
+        }
     }
 }

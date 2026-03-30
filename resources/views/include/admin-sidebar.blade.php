@@ -11,14 +11,14 @@
             </a>
         </li>
         <li class="mb-2">
-            <a href="{{ route('users.index') }}" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition">
+            <a href="{{ route('admin.users.index') }}" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition">
                 {{-- &#128273; 是钥匙 🔑 或者你可以用 &#128100; 是人像 👤 --}}
                 <span class="w-6 text-center mr-3 text-lg">&#128100;</span>
                 <span class="text-sm">User Management</span>
             </a>
         </li>   
         <li class="mb-2">
-            <a href="{{ route('companies.index') }}" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition">
+            <a href="{{ route('admin.companies.index') }}" class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition">
                 {{-- &#128273; 是钥匙 🔑 或者你可以用 &#128100; 是人像 👤 --}}
                 <span class="w-6 text-center mr-3 text-xs">&#127981;</span>
                 <span class="text-sm">Companies</span>

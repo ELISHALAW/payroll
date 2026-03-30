@@ -43,13 +43,17 @@
                             class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
                             Leave
                         </a>
-                        <a href="#"
+                        <a href="{{ route('user.family', Auth::id()) }}"
                             class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
                             Family
                         </a>
                         <a href="#"
                             class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
                             Documents
+                        </a>
+                        <a href="#"
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                            Offday
                         </a>
                         <a href="#"
                             class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">

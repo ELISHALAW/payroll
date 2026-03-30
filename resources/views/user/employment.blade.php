@@ -1,3 +1,7 @@
+@php
+    use Carbon\Carbon;    
+@endphp
+
 @extends('output.layout')
 
 @section('content')
@@ -68,7 +72,7 @@
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Date of
                                 Confirmation</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('date_of_confirmation') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ Carbon::parse($user->getDetail('date_of_confirmation'))->format('d-M-Y') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Reports To</span>
@@ -109,13 +113,13 @@
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Join Date</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('join_date') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ Carbon::parse($user->getDetail('join_date'))->format('d-M-Y') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Status Effective
                                 From</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Employment Status Effective From') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ Carbon::parse($user->getDetail('Employment Status Effective From'))->format('d-M-Y') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Notice Period</span>
@@ -133,13 +137,13 @@
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Work Permit
                                 Expiry</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Work Permit Expiry Date') ?? '-' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ Carbon::parse($user->getDetail('Work Permit Expiry Date'))->format('d-M-Y') ?? '-' }}</span>
                         </div>
                         <div class="flex flex-col border-b border-gray-50 pb-1">
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Retirement/End
                                 Date</span>
                             <span
-                                class="text-sm font-semibold text-gray-800">{{ $user->getDetail('Date of Retirement / End of Contract') ?? 'Not applicable' }}</span>
+                                class="text-sm font-semibold text-gray-800">{{ Carbon::parse($user->getDetail('Date of Retirement / End of Contract'))->format('d-M-Y') ?? 'Not applicable' }}</span>
                         </div>
                     </div>
 
@@ -254,8 +258,8 @@
                             <div class="grid grid-cols-5 p-2 border-b border-gray-100 items-center">
                                 <div class="font-medium">{{ $job->job_title }}</div>
                                 <div class="text-gray-600">{{ $job->company_name }}</div>
-                                <div class="text-gray-500">{{ $job->start_date }}</div>
-                                <div class="text-gray-500">{{ $job->end_date }}</div>
+                                <div class="text-gray-500">{{ Carbon::parse($job->start_date)->format('d-M-Y') }}</div>
+                                <div class="text-gray-500">{{ Carbon::parse($job->end_date)->format('d-M-Y') }}</div>
                                 <div class="italic text-cyan-600">{{ $job->leave_reason }}</div>
                             </div>
                         @endforeach
