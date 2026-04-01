@@ -34,12 +34,12 @@
                         <tr class="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
                             <td class="py-4 px-4">
                                 <div class="flex items-center space-x-3">
-                                    <a href="{{ route('companies.edit', $company->id) }}" title="Edit"
+                                    <a href="{{ route('admin.companies.edit', $company->id) }}" title="Edit"
                                         class="hover:scale-110 transition-transform">
                                         <span class="text-xs">&#128270;</span>
                                     </a>
 
-                                    <form action="{{ route('companies.destroy', $company->id) }}" method="POST"
+                                    <form action="{{ route('admin.companies.destroy', $company->id) }}" method="POST"
                                         onsubmit="return confirm('Confirm Delete?')">
                                         @csrf
                                         @method('DELETE')

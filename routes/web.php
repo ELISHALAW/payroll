@@ -33,6 +33,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/organizationalEmployee/{id}', [ProfileController::class, 'showOrganizationalHistory'])->name('user.organizational');
     Route::get('/leave/{id}', [ProfileController::class, 'showLeave'])->name('user.leave');
     Route::get('/family/{id}', [ProfileController::class, 'showFamily'])->name('user.family');
+    Route::get('/document/{id}', [ProfileController::class, 'showDocument'])->name('user.document');
+    Route::get('/offday/{id}', [ProfileController::class, 'showOffday'])->name('user.offday');
+    Route::get('/appraisal/{id}', [ProfileController::class, 'showAppraisal'])->name('user.appraisal');
     // Profile & Statutory Updates
     Route::post('/profile/update/{id}', [ProfileController::class, 'update'])->name('user.update');
     Route::post('/profile/update-email/{id}', [UserController::class, 'updateEmail'])->name('user.updateEmail');
@@ -55,4 +58,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/updateSickDays/{id}', [ProfileController::class, 'updateSickDays'])->name('user.updateSickDays');
     Route::post('/updateEmergencyLeave/{id}', [ProfileController::class, 'updateFamilyDetails'])->name('user.updateFamilyDetails');
     Route::post('/updateNextOfKin/{id}', [ProfileController::class, 'updateNextOfKin'])->name('user.updateNextOfKin');
+    Route::post('/createCompanyAsset/{id}', [ProfileController::class, 'createCompanyAsset'])->name('user.createCompanyAsset');
+    Route::post('/updateCompanyAsset/{id}', [ProfileController::class, 'updateCompanyAsset'])->name('user.updateCompanyAsset');
 });

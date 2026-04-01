@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Classes\CountryCodes;
+use App\Classes\BankCodes;
 
 class ProfileController extends Controller
 {
@@ -35,7 +37,7 @@ class ProfileController extends Controller
         }
         // 获取当前用户数据
         $user = User::findOrFail($id);
-
+        $BankCodes = BankCodes::getBankCollection();
         $userDetails = UserDetail::where('user_id', $id)->pluck('value', 'name')->toArray();
 
         $totalChildrenUnder18 = (int)($userDetails['child_under_18_full'] ?? 0) + ($userDetails['child_under_18_half'] ?? 0);
@@ -63,12 +65,64 @@ class ProfileController extends Controller
         $reliefPoints += ((int)($userDetails['disabled_child_over_18_edu_full'] ?? 0) * $weight['disabled_edu']);
         $reliefPoints += ((int)($userDetails['disabled_child_over_18_edu_half'] ?? 0) * ($weight['disabled_edu'] / 2));
 
-        return view('user.compensation', compact('user', 'userDetails', 'totalChildrenUnder18', 'totalDisabledChildrenUnder18', 'totalChildrenOver18Edu', 'totalChildrenOver18EduDisabled', 'reliefPoints'));
+        return view('user.compensation', compact('user', 'userDetails', 'totalChildrenUnder18', 'totalDisabledChildrenUnder18', 'totalChildrenOver18Edu', 'totalChildrenOver18EduDisabled', 'reliefPoints', 'BankCodes'));
     }
 
+    public function showDocument(string $id)
+    {
+        if (auth()->id() != $id) {
+            abort(403, 'Unauthorized access.');
+        }
+        // 获取当前用户数据
+        $user = User::findOrFail($id);
+
+        $assets = UserDetail::where('user_id', $id)
+            ->whereIn('name', ['asset_type', 'date_received', 'date_released', 'asset_details'])
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->created_at->format('Y-m-d H:i:s');
+            })
+            ->map(function ($group) {
+                return (object)[
+                    'asset_type' => $group->where('name', 'asset_type')->first()->value ?? 'N/A',
+                    'date_received' => $group->where('name', 'date_received')->first()->value ?? '-',
+                    'date_released' => $group->where('name', 'date_released')->first()->value ?? '-',
+                    'asset_details' => $group->where('name', 'asset_details')->first()->value ?? '-',
+                ];
+            });
+
+        // 返回 user 文件夹下的 profile.blade.php
+        return view('user.document', compact('user', 'assets'));
+    }
+
+    public function showOffday(string $id)
+    {
+        if (auth()->id() != $id) {
+            abort(403, 'Unauthorized access.');
+        }
+        // 获取当前用户数据
+        $user = User::findOrFail($id);
+
+        // 返回 user 文件夹下的 profile.blade.php
+        return view('user.offday', compact('user'));
+    }
+
+    public function showAppraisal(string $id)
+    {
+        if (auth()->id() != $id) {
+            abort(403, 'Unauthorized access.');
+        }
+        // 获取当前用户数据
+        $user = User::findOrFail(auth()->id());
+
+        // 返回 user 文件夹下的 profile.blade.php
+        return view('user.appraisal', compact('user'));
+    }
     public function showfamily(string $id)
     {
         $user = User::findOrFail($id);
+
+        $countries = CountryCodes::getCountryCollection();
 
         $familyMembers = UserDetail::where('user_id', $id)
             ->whereIn('name', ['family_name', 'relationship', 'family_nationality', 'family_dob', 'family_phone', 'family_nric'])
@@ -90,7 +144,7 @@ class ProfileController extends Controller
                 ];
             });
 
-        return view('user.family', compact('user', 'familyMembers'));
+        return view('user.family', compact('user', 'familyMembers', 'countries'));
     }
 
     public function showStatutory(string $id)
@@ -115,9 +169,11 @@ class ProfileController extends Controller
 
         // 获取当前用户数据
         $user = User::findOrFail($id);
+        $countries = CountryCodes::getCountryCollection();
+
 
         // 返回 user 文件夹下的 profile.blade.php
-        return view('user.profile', compact('user'));
+        return view('user.profile', compact('user', 'countries'));
     }
 
 
@@ -830,6 +886,81 @@ class ProfileController extends Controller
             return redirect()->back()->with('success', 'Family details updated successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Update failed. Please try again.');
+        }
+    }
+
+    public function createCompanyAsset(Request $request, string $id)
+    {
+        User::findOrFail($id);
+
+        $request->validate([
+            'asset_type' => 'required|string|max:255',
+            'date_received' => 'required|date',
+            'date_released' => 'nullable|date|after_or_equal:date_received',
+            'asset_details' => 'nullable|string|max:500'
+        ]);
+
+        $assetDate = [
+            'asset_type' => $request->asset_type,
+            'date_received' => $request->date_received,
+            'date_released' => $request->date_released,
+            'asset_details' => $request->asset_details
+        ];
+
+        try {
+            foreach ($assetDate as $key => $value) {
+                UserDetail::create(
+                    [
+                        'user_id' => $id,
+                        'name' => $key,
+                        'value' => $value,
+                        'remark' => 'Updated via Family Details Modal'
+                    ]
+                );
+            }
+
+            return redirect()->back()->with('success', 'Family details updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Update failed. Please try again.', $e->getMessage());
+        }
+    }
+
+    public function updateCompanyAsset(Request $request, string $id)
+    {
+
+        User::findOrFail($id);
+
+        $request->validate([
+            'asset_type' => 'required|string|max:255',
+            'date_received' => 'required|date',
+            'date_released' => 'nullable|date|after_or_equal:date_received',
+            'asset_details' => 'nullable|string|max:500'
+        ]);
+
+        $assetData = [
+            'asset_type' => $request->asset_type,
+            'date_received' => $request->date_received,
+            'date_released' => $request->date_released,
+            'asset_details' => $request->asset_details
+        ];
+
+        try {
+            foreach ($assetData as $key => $value) {
+                UserDetail::updateOrCreate(
+                    [
+                        'user_id' => $id,
+                        'name' => $key
+                    ],
+                    [
+                        'value' => $value,
+                        'remark' => 'Updated via Company Asset Modal'
+                    ]
+                );
+            }
+
+            return redirect()->back()->with('success', 'Company asset details updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Update failed. Please try again. ' . $e->getMessage());
         }
     }
 }

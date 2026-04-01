@@ -25,13 +25,13 @@
 
                             <div class="flex items-center space-x-6 min-w-[220px]">
                                 <div
-                                    class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">
+                                    class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
                                     {{ strtoupper(substr($family->name, 0, 1)) }}
                                 </div>
                                 <div>
-                                    <h4 class="text-base font-bold text-gray-900 leading-tight">{{ $family->name }}</h4>
+                                    <h4 class="text-sm font-bold text-gray-900 leading-tight">{{ $family->name }}</h4>
                                     <span
-                                        class="text-[11px] font-bold uppercase text-cyan-500 tracking-tight">{{ $family->relationship }}</span>
+                                        class="text-xs font-bold uppercase text-cyan-500 tracking-tight">{{ $family->relationship }}</span>
                                 </div>
                             </div>
 
@@ -39,23 +39,23 @@
                                 <div class="flex flex-col">
                                     <span
                                         class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Birthday</span>
-                                    <span class="text-sm font-semibold text-gray-700">{{ $family->dob }}</span>
+                                    <span class="text-xs font-semibold text-gray-700">{{ $family->dob }}</span>
                                 </div>
 
                                 <div class="flex flex-col">
                                     <span
                                         class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Nationality</span>
-                                    <span class="text-sm font-semibold text-gray-700">{{ $family->nationality }}</span>
+                                    <span class="text-xs font-semibold text-gray-700">{{ $family->nationality }}</span>
                                 </div>
 
                                 <div class="flex flex-col">
                                     <span class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Phone</span>
-                                    <span class="text-sm font-semibold text-gray-700">{{ $family->phone }}</span>
+                                    <span class="text-xs font-semibold text-gray-700">{{ $family->phone }}</span>
                                 </div>
 
                                 <div class="flex flex-col">
                                     <span class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">NRIC</span>
-                                    <span class="text-sm font-semibold text-gray-700">{{ $family->nric }}</span>
+                                    <span class="text-xs font-semibold text-gray-700">{{ $family->nric }}</span>
                                 </div>
                             </div>
 
@@ -149,11 +149,12 @@
                         <label class="block text-sm font-bold text-gray-900">Nationality</label>
                         <select name="family_nationality"
                             class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-500 focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none transition-all">
-                            <option>Select Nationality</option>
-                            <option value="Malaysian">Malaysian</option>
-                            <option value="Singaporean">Singaporean</option>
-                            <option value="Indonesian">Indonesian</option>
-
+                            @foreach ($countries as $country)
+                                <option value="{{ $country['country_name'] }}">
+                                    {{ $user->getDetail('family_nationality') == $country['country_name'] ? 'selected' : '' }}
+                                    {{ $country['country_name'] }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="space-y-2">

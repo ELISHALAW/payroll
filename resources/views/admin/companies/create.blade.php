@@ -5,12 +5,12 @@
     <div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
         <div class="px-6 py-4 bg-gray-800 flex justify-between items-center">
             <h2 class="text-xl font-semibold text-white">Register New Company</h2>
-            <a href="{{ route('companies.index') }}" class="text-gray-400 hover:text-white text-sm">
+            <a href="{{ route('admin.companies.index') }}" class="text-gray-400 hover:text-white text-sm">
                 &larr; Back to List
             </a>
         </div>
 
-        <form action="{{ route('companies.store') }}" method="POST" class="p-6">
+        <form action="{{ route('admin.companies.store') }}" method="POST" class="p-6">
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

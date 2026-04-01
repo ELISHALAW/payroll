@@ -1,5 +1,5 @@
 @php
-    use Carbon\Carbon;    
+    use Carbon\Carbon;
 @endphp
 
 @extends('output.layout')
@@ -171,7 +171,7 @@
                             <th class="px-6 py-3 text-xs font-bold text-gray-600 uppercase">Department</th>
                             <th class="px-6 py-3 text-xs font-bold text-gray-600 uppercase">Position</th>
                             <th class="px-6 py-3 text-xs font-bold text-gray-600 uppercase">Level</th>
-                            <th class="px-6 py-3"></th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-600 uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -190,8 +190,12 @@
                                 <td class="px-6 py-4 text-sm text-gray-600">{{ $history->department }}</td>
                                 <td class="px-6 py-4 text-sm font-semibold text-gray-900">{{ $history->position }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $history->level }}</td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="text-gray-400 hover:text-cyan-600">...</button>
+
+                                <td class="px-6 py-4 text-sm text-gray-500">
+                                    <button type="submit" title="Delete"
+                                        class="hover:scale-110 transition-transform text-center">
+                                        <span class="text-xs">&#10060;</span>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -245,7 +249,7 @@
                     <div class="flex flex-col gap-y-3">
                         {{-- Header Row --}}
                         <div
-                            class="grid grid-cols-5 bg-gray-50 p-4 font-bold text-xs text-gray-500 uppercase tracking-wider rounded-lg">
+                            class="grid grid-cols-6 bg-gray-50 p-4 font-bold text-xs text-gray-500 uppercase tracking-wider rounded-lg">
                             <div>Job-Title</div>
                             <div>Company Name</div>
                             <div>Start date </div>
@@ -255,12 +259,43 @@
 
                         {{-- Data Row - You can loop this with @foreach --}}
                         @foreach ($careerHistory as $job)
-                            <div class="grid grid-cols-5 p-2 border-b border-gray-100 items-center">
+                            <div class="grid grid-cols-6 p-2 border-b border-gray-100 items-center">
                                 <div class="font-medium">{{ $job->job_title }}</div>
                                 <div class="text-gray-600">{{ $job->company_name }}</div>
                                 <div class="text-gray-500">{{ Carbon::parse($job->start_date)->format('d-M-Y') }}</div>
                                 <div class="text-gray-500">{{ Carbon::parse($job->end_date)->format('d-M-Y') }}</div>
                                 <div class="italic text-cyan-600">{{ $job->leave_reason }}</div>
+
+                                <div class="flex justify-end">
+                                    <div class="relative inline-block text-left">
+                                        <button type="button"
+                                            class="three-dot-btn p-2 rounded-lg hover:bg-gray-200 text-gray-500 transition-all">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path
+                                                    d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                            </svg>
+                                        </button>
+
+                                        <div
+                                            class="dropdown-menu hidden absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                                            <button type="button"
+                                                id="editCareerBtn"
+                                                class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-all border-b border-gray-50">
+                                                Edit
+                                            </button>
+
+                                            <form action="" method="POST"
+                                                onsubmit="return confirm('Delete this job record?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-all">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -773,11 +808,83 @@
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-end">
+                <div class=" pt-6 flex items-center justify-end space-x-4 border-t border-gray-50">
+
+                    <button type="button" id="closeCareerModalBtn"
+                        class="px-6 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-xl hover:border-slate-300 hover:text-slate-800 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
+                        Cancel
+                    </button>
                     <button type="submit"
-                        class="bg-cyan-500 text-white px-8 py-2 rounded-lg font-bold hover:bg-cyan-600 transition-all">
+                        class="bg-[#00bcd4] text-white px-10 py-2.5 rounded-xl font-bold shadow-[0_4px_14px_0_rgba(0,188,212,0.4)] hover:bg-[#00acc1] transition-all active:scale-95">
                         Save
                     </button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div id="updateCareerModal"
+        class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all">
+
+            <div class="flex justify-between items-center px-6 py-4 border-b border-gray-100">
+                <h3 class="text-lg font-bold text-gray-800 uppercase tracking-tight">Career Progression</h3>
+                <button type="button" id="closeUpdateCareerModalBtn" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form action="{{ route('user.createCareerProgression', $user->id) }}" method="POST" class="p-6">
+                @csrf
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-1">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Job Title</label>
+                        <input type="text" name="job_title" placeholder="i.e. Manager"
+                        
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-cyan-400">
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Company Name</label>
+                        <input type="text" name="company_name" placeholder="Enter company name"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-cyan-400">
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Start Date</label>
+                        <input type="date" name="start_date"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none">
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">End Date</label>
+                        <input type="date" name="end_date"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Leave Reason</label>
+                        <textarea name="leave_reason" placeholder="Add a leave reason" rows="2"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-cyan-400"></textarea>
+                    </div>
+                </div>
+
+                <div class=" pt-6 flex items-center justify-end space-x-4 border-t border-gray-50">
+
+                    <button type="button" id="cancelUpdateCareerModalBtn"
+                        class="px-6 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-xl hover:border-slate-300 hover:text-slate-800 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="bg-[#00bcd4] text-white px-10 py-2.5 rounded-xl font-bold shadow-[0_4px_14px_0_rgba(0,188,212,0.4)] hover:bg-[#00acc1] transition-all active:scale-95">
+                        Save
+                    </button>
+
                 </div>
             </form>
         </div>

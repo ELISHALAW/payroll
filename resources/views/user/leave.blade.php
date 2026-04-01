@@ -104,7 +104,7 @@
                         Update Days Taken
                     </label>
                     <div class="relative">
-                        <input type="number" name="days_taken" id="days_taken" step="1" min="0"
+                        <input type="number" name="days_taken" id="days_taken" step="1" min="0" max="8"
                             value="{{ $user->getDetail('days_taken') ?? 0 }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 outline-none text-gray-700 transition-all"
                             value="1">

@@ -1,4 +1,4 @@
-@php 
+@php
     use Carbon\Carbon;
 @endphp
 
@@ -308,11 +308,13 @@
                         </div>
                         <div>
                             <p class="text-gray-400 text-xs font-bold uppercase">Start Date</p>
-                            <p class="text-lg font-bold text-orange-600">{{ Carbon::parse($user->getDetail('ptptn_start'))->format('d-M-Y') }}</p>
+                            <p class="text-lg font-bold text-orange-600">
+                                {{ Carbon::parse($user->getDetail('ptptn_start'))->format('d-M-Y') }}</p>
                         </div>
                         <div>
                             <p class="text-gray-400 text-xs font-bold uppercase">End Date</p>
-                            <p class="text-lg font-bold text-orange-600">{{ Carbon::parse($user->getDetail('ptptn_end'))->format('d-M-Y') }}</p>
+                            <p class="text-lg font-bold text-orange-600">
+                                {{ Carbon::parse($user->getDetail('ptptn_end'))->format('d-M-Y') }}</p>
                         </div>
                     </div>
                 </div>
@@ -439,63 +441,12 @@
                         <label class="block text-sm font-bold text-gray-700 mb-2">Bank Name</label>
                         <select name="bank_name"
                             class="w-full border border-gray-200 rounded-lg p-2.5 focus:ring-cyan-500">
-                            <option value="" disabled {{ !$user->getDetail('bank_name') ? 'selected' : '' }}>Select
-                                Bank</option>
-                            <optgroup label="Mainstream Banks">
-                                <option value="MAYBANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'MAYBANK' ? 'selected' : '' }}>
-                                    MAYBANK</option>
-                                <option value="CIMB BANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'CIMB BANK' ? 'selected' : '' }}>
-                                    CIMB BANK</option>
-                                <option value="PUBLIC BANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'PUBLIC BANK' ? 'selected' : '' }}>PUBLIC
-                                    BANK</option>
-                                <option value="RHB BANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'RHB BANK' ? 'selected' : '' }}>RHB
-                                    BANK</option>
-                                <option value="HONG LEONG BANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'HONG LEONG BANK' ? 'selected' : '' }}>HONG
-                                    LEONG BANK
+                            @foreach ($BankCodes as $bank)
+                                <option value="{{ $bank['bank_name'] }}"
+                                    {{ $user->getDetail('bank_name') == $bank['bank_name'] ? 'selected' : '' }}>
+                                    {{ $bank['bank_name'] }}
                                 </option>
-                                <option value="AMBANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'AMBANK' ? 'selected' : '' }}>AMBANK
-                                </option>
-                                <option value="AFFIN BANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'AFFIN BANK' ? 'selected' : '' }}>AFFIN
-                                    BANK</option>
-                                <option value="ALLIANCE BANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'ALLIANCE BANK' ? 'selected' : '' }}>
-                                    ALLIANCE BANK
-                                </option>
-                            </optgroup>
-                            <optgroup label="Islamic Banks">
-                                <option value="BANK ISLAM"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'BANK ISLAM' ? 'selected' : '' }}>BANK
-                                    ISLAM</option>
-                                <option value="BANK MUAMALAT"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'BANK MUAMALAT' ? 'selected' : '' }}>BANK
-                                    MUAMALAT
-                                </option>
-                                <option value="BANK RAKYAT"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'BANK RAKYAT' ? 'selected' : '' }}>BANK
-                                    RAKYAT</option>
-                            </optgroup>
-                            <optgroup label="International / Others">
-                                <option value="UOB BANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'UOB BANK' ? 'selected' : '' }}>UOB
-                                    BANK</option>
-                                <option value="OCBC BANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'OCBC BANK' ? 'selected' : '' }}>
-                                    OCBC BANK</option>
-                                <option value="HSBC BANK"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'HSBC BANK' ? 'selected' : '' }}>
-                                    HSBC BANK</option>
-                                <option value="STANDARD CHARTERED"
-                                    {{ ($user->getDetail('bank_name') ?? '') == 'STANDARD CHARTERED' ? 'selected' : '' }}>
-                                    STANDARD
-                                    CHARTERED</option>
-                            </optgroup>
+                            @endforeach
                         </select>
                     </div>
                     <div>

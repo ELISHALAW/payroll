@@ -9,14 +9,14 @@
                     <h2 class="text-xl font-bold text-white">Edit Company Details</h2>
                     <p class="text-blue-100 text-xs mt-1">Modifying: {{ $company->name }}</p>
                 </div>
-                <a href="{{ route('companies.index') }}"
+                <a href="{{ route('admin.companies.index') }}"
                     class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-md text-sm transition">
                     &larr; Cancel
                 </a>
             </div>
 
             {{-- Form --}}
-            <form action="{{ route('companies.update', $company->id) }}" method="POST" class="p-8 space-y-6">
+            <form action="{{ route('admin.companies.update', $company->id) }}" method="POST" class="p-8 space-y-6">
                 @csrf
                 @method('PUT') {{-- 关键：HTML表单不支持PUT，必须手动指定 --}}
 

@@ -27,37 +27,37 @@
                 <div class="flex-1 hidden md:flex justify-center items-center h-full px-8">
                     <div class="flex items-center h-full gap-1">
                         <a href="{{ route('user.profile', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-black uppercase tracking-widest text-gray-900 bg-gray-100 rounded-full">
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.profile') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
                             General
                         </a>
 
                         <a href="{{ route('user.employment', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.employment') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
                             Employment
                         </a>
                         <a href="{{ route('user.compensation', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.compensation') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
                             Compensation
                         </a>
                         <a href="{{ route('user.leave', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.leave') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
                             Leave
                         </a>
                         <a href="{{ route('user.family', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.family') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
                             Family
                         </a>
-                        <a href="#"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                        <a href="{{ route('user.document', Auth::id()) }}"
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.document') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
                             Documents
                         </a>
-                        <a href="#"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                        <a href="{{ route('user.offday',Auth::id()) }}"
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.offday') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
                             Offday
                         </a>
-                        <a href="#"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
-                            Offday
+                        <a href="{{ route('user.appraisal', Auth::id()) }}" 
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.appraisal') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                            Appraisal
                         </a>
                     </div>
                 </div>
@@ -91,6 +91,27 @@
                                     class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
                                     <i class="las la-user-circle mr-3 text-lg opacity-70"></i>
                                     My Profile
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+                                    <i class="las la-cog mr-3 text-lg opacity-70"></i>
+                                    Reset Password
+                                </a>
+                                <a href="#"
+                                    class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+                                    <i class="las la-cog mr-3 text-lg opacity-70"></i>
+                                    Settings
+                                </a>
+                                <a href="#"
+                                    class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+                                    <i class="las la-cog mr-3 text-lg opacity-70"></i>
+                                    Billing
+                                </a>
+                                <a href="#"
+                                    class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+                                    <i class="las la-cog mr-3 text-lg opacity-70"></i>
+                                    Activity Log
                                 </a>
                                 <div class="my-1 border-t border-gray-50"></div>
                                 <form action="{{ route('logout') }}" method="POST">

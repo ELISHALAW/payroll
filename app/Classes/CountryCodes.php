@@ -12,8 +12,16 @@ class CountryCodes
         return self::$data;
     }
 
+    private static function init()
+    {
+        if (empty(self::$data)) {
+            self::$data = include(app_path('Data/country_codes.php'));
+        }
+    }
+
     public static function getCountryCollection()
     {
+        self::init();
         return collect(self::$data);
     }
 

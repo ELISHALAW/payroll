@@ -3,3 +3,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+body {
+    overflow-y: auto !important;
+}
+
+/* Only lock the scroll when the modal is actually open */
+body.modal-open {
+    overflow: hidden !important;
+}

@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const modalcareer = document.getElementById('careerModal');
 const openBtncareer = document.getElementById('addPastJobBtn');
 const closeBtncareer = document.getElementById('closeModalBtn');
-
+const cancelBtnCareer = document.getElementById('closeCareerModalBtn');
 // Function to show the modal
 openBtncareer.addEventListener('click', function () {
     modalcareer.classList.remove('hidden');
@@ -315,10 +315,43 @@ closeBtncareer.addEventListener('click', function () {
     document.body.style.overflow = 'auto';
 });
 
+cancelBtnCareer.addEventListener('click', function () {
+    modalcareer.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+});
+
 // Close modal if user clicks outside the white box
 window.addEventListener('click', function (event) {
     if (event.target === modal) {
         modalcarrer.classList.add('hidden');
         document.body.style.overflow = 'auto';
     }
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('updateCareerModal');
+    const openBtn = document.getElementById('editCareerBtn');
+    const closeBtn = document.getElementById('closeUpdateCareerModalBtn');
+    const closeBtn2 = document.getElementById('cancelUpdateCareerModalBtn');
+
+    if(openBtn){
+        openBtn.addEventListener('click', function () {
+            modal.classList.remove('hidden');
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+            modal.classList.add('hidden');
+        });
+    }
+
+    if (closeBtn2) {
+        closeBtn2.addEventListener('click', function () {
+            modal.classList.add('hidden');
+        }); 
+    }
+
 });

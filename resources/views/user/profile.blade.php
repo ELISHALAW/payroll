@@ -365,9 +365,15 @@
                                 {{-- Nationality --}}
                                 <div>
                                     <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Nationality</label>
-                                    <input type="text" name="nationality" placeholder="i.e. Malaysian"
-                                        value="{{ $user->getDetail('nationality') }}"
-                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all">
+                                    <select name="nationality" id=""
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+                                        <option value="">Select a Nationality</option>
+                                        @foreach ($countries as $country)
+                                            <option value="{{ $country['country_name'] }}"
+                                                {{ $user->getDetail('nationality') == $country['country_name'] ? 'selected' : '' }}>
+                                                {{ $country['country_name'] }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
                                 {{-- Permanent Resident --}}
@@ -501,8 +507,15 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Country</label>
-                            <input type="text" name="country" value="{{ $user->getDetail('country') }}"
-                                class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+                            <select name="country"
+                                class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+                                <option value="">Select a Country</option>
+                                @foreach ($countries as $country)
+                                    <option value="{{ $country['country_name'] }}"
+                                        {{ $user->getDetail('country') == $country['country_name'] ? 'selected' : '' }}>
+                                        {{ $country['country_name'] }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 
@@ -565,9 +578,15 @@
                     </div>
                     <div class="space-y-1">
                         <label class="text-xs font-bold text-gray-400 uppercase">Country</label>
-                        <input type="text" name="correspondence_country"
-                            value="{{ $user->getDetail('correspondence_country') }}"
-                            class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none text-sm text-gray-600">
+                        <select name="correspondence_country"
+                            class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+                            <option value="">Select a Country</option>
+                            @foreach ($countries as $country)
+                                <option value="{{ $country['country_name'] }}"
+                                    {{ $user->getDetail('correspondence_country') == $country['country_name'] ? 'selected' : '' }}>
+                                    {{ $country['country_name'] }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
 
@@ -578,7 +597,7 @@
                         Cancel
                     </button>
                     <button type="submit" id="saveCorrespondenceBtn"
-                        class="px-6 py-2 bg-cyan-500 text-white text-sm font-bold rounded-lg hover:bg-cyan-600 shadow-md transition-all">
+                        class="px-6 py-2 bg-gray-900 text-white rounded-lg text-sm font-bold hover:bg-gray-800 shadow-lg">
                         Update Address
                     </button>
                 </div>
@@ -586,47 +605,62 @@
         </div>
     </div>
 
-    <div id="emergencyContactModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/50 backdrop-blur-sm">
+    <div id="emergencyContactModal"
+        class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/40 backdrop-blur-sm transition-opacity">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="relative w-full max-w-lg bg-white rounded-xl shadow-2xl">
+            <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
 
-                <div class="px-6 py-4 border-b flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-gray-800">Edit Emergency Contact</h3>
+                <div class="px-8 py-6 flex justify-between items-center">
+                    <h3 class="text-xl font-extrabold text-slate-800 tracking-tight uppercase">
+                        Edit Emergency Contact
+                    </h3>
                     <button type="button"
-                        class="closeEmergencyModal text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+                        class="closeEmergencyModal text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
 
                 <form action="{{ route('user.updateEmergencyContact', $user->id) }}" method="POST"
-                    class="p-6 space-y-4">
+                    class="px-8 pb-8 space-y-6">
                     @csrf
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Full Name</label>
+
+                    <div class="space-y-1">
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Full
+                            Name</label>
                         <input type="text" name="emergency_name"
-                            value="{{ $user->getDetail('Emergency Contact Name') }}"
-                            class="w-full border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+                            value="{{ $user->getDetail('Emergency Contact Name') }}" placeholder="e.g. John Doe"
+                            class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none text-sm text-gray-600 transition-all">
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Relationship</label>
+                    <div class="grid grid-cols-2 gap-5">
+                        <div class="space-y-1">
+                            <label
+                                class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Relationship</label>
                             <input type="text" name="emergency_relationship"
                                 value="{{ $user->getDetail('Emergency Contact Relationship') }}"
-                                class="w-full border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+                                placeholder="e.g. Spouse"
+                                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none text-sm text-gray-600 transition-all">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Phone Number</label>
+                        <div class="space-y-1">
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Phone
+                                Number</label>
                             <input type="text" name="emergency_phone"
-                                value="{{ $user->getDetail('Emergency Contact Phone') }}"
-                                class="w-full border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+                                value="{{ $user->getDetail('Emergency Contact Phone') }}" placeholder="e.g. 012-3456789"
+                                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none text-sm text-gray-600 transition-all">
                         </div>
                     </div>
 
-                    <div class="flex justify-end pt-4 space-x-3">
+                    <div class="flex items-center justify-end pt-4 space-x-4">
                         <button type="button"
-                            class="closeEmergencyModal px-4 py-2 text-gray-500 font-medium">Cancel</button>
+                            class="closeEmergencyModal px-4 py-2 text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors">
+                            Cancel
+                        </button>
                         <button type="submit"
-                            class="px-6 py-2 bg-cyan-600 text-white font-bold rounded-lg shadow-lg hover:bg-cyan-700">
-                            Save Changes
+                            class="px-6 py-2 bg-gray-900 text-white rounded-lg text-sm font-bold hover:bg-gray-800 shadow-lg">
+                            Update Contact
                         </button>
                     </div>
                 </form>

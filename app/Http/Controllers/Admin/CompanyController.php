@@ -43,7 +43,7 @@ class CompanyController extends Controller
         ]);
 
         Company::create($validated);
-        return redirect()->route('companies.index')->with('success', 'Company created successfully');
+        return redirect()->route('admin.companies.index')->with('success', 'Company created successfully');
     }
 
     /**
@@ -82,7 +82,7 @@ class CompanyController extends Controller
 
         $company->update($validated);
 
-        return redirect()->route('companies.index')->with('success', 'Company updated successfully');
+        return redirect()->route('admin.companies.index')->with('success', 'Company updated successfully');
     }
 
     /**
@@ -94,6 +94,6 @@ class CompanyController extends Controller
 
         $company->delete();
 
-        return redirect()->route('companies.index')->with('success', 'Company has been deleted successfully');
+        return redirect()->route('admin.companies.index')->with('success', 'Company has been deleted successfully');
     }
 }
