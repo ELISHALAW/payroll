@@ -93,18 +93,19 @@
                                 <td class="px-8 py-4 text-sm text-slate-500">{{ $asset->date_released }}</td>
                                 <td class="px-8 py-4">
                                     <div class="flex items-center space-x-2">
-                                        <button id="open-update-asset-modal"
-                                            class="open-update-asset-modal text-cyan-500 hover:bg-cyan-50 p-1.5 rounded-lg transition-colors flex items-center justify-center">
+                                        <a href="{{ route('user.document.editDocument', ['id' => $user->id]) }}"
+                                            class="text-cyan-500 hover:bg-cyan-50 p-1.5 rounded-lg transition-colors flex items-center justify-center"
+                                            title="Edit Asset">
                                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="11" cy="11" r="7" stroke="currentColor"
-                                                    stroke-width="2.5" />
-                                                <path d="M20 20L16 16" stroke="currentColor" stroke-width="2.5"
-                                                    stroke-linecap="round" />
-                                                <circle cx="9" cy="9" r="2" fill="white"
-                                                    fill-opacity="0.5" />
+                                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                                <path d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
                                             </svg>
-                                        </button>
+                                        </a>
                                         <button
                                             class="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors flex items-center justify-center"
                                             title="Delete">
@@ -178,76 +179,6 @@
 
                 <div class="flex justify-end items-center space-x-3 pt-4">
                     <button type="button" id="btn-cancel-new-asset"
-                        class="px-6 py-2.5 text-sm font-bold text-gray-400 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                        class="px-10 py-2.5 bg-[#00bcd4] text-white text-sm font-bold rounded-lg shadow-sm hover:bg-cyan-600 transition-all">
-                        Save
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-    <div id="update-asset-modal"
-        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-        <div class="relative bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-gray-100">
-
-            <div class="flex items-center justify-between px-6 py-5">
-                <h3 class="text-[15px] font-black text-[#1a2b3c] uppercase tracking-wide">
-                    Update Company Asset
-                </h3>
-                <button id="close-update-asset-modal"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg border-2 border-cyan-500 text-cyan-500 hover:bg-cyan-50 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-
-            <form method="POST" action="{{ route('user.updateCompanyAsset', $user->id) }}" class="px-6 pb-6 space-y-4">
-                @csrf
-                <div class="space-y-1.5">
-                    <label class="block text-[13px] font-bold text-gray-800">Asset Type</label>
-                    <input type="text" name="asset_type" value="{{ $user->getDetail('asset_type') }}"
-                        class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none transition-all">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="block text-[13px] font-bold text-gray-800">Date Received</label>
-                        <div class="relative">
-                            <input type="text" name="date_received" value="{{ $user->getDetail('date_received') }}"
-                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 bg-white cursor-default">
-                        </div>
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="block text-[13px] font-bold text-gray-800">Date Released</label>
-                        <div class="relative">
-                            <input type="text" name="date_released" value="{{ $user->getDetail('date_released') }}"
-                                readonly
-                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 bg-white cursor-default">
-                            <button type="button"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                    stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-1.5">
-                    <label class="block text-[13px] font-bold text-gray-800">Asset Details</label>
-                    <textarea name="asset_details" rows="3"
-                        class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none transition-all resize-none">{{ $user->getDetail('asset_details') }}</textarea>
-                </div>
-
-                <div class="flex justify-end items-center space-x-3 pt-4">
-                    <button type="button" id="btn-cancel-update-asset"
                         class="px-6 py-2.5 text-sm font-bold text-gray-400 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all">
                         Cancel
                     </button>

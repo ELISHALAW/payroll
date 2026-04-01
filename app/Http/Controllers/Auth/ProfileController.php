@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserDetail;
@@ -84,6 +85,7 @@ class ProfileController extends Controller
             })
             ->map(function ($group) {
                 return (object)[
+                    'id' => $group->first()->id, // Keep the ID for reference (e.g., for editing/deleting)
                     'asset_type' => $group->where('name', 'asset_type')->first()->value ?? 'N/A',
                     'date_received' => $group->where('name', 'date_received')->first()->value ?? '-',
                     'date_released' => $group->where('name', 'date_released')->first()->value ?? '-',
@@ -95,6 +97,17 @@ class ProfileController extends Controller
         return view('user.document', compact('user', 'assets'));
     }
 
+    public function showEditDocument(string $id)
+    {
+        if (auth()->id() != $id) {
+            abort(403, 'Unauthorized access.');
+        }
+
+        $user = User::findOrFail($id);
+
+        return view('user.document.editDocument', compact('user'));
+    }
+
     public function showOffday(string $id)
     {
         if (auth()->id() != $id) {
@@ -103,8 +116,19 @@ class ProfileController extends Controller
         // 获取当前用户数据
         $user = User::findOrFail($id);
 
+        $offdays = UserDetail::where('user_id', $id)
+            ->where('name', 'offday_base_date')
+            ->orderBy('value', 'asc')
+            ->get()
+            ->map(function ($item) {
+                return (object)[
+                    'value' => $item->value, // This is the actual date string (e.g., "2026-04-01")
+                    'id'    => $item->id     // Keep the ID so you can delete it later
+                ];
+            });
+
         // 返回 user 文件夹下的 profile.blade.php
-        return view('user.offday', compact('user'));
+        return view('user.offday', compact('user', 'offdays'));
     }
 
     public function showAppraisal(string $id)
@@ -193,6 +217,7 @@ class ProfileController extends Controller
             ->groupBy('remark')
             ->map(function ($group) {
                 return (object)[
+                    'id'          => $group->first()->id, // Keep the ID for reference (e.g., for editing/deleting)
                     'job_title'    => $group->where('name', 'job_title')->first()->value ?? 'N/A',
                     'company_name' => $group->where('name', 'company_name')->first()->value ?? 'N/A',
                     'start_date'   => $group->where('name', 'start_date')->first()->value ?? null,
@@ -925,42 +950,93 @@ class ProfileController extends Controller
         }
     }
 
-    public function updateCompanyAsset(Request $request, string $id)
+    public function updateCompanyAsset(Request $request, string $groupId)
     {
-
-        User::findOrFail($id);
-
         $request->validate([
-            'asset_type' => 'required|string|max:255',
+            'asset_type'    => 'required|string',
             'date_received' => 'required|date',
-            'date_released' => 'nullable|date|after_or_equal:date_received',
-            'asset_details' => 'nullable|string|max:500'
+            'date_released' => 'nullable|date',
+            'asset_details' => 'nullable|string'
         ]);
 
-        $assetData = [
-            'asset_type' => $request->asset_type,
-            'date_received' => $request->date_received,
-            'date_released' => $request->date_released,
-            'asset_details' => $request->asset_details
-        ];
-
         try {
-            foreach ($assetData as $key => $value) {
+            $data = [
+                'asset_type'    => $request->asset_type,
+                'date_received' => $request->date_received,
+                'date_released' => $request->date_released,
+                'asset_details' => $request->asset_details,
+            ];
+
+            foreach ($data as $key => $value) {
+                // Find the specific row for THIS asset group and THIS specific field
                 UserDetail::updateOrCreate(
                     [
-                        'user_id' => $id,
-                        'name' => $key
+                        'group_id' => $groupId, // Only update rows in this "folder"
+                        'name'     => $key      // Target specific row: type, date, or detail
                     ],
                     [
-                        'value' => $value,
-                        'remark' => 'Updated via Company Asset Modal'
+                        'user_id' => auth()->id(), // Safety check
+                        'value'   => $value,
+                        'remark'  => 'Updated via Asset Modal'
                     ]
                 );
             }
 
-            return redirect()->back()->with('success', 'Company asset details updated successfully!');
+            return redirect()->back()->with('success', 'Asset updated successfully!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Update failed. Please try again. ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Update failed: ' . $e->getMessage());
         }
+    }
+
+
+    public function createOffday(Request $request, string $id)
+    {
+        $request->validate([
+            'offday_base_date'  => 'required|date',
+            'repeat_count'      => 'required_if:recurrence_mode,times|nullable|integer|min:1',
+            'repeat_until_date' => 'required_if:recurrence_mode,until|nullable|date|after:offday_base_date',
+        ]);
+
+        try {
+            $date = Carbon::parse($request->offday_base_date);
+
+            // 1. Save the first day
+            $this->saveRow($id, $date);
+
+            // 2. If "Make it recurrent" is checked
+            if ($request->has('is_recurrent')) {
+
+                if ($request->recurrence_mode === 'times') {
+                    // Loop for X times
+                    for ($i = 1; $i <= $request->repeat_count; $i++) {
+                        $this->saveRow($id, $date->copy()->addWeeks($i));
+                    }
+                } else {
+                    // Loop until the date is reached
+                    $until = Carbon::parse($request->repeat_until_date);
+                    $next = $date->copy()->addWeek();
+
+                    while ($next->lte($until)) {
+                        $this->saveRow($id, $next);
+                        $next->addWeek();
+                    }
+                }
+            }
+
+            return redirect()->back()->with('success', 'Offdays assigned!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    // Simple helper to save to Database
+    private function saveRow($userId, $date)
+    {
+        UserDetail::create([
+            'user_id' => $userId,
+            'name'    => 'offday_base_date',
+            'value'   => $date->format('Y-m-d'),
+            'remark'  => 'Scheduled Offday'
+        ]);
     }
 }

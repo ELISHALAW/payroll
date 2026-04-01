@@ -86,3 +86,31 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('update-asset-modal');
+    const form = document.getElementById('update-asset-form');
+    const editButtons = document.querySelectorAll('.open-update-asset-modal');
+
+    if (!modal || !form) return;
+
+    const routeTemplate = form.dataset.route;
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const data = this.dataset;
+
+            document.getElementById('modal_asset_type').value = data.type || '';
+            document.getElementById('modal_asset_details').value = data.details || '';
+            document.getElementById('modal_date_received').value = data.received || '';
+            document.getElementById('modal_date_released').value = data.released || '';
+
+            form.action = routeTemplate.replace('__ID__', data.id);
+
+            modal.classList.remove('hidden');
+        });
+    });
+});

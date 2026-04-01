@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeBtn = document.getElementById('closeUpdateCareerModalBtn');
     const closeBtn2 = document.getElementById('cancelUpdateCareerModalBtn');
 
-    if(openBtn){
+    if (openBtn) {
         openBtn.addEventListener('click', function () {
             modal.classList.remove('hidden');
         });
@@ -351,7 +351,98 @@ document.addEventListener('DOMContentLoaded', function () {
     if (closeBtn2) {
         closeBtn2.addEventListener('click', function () {
             modal.classList.add('hidden');
-        }); 
+        });
     }
 
+});
+
+
+
+
+
+/** * Part 1: The Dropdown Toggle 
+ * This must stay outside DOMContentLoaded so the 'onclick' can see it.
+ **/
+function toggleMenu(menuId, event) {
+    event.stopPropagation();
+    const menu = document.getElementById(menuId);
+    if (menu) {
+        // Close all other open dropdowns first
+        document.querySelectorAll('.dropdown-menu').forEach(m => {
+            if (m.id !== menuId) m.classList.add('hidden');
+        });
+        menu.classList.toggle('hidden');
+    }
+}
+
+/** * Part 2: The Modal Logic
+ **/
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('updateCareerModal');
+    const editBtns = document.querySelectorAll('.edit-job-btn'); // Select ALL buttons
+    const closeBtn = document.getElementById('closeUpdateCareerModalBtn');
+
+    // 1. Open Modal & Fill Data
+    editBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            // Grab data from the button
+            const jobId = this.getAttribute('data-id');
+            const jobTitle = this.getAttribute('data-title');
+            const company = this.getAttribute('data-company');
+            const start = this.getAttribute('data-start');
+            const end = this.getAttribute('data-end');
+            const reason = this.getAttribute('data-reason');
+
+            // Inject into Modal Inputs (Fixed your IDs to match your HTML)
+            if (document.getElementById('career_id')) document.getElementById('career_id').value = jobId;
+            if (document.getElementById('edit_job_id')) document.getElementById('edit_job_id').value = jobTitle;
+            if (document.getElementById('edit_company_name')) document.getElementById('edit_company_name').value = company;
+            if (document.getElementById('edit_start_date')) document.getElementById('edit_start_date').value = start;
+            if (document.getElementById('edit_end_date')) document.getElementById('edit_end_date').value = end;
+            if (document.getElementById('leave_reason')) document.getElementById('leave_reason').value = reason;
+
+            // Show the modal
+            modal.classList.remove('hidden');
+        });
+    });
+
+    // 2. Close Modal
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    }
+
+    // 3. Click outside dropdown to close it
+    window.onclick = function () {
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
+    };
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. Select all edit buttons
+    const editButtons = document.querySelectorAll('.edit-job-btn');
+    const modal = document.getElementById('edit-job-modal');
+    const form = document.getElementById('edit-job-form');
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            // 2. Fetch data from the button's data attributes
+            const jobId = this.getAttribute('data-id');
+            const title = this.getAttribute('data-title');
+            const company = this.getAttribute('data-company');
+            const start = this.getAttribute('data-start');
+            const reason = this.getAttribute('data-reason');
+
+            // 3. Inject data into the form inputs
+            document.getElementById('edit_job_title').value = title;
+            document.getElementById('edit_company_name').value = company;
+            document.getElementById('edit_start_date').value = start;
+            document.getElementById('edit_leave_reason').value = reason;
+
+            // 4. Update the Form Action URL (so it goes to the right ID)
+            form.action = `/user/jobs/update/${jobId}`;
+
+            // 5. Show the modal
+            modal.classList.remove('hidden');
+        });
+    });
 });

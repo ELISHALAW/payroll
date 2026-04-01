@@ -13,7 +13,7 @@
                     <p class="text-sm text-gray-500 mt-1">Modifying information for <b>{{ $user->name }}</b></p>
                 </div>
 
-                <form action="{{ route('users.update', $user->id) }}" method="POST" class="space-y-5">
+                <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="space-y-5">
                     @csrf
                     @method('PUT')
 
@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="text-center mt-4">
-                        <a href="{{ route('users.index') }}" class="text-sm text-gray-400 hover:text-gray-600 transition">
+                        <a href="{{ route('admin.users.index') }}" class="text-sm text-gray-400 hover:text-gray-600 transition">
                             Cancel and go back
                         </a>
                     </div>

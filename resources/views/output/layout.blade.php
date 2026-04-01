@@ -7,7 +7,7 @@
     <title>@yield('title', 'Laravel payroll')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="session-id" content="{{ session()->getId() }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/compensation.js', 'resources/js/leave.js','resources/js/offday.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/compensation.js', 'resources/js/leave.js', 'resources/js/offday.js', 'resources/js/family.js', 'resources/js/document.js'])
 </head>
 
 <body>

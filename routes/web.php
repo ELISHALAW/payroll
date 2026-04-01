@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/document/{id}', [ProfileController::class, 'showDocument'])->name('user.document');
     Route::get('/offday/{id}', [ProfileController::class, 'showOffday'])->name('user.offday');
     Route::get('/appraisal/{id}', [ProfileController::class, 'showAppraisal'])->name('user.appraisal');
+    Route::get('/edit-document/{id}',[ProfileController::class, 'showEditDocument'])->name('user.document.editDocument');
     // Profile & Statutory Updates
     Route::post('/profile/update/{id}', [ProfileController::class, 'update'])->name('user.update');
     Route::post('/profile/update-email/{id}', [UserController::class, 'updateEmail'])->name('user.updateEmail');
@@ -60,4 +61,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/updateNextOfKin/{id}', [ProfileController::class, 'updateNextOfKin'])->name('user.updateNextOfKin');
     Route::post('/createCompanyAsset/{id}', [ProfileController::class, 'createCompanyAsset'])->name('user.createCompanyAsset');
     Route::post('/updateCompanyAsset/{id}', [ProfileController::class, 'updateCompanyAsset'])->name('user.updateCompanyAsset');
+    Route::post('/createOffday/{id}', [ProfileController::class, 'createOffday'])->name('user.createOffday');
 });
