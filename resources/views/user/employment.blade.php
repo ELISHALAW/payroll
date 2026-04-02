@@ -278,17 +278,12 @@
 
                                         <div
                                             class="dropdown-menu hidden absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-                                            <button type="button"
-                                                onclick="toggleMenu('menu-{{ $job->id }}', event)"
-                                                class="edit-job-btn w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-all border-b border-gray-50"
-                                                data-id="{{ $job->id }}" data-title="{{ $job->job_title }}"
-                                                data-company="{{ $job->company_name }}"
-                                                data-start="{{ $job->start_date }}" data-end="{{ $job->end_date }}"
-                                                data-reason="{{ $job->leave_reason }}">
+                                            <a href="{{ route('user.careerProgression.editCareerProgression', $job->id) }}"
+                                                class="edit-job-btn block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-all border-b border-gray-50 font-medium">
                                                 Edit
-                                            </button>
+                                            </a>
 
-                                            <form action="" method="POST"
+                                            <form action="{{ route('user.careerProgression.deleteCareerProgression',$job->id) }}" method="POST"
                                                 onsubmit="return confirm('Delete this job record?')">
                                                 @csrf
                                                 @method('DELETE')
@@ -823,90 +818,6 @@
                         Save
                     </button>
 
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-
-
-
-
-    <div id="updateCareerModal"
-        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
-
-        <div
-            class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all border border-slate-200">
-
-            <div class="flex justify-between items-center px-8 py-5 bg-slate-50/50 border-b border-slate-100">
-                <div>
-                    <h3 class="text-xl font-extrabold text-slate-800 tracking-tight">UPDATE CAREER PROGRESSION</h3>
-                    <p class="text-xs text-slate-500 font-medium mt-0.5">Modify your previous employment details</p>
-                </div>
-                <button type="button" id="closeUpdateCareerModalBtn"
-                    class="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <form id="careerForm" action="{{ route('user.createCareerProgression', $user->id) }}" method="POST"
-                class="p-8">
-                @csrf
-                <input type="hidden" name="career_id" id="career_id">
-
-                <div class="grid grid-cols-2 gap-x-6 gap-y-5">
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Job
-                            Title</label>
-                        <div class="relative">
-                            <input type="text" name="job_title" id="edit_job_title"
-                                placeholder="e.g. Full Stack Developer"
-                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all outline-none text-slate-600 placeholder-slate-400">
-                        </div>
-                    </div>
-
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Company
-                            Name</label>
-                        <input type="text" name="company_name" id="edit_company_name"
-                            placeholder="Enter company name"
-                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all outline-none text-slate-600 placeholder-slate-400">
-                    </div>
-
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Start
-                            Date</label>
-                        <input type="date" name="start_date" id="edit_start_date"
-                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all outline-none text-slate-600">
-                    </div>
-
-                    <div class="col-span-1">
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">End
-                            Date</label>
-                        <input type="date" name="end_date" id="edit_end_date"
-                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all outline-none text-slate-600">
-                    </div>
-
-                    <div class="col-span-2">
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Reason for
-                            Leaving</label>
-                        <textarea name="leave_reason" id="leave_reason" rows="3" placeholder="Briefly explain your departure..."
-                            class="resize-none w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all outline-none text-slate-600 placeholder-slate-400 resize-none"></textarea>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
-                    <button type="button" id="cancelUpdateCareerModalBtn"
-                        class="px-6 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-all">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                        class="px-8 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-bold rounded-lg shadow-lg shadow-cyan-600/20 transform active:scale-95 transition-all">
-                        Update Record
-                    </button>
                 </div>
             </form>
         </div>

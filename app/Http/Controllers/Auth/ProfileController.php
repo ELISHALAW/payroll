@@ -97,15 +97,33 @@ class ProfileController extends Controller
         return view('user.document', compact('user', 'assets'));
     }
 
-    public function showEditDocument(string $id)
+    public function showEditDocument(string $assetId)
     {
-        if (auth()->id() != $id) {
+        $assetRecord = UserDetail::findOrFail($assetId);
+        $user = User::findOrFail($assetRecord->user_id);
+
+        if (auth()->id() != $assetRecord->user_id) {
             abort(403, 'Unauthorized access.');
         }
 
-        $user = User::findOrFail($id);
+        // Get all records in this asset group (same created_at)
+        $assetData = UserDetail::where('user_id', $assetRecord->user_id)
+            ->whereIn('name', ['asset_type', 'date_received', 'date_released', 'asset_details'])
+            ->where('created_at', $assetRecord->created_at)
+            ->get();
 
-        return view('user.document.editDocument', compact('user'));
+
+        $asset = (object)[
+            'id'            => $assetRecord->id,
+            'asset_type'    => $assetData->where('name', 'asset_type')->first()->value ?? '',
+            'date_received' => $assetData->where('name', 'date_received')->first()->value ?? '',
+            'date_released' => $assetData->where('name', 'date_released')->first()->value ?? '',
+            'asset_details' => $assetData->where('name', 'asset_details')->first()->value ?? '',
+            'created_at'    => $assetRecord->created_at
+        ];
+
+
+        return view('user.document.editDocument', compact('user', 'asset'));
     }
 
     public function showOffday(string $id)
@@ -184,7 +202,75 @@ class ProfileController extends Controller
         return view('user.compensation', compact('user'));
     }
 
+    public function showEditCareerProgression(string $careerId)
+    {
+        $editJob = UserDetail::findOrFail($careerId);
+        $user = User::findOrFail($editJob->user_id);
 
+        if (auth()->id() != $editJob->user_id) {
+            abort(403, 'Unauthorized access.');
+        }
+
+        // Get all records in this batch (same remark)
+        $careerData = UserDetail::where('remark', $editJob->remark)->get();
+        $editJob = (object)[
+            'id'           => $careerData->first()->id,
+            'job_title'    => $careerData->where('name', 'job_title')->first()->value ?? '',
+            'company_name' => $careerData->where('name', 'company_name')->first()->value ?? '',
+            'start_date'   => $careerData->where('name', 'start_date')->first()->value ?? '',
+            'end_date'     => $careerData->where('name', 'end_date')->first()->value ?? '',
+            'leave_reason' => $careerData->where('name', 'leave_reason')->first()->value ?? '',
+            'remark'       => $editJob->remark
+        ];
+
+        return view('user.careerProgression.editCareerProgression', compact('user', 'editJob'));
+    }
+    public function updateCareerProgression(Request $request, $id)
+    {
+        // 1. Find the specific record being edited to extract its group 'remark'
+        // Note: $id here should be the primary key ID of one of the UserDetail rows
+        $originalRecord = UserDetail::findOrFail($id);
+        $user = User::findOrFail($originalRecord->user_id);
+
+        // 2. Validation
+        $request->validate([
+            'job_title'    => 'required|string|max:255',
+            'company_name' => 'required|string|max:255',
+            'start_date'   => 'required|date',
+            'end_date'     => 'nullable|date|after_or_equal:start_date',
+            'leave_reason' => 'nullable|string|max:1000',
+        ]);
+
+        // 3. Define the mapping of Form Input Name => Database 'name' column
+        $careerMap = [
+            'job_title'    => 'job_title',
+            'company_name' => 'company_name',
+            'start_date'   => 'start_date',
+            'end_date'     => 'end_date',
+            'leave_reason' => 'leave_reason'
+        ];
+
+        // 4. Update the batch using the existing 'remark'
+        foreach ($careerMap as $inputKey => $dbLabel) {
+            // We use updateOrCreate so if a new field is added to the form later, 
+            // it inserts into the group correctly.
+            UserDetail::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'name'    => $dbLabel,
+                    'remark'  => $originalRecord->remark // Using the existing batch remark
+                ],
+                [
+                    'value'   => $request->get($inputKey) ?? 'N/A'
+                ]
+            );
+        }
+
+        // 5. Redirect back to the employment list
+        return redirect()
+            ->route('user.employment', $user->id)
+            ->with('success', 'Career progression updated successfully!');
+    }
     public function show(string $id)
     {
         if (auth()->id() != $id) {
@@ -939,55 +1025,45 @@ class ProfileController extends Controller
                         'user_id' => $id,
                         'name' => $key,
                         'value' => $value,
-                        'remark' => 'Updated via Family Details Modal'
+                        'remark' => 'Updated via Company Asset Modal'
                     ]
                 );
             }
 
-            return redirect()->back()->with('success', 'Family details updated successfully!');
+            return redirect()->back()->with('success', 'Company asset details updated successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Update failed. Please try again.', $e->getMessage());
         }
     }
 
-    public function updateCompanyAsset(Request $request, string $groupId)
+    public function updateCompanyAsset(Request $request, $assetId)
     {
-        $request->validate([
-            'asset_type'    => 'required|string',
-            'date_received' => 'required|date',
-            'date_released' => 'nullable|date',
-            'asset_details' => 'nullable|string'
-        ]);
+        $assetRecord = UserDetail::findOrFail($assetId);
 
-        try {
-            $data = [
-                'asset_type'    => $request->asset_type,
-                'date_received' => $request->date_received,
-                'date_released' => $request->date_released,
-                'asset_details' => $request->asset_details,
-            ];
+        // Find all records belonging to this "group" (same user and timestamp)
+        $group = UserDetail::where('user_id', $assetRecord->user_id)
+            ->where('created_at', $assetRecord->created_at)
+            ->get();
 
-            foreach ($data as $key => $value) {
-                // Find the specific row for THIS asset group and THIS specific field
+        $fields = ['asset_type', 'date_received', 'date_released', 'asset_details'];
+
+        foreach ($fields as $field) {
+            if ($request->has($field)) {
+                // Update the existing record in the group or create it if missing
                 UserDetail::updateOrCreate(
                     [
-                        'group_id' => $groupId, // Only update rows in this "folder"
-                        'name'     => $key      // Target specific row: type, date, or detail
+                        'user_id' => $assetRecord->user_id,
+                        'created_at' => $assetRecord->created_at,
+                        'name' => $field
                     ],
-                    [
-                        'user_id' => auth()->id(), // Safety check
-                        'value'   => $value,
-                        'remark'  => 'Updated via Asset Modal'
-                    ]
+                    ['value' => $request->input($field)]
                 );
             }
-
-            return redirect()->back()->with('success', 'Asset updated successfully!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Update failed: ' . $e->getMessage());
         }
-    }
 
+        return redirect()->route('user.document', $assetRecord->user_id)
+            ->with('success', 'Asset updated successfully');
+    }
 
     public function createOffday(Request $request, string $id)
     {
@@ -1038,5 +1114,46 @@ class ProfileController extends Controller
             'value'   => $date->format('Y-m-d'),
             'remark'  => 'Scheduled Offday'
         ]);
+    }
+
+
+    public function destroyOffday($offdayId)
+    {
+        // 1. Find the specific record (e.g., ID 126)
+        // Replace 'Offday' with the actual name of your Model
+        $offday = UserDetail::findOrFail($offdayId);
+
+        // 2. Security Check: Ensure the record belongs to the logged-in user
+        if (auth()->id() != $offday->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // 3. Perform the delete
+        $offday->delete();
+
+        // 4. Redirect back to the list with a success message
+        return redirect()->back()->with('success', 'Offday removed successfully.');
+    }
+
+    public function deleteCareerProgression($id)
+    {
+        $clickedRow = UserDetail::findOrFail($id);
+
+        // 2. Get the unique remark from that row 
+        // (e.g., "Career Progression Entry - 1775118525")
+        $groupRemark = $clickedRow->remark;
+
+        // 3. Delete EVERY row that has this same remark and belongs to the user
+        if (!empty($groupRemark)) {
+            UserDetail::where('remark', $groupRemark)
+                ->where('user_id', auth()->id()) // Extra safety
+                ->delete();
+
+            return redirect()->back()->with('status', 'Career record fully deleted.');
+        }
+
+        // Fallback: If for some reason remark is empty, just delete the single row
+        $clickedRow->delete();
+        return redirect()->back()->with('status', 'Single record deleted.');
     }
 }

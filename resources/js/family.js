@@ -48,13 +48,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (closeBtn) {
         closeBtn.addEventListener('click', function () {
             modal.classList.add('hidden');
-        }); 
+        });
     }
 
-    if(closeBtn2) {
+    if (closeBtn2) {
         closeBtn2.addEventListener('click', function () {
             modal.classList.add('hidden');
-        }); 
+        });
 
     }
 
@@ -66,3 +66,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 });
+
+const btn = document.getElementById('menuButton');
+const menu = document.getElementById('dropdownMenu');
+
+btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isHidden = menu.classList.contains('hidden');
+    if (isHidden) {
+        menu.classList.remove('hidden');
+        // Timeout to allow browser to register the class removal before animating
+        setTimeout(() => {
+            menu.classList.remove('opacity-0', '-translate-x-2');
+            menu.classList.add('opacity-100', 'translate-x-0');
+        }, 10);
+    } else {
+        hideMenu();
+    }
+});
+
+document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target)) hideMenu();
+});
+
+function hideMenu() {
+    menu.classList.add('opacity-0', '-translate-x-2');
+    menu.classList.remove('opacity-100', 'translate-x-0');
+    setTimeout(() => menu.classList.add('hidden'), 200);
+}

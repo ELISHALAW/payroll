@@ -47,7 +47,7 @@ class UserController extends Controller
             'status' => 1
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User added successfully');
+        return redirect()->route('admin.users.index')->with('success', 'User added successfully');
     }
 
     /**
@@ -92,7 +92,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully');
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
     /**
@@ -104,12 +104,12 @@ class UserController extends Controller
 
 
         if ($user->id === auth()->id()) {
-            return redirect()->route('users.index')->with('error', 'You cannot delete your own account!');
+            return redirect()->route('admin.users.index')->with('error', 'You cannot delete your own account!');
         }
 
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'User deleted successfully');
+        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
 
     public function updateEmail(Request $request, $id)

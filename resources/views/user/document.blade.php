@@ -89,32 +89,21 @@
                             <tr class="hover:bg-gray-50/50 transition-colors">
                                 <td class="px-8 py-4 text-sm font-medium text-slate-700">{{ $asset->asset_type }}</td>
                                 <td class="px-8 py-4 text-sm text-slate-500">{{ $asset->asset_details }}</td>
-                                <td class="px-8 py-4 text-sm text-slate-500">{{ $asset->date_received }}</td>
-                                <td class="px-8 py-4 text-sm text-slate-500">{{ $asset->date_released }}</td>
+                                <td class="px-8 py-4 text-sm text-slate-500">
+                                    {{ Carbon::parse($asset->date_received)->format('d-m-Y') }}</td>
+                                <td class="px-8 py-4 text-sm text-slate-500">
+                                    {{ Carbon::parse($asset->date_released)->format('d-m-Y') }}</td>
                                 <td class="px-8 py-4">
                                     <div class="flex items-center space-x-2">
-                                        <a href="{{ route('user.document.editDocument', ['id' => $user->id]) }}"
+                                        <a href="{{ route('user.document.editDocument', $asset->id) }}"
                                             class="text-cyan-500 hover:bg-cyan-50 p-1.5 rounded-lg transition-colors flex items-center justify-center"
                                             title="Edit Asset">
-                                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                                <path d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
+                                            &#128221;
                                         </a>
                                         <button
                                             class="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors flex items-center justify-center"
                                             title="Delete">
-                                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M7 21C6.45 21 5.979 20.804 5.587 20.412C5.195 20.02 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.804 20.02 18.412 20.412C18.02 20.804 17.55 21 17 21H7ZM7 6V19H17V6H7ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"
-                                                    fill="currentColor" />
-                                            </svg>
+                                            &#x1F5D1;
                                         </button>
                                     </div>
                                 </td>
