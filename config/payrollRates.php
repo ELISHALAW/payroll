@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'rates' => [
+    'payrollRates' => [
         'epf'               => 0.11,
         'socso'             => 0.005,
         'eis'               => 0.002,

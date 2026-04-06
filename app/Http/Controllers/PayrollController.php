@@ -28,7 +28,7 @@ class PayrollController extends Controller
     public function calculatePayroll($basic_salary, $allowance)
     {
         $basic_salary = $basic_salary + $allowance;
-        $rates = config('payroll.rates');
+        $rates = config('payrollRates');
         $epf = $basic_salary * $rates['epf'];
         $socso = $basic_salary * $rates['socso'];
         $eis = $basic_salary * $rates['eis'];

@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Config::set([
-            'payroll.rates' => [
+            'payrollRates' => [
                 'epf' => 0.11,
                 'socso' => 0.005,
                 'eis' => 0.002,
