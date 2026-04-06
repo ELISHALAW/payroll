@@ -266,33 +266,31 @@
                                 <div class="text-gray-500">{{ Carbon::parse($job->end_date)->format('d-M-Y') }}</div>
                                 <div class="italic text-cyan-600">{{ $job->leave_reason }}</div>
 
-                                <div class="flex justify-end">
-                                    <div class="relative inline-block text-left">
-                                        <button type="button"
-                                            class="three-dot-btn p-2 rounded-lg hover:bg-gray-200 text-gray-500 transition-all">
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                                <path
-                                                    d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                                            </svg>
-                                        </button>
+                                <div class="relative inline-block text-right">
+                                    <button type="button" onclick="toggleMenu('dropdown-{{ $job->id }}', event)"
+                                        class="three-dot-btn p-2 rounded-lg hover:bg-gray-200 text-gray-500 transition-all">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                        </svg>
+                                    </button>
 
-                                        <div
-                                            class="dropdown-menu hidden absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-                                            <a href="{{ route('user.careerProgression.editCareerProgression', $job->id) }}"
-                                                class="edit-job-btn block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-all border-b border-gray-50 font-medium">
-                                                Edit
-                                            </a>
-
-                                            <form action="{{ route('user.careerProgression.deleteCareerProgression',$job->id) }}" method="POST"
-                                                onsubmit="return confirm('Delete this job record?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-all">
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        </div>
+                                    <div id="dropdown-{{ $job->id }}"
+                                        class="dropdown-menu hidden absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-visible">
+                                        <a href="{{ route('user.careerProgression.editCareerProgression', $job->id) }}"
+                                            class="edit-job-btn block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-all border-b border-gray-50 font-medium">
+                                            Edit
+                                        </a>
+                                        <form
+                                            action="{{ route('user.careerProgression.deleteCareerProgression', $job->id) }}"
+                                            method="POST" onsubmit="return confirm('Delete this job record?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-all">
+                                                Delete
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

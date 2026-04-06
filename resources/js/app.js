@@ -360,19 +360,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-/** * Part 1: The Dropdown Toggle 
- * This must stay outside DOMContentLoaded so the 'onclick' can see it.
- **/
 function toggleMenu(menuId, event) {
-    event.stopPropagation();
+    event.stopPropagation(); // Prevents the click from reaching the document
+
     const menu = document.getElementById(menuId);
+
     if (menu) {
-        // Close all other open dropdowns first
-        document.querySelectorAll('.dropdown-menu').forEach(m => {
-            if (m.id !== menuId) m.classList.add('hidden');
+        // Find all dropdowns
+        const allMenus = document.querySelectorAll('.dropdown-menu');
+
+        allMenus.forEach(m => {
+            if (m.id !== menuId) {
+                m.classList.add('hidden'); // Close others
+            }
         });
+
+        // Toggle current one
         menu.classList.toggle('hidden');
     }
 }
 
+// Close dropdown if user clicks anywhere else on the screen
+document.addEventListener('click', function () {
+    document.querySelectorAll('.dropdown-menu').forEach(m => {
+        m.classList.add('hidden');
+    });
+});
 

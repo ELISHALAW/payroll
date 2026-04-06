@@ -3,73 +3,128 @@
         <div class="flex items-center h-16">
 
             {{-- 1. LEFT SIDE --}}
-            <div class="flex items-center gap-6">
-                <a href="/" class="flex items-center gap-2 group">
-                    <div
-                        class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
-                        <span class="text-white font-bold text-xs">CA</span>
-                    </div>
-                    <span class="text-xl font-extrabold tracking-tight text-gray-900 whitespace-nowrap">
-                        CustomAuth
-                    </span>
-                </a>
+            <div class="flex items-center justify-between w-full">
 
-                <div class="hidden md:flex items-center">
-                    <a href="{{ route('home') }}"
-                        class="px-3 py-2 text-sm font-semibold text-white bg-gray-900 rounded-md">
-                        Dashboard
+                {{-- LEFT SIDE: Logo & Dashboard grouped together --}}
+                <div class="flex items-center gap-8">
+                    <a href="/" class="flex items-center gap-2 group">
+                        <div
+                            class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
+                            <span class="text-white font-bold text-xs">CA</span>
+                        </div>
+                        <span class="text-xl font-extrabold tracking-tight text-gray-900 whitespace-nowrap">
+                            CustomAuth
+                        </span>
                     </a>
+
+                    @auth
+                        <div class="hidden md:flex">
+                            <a href="{{ route('home') }}"
+                                class="px-4 py-2 text-sm font-bold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors">
+                                Dashboard
+                            </a>
+                        </div>
+                    @endauth
+                </div>
+
+                {{-- RIGHT SIDE: Login/Register OR Profile --}}
+                <div class="flex items-center gap-3">
+                    @guest
+                        <a href="{{ route('login') }}"
+                            class="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors">
+                            Sign In
+                        </a>
+                        <a href="{{ route('register') }}"
+                            class="px-6 py-2.5 bg-gray-900 text-white rounded-full text-sm font-bold hover:bg-gray-800 transition-all shadow-md active:scale-95">
+                            Register
+                        </a>
+                    @endguest
+
+
                 </div>
             </div>
+            @auth
+                {{-- 2. MIDDLE SECTION: Only appears on Profile Page --}}
+                @if (Route::is('user.*'))
+                    <div class="flex-1 hidden md:flex justify-center items-center h-full px-8">
+                        <div class="flex items-center h-full gap-1">
+                            <a href="{{ route('user.profile', Auth::id()) }}"
+                                class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.profile') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                                General
+                            </a>
 
-            {{-- 2. MIDDLE SECTION: Only appears on Profile Page --}}
-            @if (Route::is('user.*'))
-                <div class="flex-1 hidden md:flex justify-center items-center h-full px-8">
-                    <div class="flex items-center h-full gap-1">
-                        <a href="{{ route('user.profile', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.profile') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
-                            General
-                        </a>
-
-                        <a href="{{ route('user.employment', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.employment') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
-                            Employment
-                        </a>
-                        <a href="{{ route('user.compensation', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.compensation') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
-                            Compensation
-                        </a>
-                        <a href="{{ route('user.leave', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.leave') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                            <a href="{{ route('user.employment', Auth::id()) }}"
+                                class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.employment') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                                Employment
+                            </a>
+                            <a href="{{ route('user.compensation', Auth::id()) }}"
+                                class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.compensation') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                                Compensation
+                            </a>
+                            <a href="{{ route('user.leave', Auth::id()) }}"
+                                class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.leave') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                                Leave
+                            </a>
+                            <a href="{{ route('user.family', Auth::id()) }}"
+                                class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.family') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                                Family
+                            </a>
+                            <a href="{{ route('user.document', Auth::id()) }}"
+                                class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.document') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                                Documents
+                            </a>
+                            <a href="{{ route('user.offday', Auth::id()) }}"
+                                class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.offday') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                                Offday
+                            </a>
+                            <a href="{{ route('user.appraisal', Auth::id()) }}"
+                                class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.appraisal') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                                Appraisal
+                            </a>
+                        </div>
+                    </div>
+                @elseif(Route::is('home') || Route::is('payroll.*'))
+                    <div class="flex-1 hidden md:flex justify-center items-center h-full px-8">
+                        <a href=""
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.appraisal') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
                             Leave
                         </a>
-                        <a href="{{ route('user.family', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.family') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
-                            Family
-                        </a>
-                        <a href="{{ route('user.document', Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.document') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
-                            Documents
-                        </a>
-                        <a href="{{ route('user.offday',Auth::id()) }}"
-                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.offday') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
-                            Offday
-                        </a>
-                        <a href="{{ route('user.appraisal', Auth::id()) }}" 
+                        <a href=""
                             class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors {{ Route::is('user.appraisal') ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
-                            Appraisal
+                            Benefits
+                        </a>
+                        <a href=""
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                            Insurance
+                        </a>
+                        <a href=""
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                            Investment
+                        </a>
+                        <a href="{{ route('payroll.index') }}"
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors  {{ Route::is(['payroll.index', 'payroll.calculate']) ? 'font-black text-gray-900 bg-gray-100' : 'font-bold text-gray-500 hover:text-gray-900' }}">
+                            Payroll
+                        </a>
+                        <a href=""
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                            Claims
+                        </a>
+                        <a href=""
+                            class="px-2 py-1 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors">
+                            Hadir
                         </a>
                     </div>
-                </div>
-            @else
-                {{-- Spacer to keep the layout consistent when tabs are hidden --}}
-                <div class="flex-1"></div>
-            @endif
+                @else
+                    {{-- Spacer to keep the layout consistent when tabs are hidden --}}
+                    <div class="flex-1"></div>
+                @endif
+
+            @endauth
 
             {{-- 3. RIGHT SIDE: User Section --}}
             <div class="flex items-center gap-4">
                 @auth
-                    <div class="flex items-center gap-3 relative group">
+                    <div class="flex items-center gap-3 relative group flex-shrink-0">
                         <div class="flex items-center gap-3 cursor-pointer py-2">
                             <div class="text-right hidden sm:block">
                                 <p
@@ -127,19 +182,7 @@
                     </div>
                 @endauth
 
-                @guest
-                    {{-- 情况 B: 访客状态 --}}
-                    <div class="flex items-center gap-2">
-                        <a href="{{ route('login') }}"
-                            class="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors">
-                            Sign In
-                        </a>
-                        <a href="{{ route('register') }}"
-                            class="px-5 py-2 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-gray-800 transition-all shadow-sm hover:shadow-md active:scale-95">
-                            Register
-                        </a>
-                    </div>
-                @endguest
+
             </div>
         </div>
     </div>

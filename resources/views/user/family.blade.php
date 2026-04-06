@@ -7,7 +7,8 @@
 @section('content')
     <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
 
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div
+            class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible items-center justify-center sm:p-6 lg:p-8">
             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/30">
                 <h3 class="text-lg font-bold text-gray-800 uppercase tracking-wider flex items-center">
                     <span class="w-1.5 h-5 bg-cyan-500 rounded-full mr-2"></span>
@@ -62,39 +63,48 @@
                             <div class="flex items-center justify-end">
                                 <div class="relative inline-block text-left">
 
-                                    <button id="menuButton"
-                                        class="p-2 text-cyan-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all focus:outline-none">
+                                    <button type="button"
+                                        class="menu-button p-2 text-cyan-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500/20">
                                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                                             <path
                                                 d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                                         </svg>
                                     </button>
 
-                                    <div id="dropdownMenu"
-                                        class="hidden absolute left-full top-0 ml-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 z-[100] overflow-hidden transform opacity-0 -translate-x-2 transition-all duration-200 origin-left">
-                                        <div class="py-1">
-                                            <a href="#"
-                                                class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-colors border-b border-gray-50">
-                                                <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                                    </path>
-                                                </svg>
-                                                Edit Record
-                                            </a>
-
-                                            <form action="#" method="POST">
-                                                <button type="submit"
-                                                    class="flex items-center w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                                    <svg class="w-4 h-4 mr-3 text-red-400" fill="none"
-                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                    <div
+                                        class="dropdown-menu hidden absolute right-0 top-full mt-3 w-64 bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 z-[999] transform opacity-0 scale-95 transition-all duration-300 ease-out origin-top-right">
+                                        <div class="p-1.5 space-y-1">
+                                            <a href="{{ route('user.family.editFamily', $family->id) }}"
+                                                class="group flex items-center px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 transition-all">
+                                                <div
+                                                    class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-50 group-hover:bg-cyan-100 transition-colors mr-3">
+                                                    <svg class="w-5 h-5 text-gray-500 group-hover:text-cyan-600"
+                                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2"
-                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                        </path>
+                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
-                                                    Delete Record
+                                                </div>
+                                                <span>Edit Record</span>
+                                            </a>
+
+                                            <div class="h-px bg-gray-100 mx-2 my-1"></div>
+
+                                            <form action="{{ route('user.family.deleteFamily',$family->id) }}" method="POST"
+                                                onsubmit="return confirm('Delete this record permanently?');">
+                                                @csrf @method('DELETE')
+                                                <button type="submit"
+                                                    class="group flex items-center w-full px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-all">
+                                                    <div
+                                                        class="flex items-center justify-center w-9 h-9 rounded-lg bg-red-50 group-hover:bg-red-100 transition-colors mr-3">
+                                                        <svg class="w-5 h-5 text-red-500 group-hover:text-red-600"
+                                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </div>
+                                                    <span>Delete Record</span>
                                                 </button>
                                             </form>
                                         </div>
@@ -108,6 +118,7 @@
                         No family records found...
                     </div>
                 @endforelse
+
             </div>
         </div>
 
@@ -159,7 +170,7 @@
                 </a>
             </div>
 
-            <form action="{{ route('user.updateFamilyDetails', $user->id) }}" method="POST" class="p-10">
+            <form action="{{ route('user.createFamilyDetails', $user->id) }}" method="POST" class="p-10">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
                     <div class="space-y-2">

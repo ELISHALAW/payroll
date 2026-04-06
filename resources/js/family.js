@@ -67,30 +67,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-const btn = document.getElementById('menuButton');
-const menu = document.getElementById('dropdownMenu');
+document.addEventListener('DOMContentLoaded', () => {
+    // Select all buttons by class
+    const buttons = document.querySelectorAll('.menu-button');
 
-btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isHidden = menu.classList.contains('hidden');
-    if (isHidden) {
-        menu.classList.remove('hidden');
-        // Timeout to allow browser to register the class removal before animating
-        setTimeout(() => {
-            menu.classList.remove('opacity-0', '-translate-x-2');
-            menu.classList.add('opacity-100', 'translate-x-0');
-        }, 10);
-    } else {
-        hideMenu();
+    buttons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            // Find the specific menu next to this button
+            const menu = btn.nextElementSibling;
+
+            // Close other open menus first
+            document.querySelectorAll('.dropdown-menu').forEach(m => {
+                if (m !== menu) m.classList.add('hidden');
+            });
+
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                // Tiny delay to trigger CSS transition
+                setTimeout(() => {
+                    menu.classList.remove('opacity-0', 'scale-95');
+                    menu.classList.add('opacity-100', 'scale-100');
+                }, 10);
+            } else {
+                hideMenu(menu);
+            }
+        });
+    });
+
+    // Close when clicking anywhere else
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.dropdown-menu').forEach(m => hideMenu(m));
+    });
+
+    function hideMenu(m) {
+        m.classList.add('opacity-0', 'scale-95');
+        m.classList.remove('opacity-100', 'scale-100');
+        setTimeout(() => m.classList.add('hidden'), 300);
     }
 });
-
-document.addEventListener('click', (e) => {
-    if (!menu.contains(e.target)) hideMenu();
-});
-
-function hideMenu() {
-    menu.classList.add('opacity-0', '-translate-x-2');
-    menu.classList.remove('opacity-100', 'translate-x-0');
-    setTimeout(() => menu.classList.add('hidden'), 200);
-}

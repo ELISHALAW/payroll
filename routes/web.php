@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PayrollController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -27,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
 
     // User Profile / Payroll Views
     Route::get('/user/home', fn() => view('user.home'))->name('user.home');
+    Route::get('/payroll',[PayrollController::class,'index'])->name('payroll.index');
     Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('user.profile');
     Route::get('/employee/{id}', [ProfileController::class, 'showEmployee'])->name('user.employment');
     Route::get('/compensation/{id}', [ProfileController::class, 'showCompensation'])->name('user.compensation');
@@ -39,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/edit-document/{id}', [ProfileController::class, 'showEditDocument'])->name('user.document.editDocument');
     Route::get('/edit-career-progression/{careerId}', [ProfileController::class, 'showEditCareerProgression'])
         ->name('user.careerProgression.editCareerProgression');
+    Route::get('/edit-family/{familyId}', [ProfileController::class, 'showEditFamily'])->name('user.family.editFamily');
     // Profile & Statutory Updates
     Route::post('/profile/update/{id}', [ProfileController::class, 'update'])->name('user.update');
     Route::post('/profile/update-email/{id}', [UserController::class, 'updateEmail'])->name('user.updateEmail');
@@ -59,15 +62,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/updateLeave/{id}', [ProfileController::class, 'updateDaysTaken'])->name('user.updateDaysTaken');
     Route::post('/updateHospitalizationDays/{id}', [ProfileController::class, 'updateHospitalizationDays'])->name('user.updateHospitalizationDays');
     Route::post('/updateSickDays/{id}', [ProfileController::class, 'updateSickDays'])->name('user.updateSickDays');
-    Route::post('/updateEmergencyLeave/{id}', [ProfileController::class, 'updateFamilyDetails'])->name('user.updateFamilyDetails');
+    Route::post('/updateEmergencyLeave/{id}', [ProfileController::class, 'createFamilyDetails'])->name('user.createFamilyDetails');
     Route::post('/updateNextOfKin/{id}', [ProfileController::class, 'updateNextOfKin'])->name('user.updateNextOfKin');
     Route::post('/createCompanyAsset/{id}', [ProfileController::class, 'createCompanyAsset'])->name('user.createCompanyAsset');
     Route::post('/updateCompanyAsset/{id}', [ProfileController::class, 'updateCompanyAsset'])->name('user.updateCompanyAsset');
     Route::post('/createOffday/{id}', [ProfileController::class, 'createOffday'])->name('user.createOffday');
     Route::post('/updateCareerProgression/{id}', [ProfileController::class, 'updateCareerProgression'])->name('user.updateCareerProgression');
+    Route::post('/update-family/{id}', [ProfileController::class, 'updateFamily'])->name('user.family.updateFamily');
+    Route::post('/payroll',[PayrollController::class,'index'])->name('payroll.calculate');
 
 
-
+    Route::delete('/deleteFamily/{id}', [ProfileController::class, 'deleteFamily'])->name('user.family.deleteFamily');
     Route::delete('/deleteCareerProgression/{id}', [ProfileController::class, 'deleteCareerProgression'])->name('user.careerProgression.deleteCareerProgression');
     Route::delete('/delete-offday/{offdayId}', [ProfileController::class, 'destroyOffday'])->name('user.offday.delete');
+    Route::delete('/deleteDocument/{id}', [ProfileController::class, 'deleteDocument'])->name('user.document.deleteDocument');
 });

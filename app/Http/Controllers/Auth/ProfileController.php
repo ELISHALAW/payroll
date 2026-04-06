@@ -176,6 +176,7 @@ class ProfileController extends Controller
             // Map the group into a clean object
             ->map(function ($group) {
                 return (object)[
+                    'id' => $group->first()->id,
                     'name'         => $group->where('name', 'family_name')->first()->value ?? 'N/A',
                     'relationship' => $group->where('name', 'relationship')->first()->value ?? 'Member',
                     'nationality'  => $group->where('name', 'family_nationality')->first()->value ?? '-',
@@ -201,29 +202,74 @@ class ProfileController extends Controller
         // 返回 user 文件夹下的 profile.blade.php
         return view('user.compensation', compact('user'));
     }
+    public function showEditFamily(string $id)
+    {
+        // 1. Find the specific row (e.g., ID 127 for the name)
+        // IMPORTANT: Make sure the ID in your URL exists in the 'id' column!
+        $mainDetail = UserDetail::findOrFail($id);
+
+        // 2. Fetch all rows for this user that share the EXACT same creation time
+        $details = UserDetail::where('user_id', $mainDetail->user_id)
+            ->where('created_at', $mainDetail->created_at)
+            ->get();
+
+        // 3. Map into one object for the form
+        $familyMember = (object)[
+            'id'                 => $mainDetail->id,
+            'relationship'       => $details->where('name', 'relationship')->first()->value ?? '',
+            'family_name'        => $details->where('name', 'family_name')->first()->value ?? '',
+            'family_nationality' => $details->where('name', 'family_nationality')->first()->value ?? '',
+            'family_dob'         => $details->where('name', 'family_dob')->first()->value ?? '',
+            'family_phone'       => $details->where('name', 'family_phone')->first()->value ?? '',
+            'family_nric'        => $details->where('name', 'family_nric')->first()->value ?? '',
+        ];
+
+        // Get the user for the "Back" link
+        $user = User::find($mainDetail->user_id);
+
+        return view('user.family.editFamily', compact('familyMember', 'user'));
+    }
 
     public function showEditCareerProgression(string $careerId)
     {
-        $editJob = UserDetail::findOrFail($careerId);
-        $user = User::findOrFail($editJob->user_id);
+        try {
+            // 1. Find the initial record
+            $anchorRecord = UserDetail::findOrFail($careerId);
 
-        if (auth()->id() != $editJob->user_id) {
-            abort(403, 'Unauthorized access.');
+            // 2. Authorization Check
+            if (auth()->id() != $anchorRecord->user_id) {
+                abort(403, 'Unauthorized access.');
+            }
+
+            $user = User::findOrFail($anchorRecord->user_id);
+
+            // 3. Get the batch using the 'remark' or 'created_at' 
+            // Note: It is safer to use the 'remark' if that is your unique batch identifier
+            $careerData = UserDetail::where('user_id', $user->id)
+                ->where('remark', $anchorRecord->remark)
+                ->get();
+
+            // 4. Safety Check: If the collection is empty, redirect back
+            if ($careerData->isEmpty()) {
+                return redirect()->back()->with('error', 'Career progression record not found.');
+            }
+
+            // 5. Map the data into an object for the view
+            $editJob = (object)[
+                'id'           => $anchorRecord->id, // Use the ID passed in the URL
+                'job_title'    => $careerData->where('name', 'job_title')->first()->value ?? '',
+                'company_name' => $careerData->where('name', 'company_name')->first()->value ?? '',
+                'start_date'   => $careerData->where('name', 'start_date')->first()->value ?? '',
+                'end_date'     => $careerData->where('name', 'end_date')->first()->value ?? '',
+                'leave_reason' => $careerData->where('name', 'leave_reason')->first()->value ?? '',
+                'remark'       => $anchorRecord->remark
+            ];
+
+            return view('user.careerProgression.editCareerProgression', compact('user', 'editJob'));
+        } catch (\Exception $e) {
+            Log::error("Error loading Edit Career page: " . $e->getMessage());
+            return redirect()->back()->with('error', 'An unexpected error occurred.');
         }
-
-        // Get all records in this batch (same remark)
-        $careerData = UserDetail::where('remark', $editJob->remark)->get();
-        $editJob = (object)[
-            'id'           => $careerData->first()->id,
-            'job_title'    => $careerData->where('name', 'job_title')->first()->value ?? '',
-            'company_name' => $careerData->where('name', 'company_name')->first()->value ?? '',
-            'start_date'   => $careerData->where('name', 'start_date')->first()->value ?? '',
-            'end_date'     => $careerData->where('name', 'end_date')->first()->value ?? '',
-            'leave_reason' => $careerData->where('name', 'leave_reason')->first()->value ?? '',
-            'remark'       => $editJob->remark
-        ];
-
-        return view('user.careerProgression.editCareerProgression', compact('user', 'editJob'));
     }
     public function updateCareerProgression(Request $request, $id)
     {
@@ -960,7 +1006,7 @@ class ProfileController extends Controller
         }
     }
 
-    public function updateFamilyDetails(Request $request, string $id)
+    public function createFamilyDetails(Request $request, string $id)
     {
         User::findOrFail($id);
 
@@ -997,6 +1043,52 @@ class ProfileController extends Controller
             return redirect()->back()->with('success', 'Family details updated successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Update failed. Please try again.');
+        }
+    }
+
+    public function updateFamily(Request $request, $id)
+    {
+        // 1. Validation
+        $validated = $request->validate([
+            'relationship'       => 'required|string|in:Children,Spouse,Parents,Siblings',
+            'family_name'        => 'required|string|max:255',
+            'family_nationality' => 'required|string',
+            'family_dob'         => 'required|date|before:today',
+            'family_phone'       => 'required|numeric|digits_between:9,13',
+            'family_nric'        => 'required|string|max:20',
+        ], [
+            'family_dob.before' => 'The date of birth must be a date in the past.',
+            'family_phone.numeric' => 'Please enter a valid phone number without dashes.',
+        ]);
+
+        try {
+            // 2. Find the anchor record
+            $mainRecord = UserDetail::findOrFail($id);
+
+            // 3. Process the update/create loop
+            foreach ($validated as $name => $value) {
+                UserDetail::updateOrCreate(
+                    [
+                        'user_id'    => $mainRecord->user_id,
+                        'created_at' => $mainRecord->created_at,
+                        'name'       => $name
+                    ],
+                    [
+                        'value'      => $value,
+                        'remark'     => 'Updated via Family Details Modal'
+                    ]
+                );
+            }
+
+            // If successful, redirect back with success message
+            return redirect()->route('user.family', $mainRecord->user_id)->with('success', 'Family member updated successfully!');
+        } catch (\Exception $e) {
+            // If an error occurs, log it and redirect back with an error message
+            Log::error("Update error: " . $e->getMessage());
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Unable to update family details. Please check your connection and try again.');
         }
     }
 
@@ -1063,6 +1155,25 @@ class ProfileController extends Controller
 
         return redirect()->route('user.document', $assetRecord->user_id)
             ->with('success', 'Asset updated successfully');
+    }
+
+    public function deleteCompanyAsset($id)
+    {
+        $row = UserDetail::findOrFail($id);
+
+        $groupRemark = $row->remark();
+
+        if (!empty($groupRemark)) {
+            UserDetail::where('remark', $groupRemark)
+                ->where('user_id', auth()->id())
+                ->delete();
+
+            return redirect()->back()->with('status', 'Company Asset deleted successfully');
+        }
+
+        $row->delete();
+
+        return redirect()->back()->with('status single record deleted');
     }
 
     public function createOffday(Request $request, string $id)
@@ -1155,5 +1266,63 @@ class ProfileController extends Controller
         // Fallback: If for some reason remark is empty, just delete the single row
         $clickedRow->delete();
         return redirect()->back()->with('status', 'Single record deleted.');
+    }
+
+    public function deleteDocument($id)
+    {
+        $assetRecord = UserDetail::findOrFail($id);
+
+        if (auth()->id() !== $assetRecord->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // This /document section stores one asset as multiple rows (asset_type, date_received, date_released, asset_details)
+        // grouped by created_at. Delete the asset group by created_at so only the intended asset is removed.
+        $createdAt = $assetRecord->created_at;
+
+        UserDetail::where('user_id', $assetRecord->user_id)
+            ->where('created_at', $createdAt)
+            ->whereIn('name', ['asset_type', 'date_received', 'date_released', 'asset_details'])
+            ->delete();
+
+        return redirect()->back()->with('status', 'Document asset deleted successfully.');
+    }
+
+    public function deleteFamily($id)
+    {
+        try {
+            // 1. Find the anchor record
+            // Note: Check if you are finding by User or UserDetail. 
+            // If $id refers to a specific detail row, use UserDetail::findOrFail($id);
+            $familyRecord = UserDetail::findOrFail($id);
+
+            // 2. Authorization Check
+            if (auth()->id() != $familyRecord->user_id) {
+                abort(403, 'Unauthorized action.');
+            }
+
+            $createdAt = $familyRecord->created_at;
+            $userId = $familyRecord->user_id;
+
+            // 3. Perform Deletion
+            UserDetail::where('user_id', $userId)
+                ->where('created_at', $createdAt)
+                ->whereIn('name', [
+                    'relationship',
+                    'family_name',
+                    'family_nationality',
+                    'family_dob',
+                    'family_phone',
+                    'family_nric'
+                ])
+                ->delete();
+
+            return redirect()->back()->with('success', 'Family member records deleted successfully.');
+        } catch (\Exception $e) {
+            // Log the technical error for your own debugging
+            Log::error("Family Deletion Failed: " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Unable to delete the record. Please try again later.');
+        }
     }
 }
