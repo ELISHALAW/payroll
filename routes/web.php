@@ -28,7 +28,7 @@ Route::middleware(['auth'])->group(function () {
 
     // User Profile / Payroll Views
     Route::get('/user/home', fn() => view('user.home'))->name('user.home');
-    Route::get('/payroll',[PayrollController::class,'index'])->name('payroll.index');
+    Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll.index');
     Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('user.profile');
     Route::get('/employee/{id}', [ProfileController::class, 'showEmployee'])->name('user.employment');
     Route::get('/compensation/{id}', [ProfileController::class, 'showCompensation'])->name('user.compensation');
@@ -69,11 +69,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/createOffday/{id}', [ProfileController::class, 'createOffday'])->name('user.createOffday');
     Route::post('/updateCareerProgression/{id}', [ProfileController::class, 'updateCareerProgression'])->name('user.updateCareerProgression');
     Route::post('/update-family/{id}', [ProfileController::class, 'updateFamily'])->name('user.family.updateFamily');
-    Route::post('/payroll',[PayrollController::class,'index'])->name('payroll.calculate');
+    Route::post('/payroll', [PayrollController::class, 'index'])->name('payroll.calculate');
 
 
     Route::delete('/deleteFamily/{id}', [ProfileController::class, 'deleteFamily'])->name('user.family.deleteFamily');
     Route::delete('/deleteCareerProgression/{id}', [ProfileController::class, 'deleteCareerProgression'])->name('user.careerProgression.deleteCareerProgression');
     Route::delete('/delete-offday/{offdayId}', [ProfileController::class, 'destroyOffday'])->name('user.offday.delete');
     Route::delete('/deleteDocument/{id}', [ProfileController::class, 'deleteDocument'])->name('user.document.deleteDocument');
+
+
+    // SAVE the data 
+    Route::match(['get', 'post'], '/payroll', [PayrollController::class, 'index'])->name('payroll.index');
+    Route::post('/payroll/save', [PayrollController::class, 'store'])->name('payroll.save');
+
+    // Payslip download function
+    Route::post('/payroll/download',[PayrollController::class,'downloadPayslip'])->name('payslip.download');
 });
