@@ -39,6 +39,8 @@ class PayrollController extends Controller
         $cumulative_socso_employer = 0;
         $cumulative_eis_employer = 0;
 
+
+
         for ($m = 1; $m <= $selected_month; $m++) {
             $cumulative_epf_employer += (float) str_replace(',', '', $allSavedData["month_{$m}_epf_employer"] ?? 0);
             $cumulative_socso_employer += (float) str_replace(',', '', $allSavedData["month_{$m}_socso_employer"] ?? 0);
@@ -67,6 +69,8 @@ class PayrollController extends Controller
             'epf_employer_monthly' => $calc['epf_employer'],
             'socso_employer_monthly' => $calc['socso_employer'],
             'eis_employer_monthly' => $calc['eis_employer'],
+
+
         ]);
     }
 
@@ -79,6 +83,7 @@ class PayrollController extends Controller
         $eis = $basic_salary * $rates['eis'];
 
 
+
         $epf_employer = ($basic_salary <= 5000) ? ($basic_salary * $rates['epf_employer_low']) : ($basic_salary * $rates['epf_employer_high']);
         $socso_employer = $basic_salary * $rates['socso_employer'];
         $eis_employer = $basic_salary * $rates['eis_employer'];
@@ -88,13 +93,13 @@ class PayrollController extends Controller
         $total_deduction = $epf + $socso + $eis;
 
         $net_pay = $basic_salary - ($epf + $socso + $eis);
-
+        $net_pay = round($net_pay, 2);
 
         return [
             'epf' => $epf,
             'socso' => $socso,
             'eis' => $eis,
-            'net_pay' => number_format($net_pay, 0),
+            'net_pay' => $net_pay,
             'total_deduction' => $total_deduction,
             'epf_employer' => $epf_employer,
             'socso_employer' => $socso_employer,
@@ -160,22 +165,35 @@ class PayrollController extends Controller
     public function downloadPayslip(Request $request)
     {
         $monthNumber = (int) $request->input('selected_month', date('n'));
-        // 1. Gather data from the form request
+
+        $user = UserDetail::where('user_id', Auth::id())->first();
+
+
         $data = [
-            'name'          => $request->user_name, // Pass this as a hidden input in your form
-            'month'         => Carbon::create()->month($request->selected_month)->format('F Y'),
-            'basic_salary'  => $request->basic_salary,
-            'allowance'     => $request->allowance,
-            'epf'           => $request->epf_amount,
-            'socso'         => $request->socso_amount,
-            'eis'           => $request->eis_amount,
-            'net_pay'       => $request->net_pay_amount,
+            'user' => Auth::user(),
+            'name'          => $request->input('user_name', 'Employee'),
+            'selected_month'         => Carbon::create()->month($monthNumber)->format('F Y'),
+
+            // Clean commas from strings and cast to float to satisfy number_format()
+            'basic_salary'  => (float) str_replace(',', '', $request->input('basic_salary', 0)),
+            'allowance'     => (float) str_replace(',', '', $request->input('allowance', 0)),
+            'epf'           => (float) str_replace(',', '', $request->input('epf_amount', 0)),
+            'socso'         => (float) str_replace(',', '', $request->input('socso_amount', 0)),
+            'eis'           => (float) str_replace(',', '', $request->input('eis_amount', 0)),
+
+            'epf_employer_monthly'   => (float) str_replace(',', '', $request->input('epf_employer', 0)),
+            'socso_employer_monthly' => (float) str_replace(',', '', $request->input('socso_employer', 0)),
+            'eis_employer_monthly'   => (float) str_replace(',', '', $request->input('eis_employer', 0)),
+
+            // Final Totals
+            'net_pay'        => (float) str_replace(',', '', $request->input('net_pay_amount', 0)),
+
+
         ];
 
-        // 2. Load the view and pass the data
-        $pdf = Pdf::loadView('payroll.pdf_template', $data);
+        // Use the full path we confirmed in the last step
+        $pdf = Pdf::loadView('user.general.pdf_template', $data);
 
-        // 3. Stream or Download
         return $pdf->download('payslip_' . $data['name'] . '.pdf');
     }
 }
