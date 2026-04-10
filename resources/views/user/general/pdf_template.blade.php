@@ -5,386 +5,303 @@
     <meta charset="UTF-8">
     <style>
         @page {
-            margin: 18px 18px;
+            margin: 15px;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica', 'Arial', sans-serif;
             font-size: 11px;
             color: #000;
             margin: 0;
             padding: 0;
         }
 
-        .page {
+        .container {
             border: 1px solid #000;
-            padding: 14px;
+            padding: 20px;
+            min-height: 980px;
         }
 
         table {
-            border-collapse: collapse;
             width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
         }
 
-        .t-right {
-            text-align: right;
-        }
-
-        .t-left {
-            text-align: left;
-        }
-
-        .t-center {
-            text-align: center;
-        }
-
-        .bold {
-            font-weight: bold;
-        }
-
-        .small {
-            font-size: 9px;
-        }
-
-        .company-title {
-            font-size: 18px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .payslip-for {
-            font-size: 18px;
-            font-weight: bold;
-            line-height: 1.15;
-        }
-
-        .emp-box {
-            border: 1px solid #000;
-            border-radius: 14px;
-            padding: 10px 12px;
-            margin-top: 10px;
-        }
-
-        .emp-box td {
+        td {
             vertical-align: top;
-            padding: 2px 6px;
+        }
+
+        /* Header */
+        .company-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .payslip-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
             line-height: 1.2;
         }
 
-        .label {
-            width: 105px;
-            white-space: nowrap;
+        /* Employee Info Box */
+        .info-box {
+            border: 1px solid #000;
+            border-radius: 12px;
+            margin: 15px 0;
+            padding: 10px;
         }
 
+        .info-box td {
+            padding: 3px 5px;
+            font-size: 10px;
+        }
+
+        .label {
+            font-weight: normal;
+            width: 90px;
+        }
+
+        .value {
+            font-weight: bold;
+        }
+
+        /* Main Grid (Earnings/Deductions/Leave) */
         .main-grid {
-            margin-top: 12px;
             border-top: 2px solid #000;
             border-bottom: 2px solid #000;
         }
 
-        .main-grid td {
-            vertical-align: top;
-        }
-
-        .col {
+        .col-border {
             border-right: 2px solid #000;
         }
 
-        .col:last-child {
-            border-right: 0;
-        }
-
-        .col-inner {
-            width: 100%;
-        }
-
-        .col-head td {
-            border-bottom: 1px solid #000;
-            padding: 6px 8px;
+        .section-title {
             font-weight: bold;
+            text-decoration: underline;
+            padding: 8px 5px;
         }
 
-        .col-body td {
-            padding: 7px 8px;
+        .data-row td {
+            padding: 4px 5px;
         }
 
-        .row-item td {
-            padding: 3px 0;
-        }
-
-        .subtotal td {
+        .total-row td {
             border-top: 1px solid #000;
-            padding: 7px 8px;
+            padding: 10px 5px;
             font-weight: bold;
         }
 
-        .leave-head td {
-            padding: 0;
-        }
-
-        .leave-table {
-            table-layout: fixed;
-        }
-
-        .leave-table td {
-            padding: 2px 4px;
-            white-space: nowrap;
-        }
-
-        .leave-table .lt-name {
-            text-align: left;
-            width: 38%;
-        }
-
-        .leave-table .lt-val {
-            text-align: right;
-            width: 12.4%;
-        }
-
-        .leave-table .lt-head {
+        /* Leave Table Fix - Use fixed widths to prevent overlapping */
+        .leave-header td {
+            font-size: 9px;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding: 5px 2px;
             text-align: center;
-            padding-left: 6px;
-            padding-right: 6px;
         }
 
-        .stat {
-            margin-top: 16px;
-        }
-
-        .stat th,
-        .stat td {
-            border: 1px solid #000;
-            padding: 6px 6px;
-            text-align: right;
+        .leave-data td {
             font-size: 10px;
+            padding: 6px 2px;
+            text-align: center;
         }
 
-        .stat th {
+        .leave-type-name {
+            text-align: left !important;
+            width: 90px;
+        }
+
+        /* Summary Stats Table */
+        .stat-table th,
+        .stat-table td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: right;
+            font-size: 9px;
+        }
+
+        .stat-table th {
             font-weight: bold;
-            background: #fff;
+            background-color: #f2f2f2;
         }
 
-        .footer {
-            margin-top: 18px;
-        }
-
-        .net-pay {
+        /* Footer */
+        .net-pay-container {
             border: 2px solid #000;
-            padding: 9px 12px;
-            width: 240px;
+            padding: 12px;
+            text-align: center;
             font-size: 16px;
             font-weight: bold;
-        }
-
-        .sig td {
-            padding: 3px 0;
+            width: 250px;
+            margin: 0 auto;
         }
 
         .sig-line {
             border-bottom: 1px solid #000;
-            height: 26px;
+            height: 35px;
+            width: 100%;
+        }
+
+        .footer-note {
+            font-size: 9px;
+            margin-top: 10px;
         }
     </style>
 </head>
 
 <body>
     @php
-        $companyName = 'SMS GURU SDN BHD';
-        $companyReg = '(202101001051 (1401349-T))';
-
-        $grossPay = (float) ($basic_salary ?? 0) + (float) ($allowance ?? 0);
-        $employeeName = (string) ($name ?? 'Employee');
-        $payslipMonth = (string) ($selected_month ?? '');
-
-        $current_epf_employee = $user->getDetail("month_{$selected_month}_epf_employee");
-        $current_socso_employee = $user->getDetail("month_{$selected_month}_socso_employee");
-        $current_eis_employee = $user->getDetail("month_{$selected_month}_eis_employee");
+        // Ensure numeric values to prevent calculation errors
+        $gross = (float) ($basic_salary ?? 0) + (float) ($allowance ?? 0);
+        $total_deduct =
+            (float) ($monthly_ee_epf ?? 0) + (float) ($monthly_ee_socso ?? 0) + (float) ($monthly_ee_eis ?? 0);
     @endphp
 
-    <div class="page">
+    <div class="container">
         <table>
             <tr>
-                <td style="width: 64px; vertical-align: top;">
+                <td width="70">
                     <div
-                        style="width: 54px; height: 54px; border: 1px solid #000; text-align: center; line-height: 54px; font-weight: bold; font-size: 11px;">
-                        LOGO
-                    </div>
+                        style="width: 60px; height: 60px; border: 1px solid #000; text-align: center; line-height: 60px;">
+                        LOGO</div>
                 </td>
-                <td style="vertical-align: top;">
-                    <div class="company-title">{{ $companyName }}
-                        <span style="font-size: 10px; font-weight: normal;">{{ $companyReg }}</span>
-                    </div>
+                <td>
+                    <div class="company-name">SMS GURU SDN BHD</div>
+                    <div style="font-size: 10px;">(202101001051 (1401349-T))</div>
                 </td>
-                <td class="t-right" style="width: 200px; vertical-align: top;">
-                    <div class="payslip-for">Payslip For<br>{{ strtoupper($payslipMonth) }}</div>
+                <td class="payslip-title">
+                    Payslip For<br>{{ strtoupper($selected_month ?? 'MONTH') }}
                 </td>
             </tr>
         </table>
 
-        <div class="emp-box">
+        <div class="info-box">
             <table>
                 <tr>
-                    <td style="width: 52%;">
-                        <table>
-                            <tr>
-                                <td class="label">NAME :</td>
-                                <td class="bold">{{ $employeeName }}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">DEPT : {{ $user->getdetail('department') }}</td>
-                                <td>----</td>
-                            </tr>
-                            <tr>
-                                <td class="label">BANK A/C NO :</td>
-                                <td>{{ $user->getDetail('bank_account_no') }}</td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td style="width: 48%;">
-                        <table>
-                            <tr>
-                                <td class="label">SOCSO :</td>
-                                <td>&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td class="label">EMPLOYEE NO :</td>
-                                <td>&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td class="label">EPF :</td>
-                                <td>&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td class="label">TAX :</td>
-                                <td>&nbsp;</td>
-                            </tr>
-                        </table>
-                    </td>
+                    <td class="label">NAME :</td>
+                    <td class="value" width="220">{{ $name ?? 'Employee Name' }}</td>
+                    <td class="label">SOCSO :</td>
+                    <td class="value">{{ $user->getDetail('socso_no') ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">DEPT :</td>
+                    <td class="value">{{ $user->getDetail('department') ?? '-' }}</td>
+                    <td class="label">EMPLOYEE NO :</td>
+                    <td class="value">{{ $user->getDetail('employee_no') ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">BANK A/C NO :</td>
+                    <td class="value">{{ $user->getDetail('bank_account_no') ?? '-' }}</td>
+                    <td class="label">EPF :</td>
+                    <td class="value">{{ $user->getDetail('epf_no') ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label"></td>
+                    <td class="value"></td>
+                    <td class="label">TAX :</td>
+                    <td class="value">{{ $user->getDetail('income_tax_no') ?? '-' }}</td>
                 </tr>
             </table>
         </div>
 
         <table class="main-grid">
             <tr>
-                <td class="col" style="width: 32%;">
-                    <table class="col-inner">
-                        <tr class="col-head">
-                            <td class="t-left"><span style="text-decoration: underline;">Earnings</span></td>
-                            <td class="t-right">RM</td>
+                <td class="col-border" width="30%">
+                    <table>
+                        <tr>
+                            <td class="section-title">Earnings</td>
+                            <td class="section-title" align="right">RM</td>
                         </tr>
-                        <tr class="col-body">
-                            <td colspan="2">
-                                <table style="width: 100%;">
-                                    <tr class="row-item">
-                                        <td class="t-left">Basic Salary</td>
-                                        <td class="t-right">{{ number_format((float) $basic_salary, 2) }}</td>
-                                    </tr>
-                                    @if (((float) $allowance) > 0)
-                                        <tr class="row-item">
-                                            <td class="t-left">Allowance</td>
-                                            <td class="t-right">{{ number_format((float) $allowance, 2) }}</td>
-                                        </tr>
-                                    @endif
-                                </table>
-                            </td>
+                        <tr class="data-row">
+                            <td>Basic Salary</td>
+                            <td align="right">{{ number_format($basic_salary ?? 0, 2) }}</td>
                         </tr>
-                        <tr class="subtotal">
-                            <td class="t-left">Total Earning</td>
-                            <td class="t-right">{{ number_format($grossPay, 2) }}</td>
+                        @if ($allowance > 0)
+                            <tr class="data-row">
+                                <td>Allowance</td>
+                                <td align="right">{{ number_format($allowance, 2) }}</td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <td colspan="2" style="height: 50px;"></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>Total Earning</td>
+                            <td align="right">{{ number_format($gross, 2) }}</td>
                         </tr>
                     </table>
                 </td>
 
-                <td class="col" style="width: 32%;">
-                    <table class="col-inner">
-                        <tr class="col-head">
-                            <td class="t-left"><span style="text-decoration: underline;">Deductions</span></td>
-                            <td class="t-right">RM</td>
+                <td class="col-border" width="30%">
+                    <table>
+                        <tr>
+                            <td class="section-title">Deductions</td>
+                            <td class="section-title" align="right">RM</td>
                         </tr>
-                        <tr class="col-body">
-                            <td colspan="2">
-                                <table style="width: 100%;">
-                                    <tr class="row-item">
-                                        <td class="t-left">EPF Employee</td>
-                                        <td class="t-right">-{{ number_format((float) $epf, 2) }}</td>
-                                    </tr>
-                                    <tr class="row-item">
-                                        <td class="t-left">SOCSO Employee</td>
-                                        <td class="t-right">-{{ number_format((float) $socso, 2) }}</td>
-                                    </tr>
-                                    <tr class="row-item">
-                                        <td class="t-left">EIS Employee</td>
-                                        <td class="t-right">-{{ number_format((float) $eis, 2) }}</td>
-                                    </tr>
-                                    <tr class="row-item">
-                                        <td class="t-left">Income Tax PCB</td>
-                                        <td class="t-right">-{{ number_format(0, 2) }}</td>
-                                    </tr>
-                                </table>
-                            </td>
+                        <tr class="data-row">
+                            <td>EPF Employee</td>
+                            <td align="right">-{{ number_format($monthly_ee_epf ?? 0, 2) }}</td>
                         </tr>
-                        @php
-                            $totalDeduction = (float) $epf + (float) $socso + (float) $eis;
-                        @endphp
-                        <tr class="subtotal">
-                            <td class="t-left">Total Deduction</td>
-                            <td class="t-right">-{{ number_format($totalDeduction, 2) }}</td>
+                        <tr class="data-row">
+                            <td>SOCSO Employee</td>
+                            <td align="right">-{{ number_format($monthly_ee_socso ?? 0, 2) }}</td>
+                        </tr>
+                        <tr class="data-row">
+                            <td>EIS Employee</td>
+                            <td align="right">-{{ number_format($monthly_ee_eis ?? 0, 2) }}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>Total Deduction</td>
+                            <td align="right">-{{ number_format($total_deduct, 2) }}</td>
                         </tr>
                     </table>
                 </td>
 
-                <td style="width: 36%;">
-                    <table class="col-inner">
-                        <tr class="col-head leave-head">
-                            <td colspan="2" style="padding: 6px 8px;">
-                                <table class="leave-table" style="width: 100%;">
-                                    <tr>
-                                        <td class="lt-name" style="text-decoration: underline; font-weight: bold;">Leave
-                                            Type</td>
-                                        <td class="lt-val lt-head bold">B/F</td>
-                                        <td class="lt-val lt-head bold">Entitle</td>
-                                        <td class="lt-val lt-head bold">YTD</td>
-                                        <td class="lt-val lt-head bold">MTD</td>
-                                        <td class="lt-val lt-head bold">Bal.</td>
-                                    </tr>
-                                </table>
-                            </td>
+                <td width="40%" style="padding-left: 10px;">
+                    <table>
+                        <tr class="leave-header">
+                            <td class="leave-type-name">LEAVE TYPE</td>
+                            <td>B/F</td>
+                            <td>ENT</td>
+                            <td>YTD</td>
+                            <td>MTD</td>
+                            <td>BAL</td>
                         </tr>
-                        <tr class="col-body">
-                            <td colspan="2" style="height: 190px;">
-                                <table class="leave-table" style="width: 100%;">
-                                    <tr>
-                                        <td class="lt-name">Annual Leave</td>
-                                        <td class="lt-val">0.00</td>
-                                        <td class="lt-val">0.00</td>
-                                        <td class="lt-val">0.00</td>
-                                        <td class="lt-val">0.00</td>
-                                        <td class="lt-val">0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="lt-name">Medical Leave</td>
-                                        <td class="lt-val">0.00</td>
-                                        <td class="lt-val">0.00</td>
-                                        <td class="lt-val">0.00</td>
-                                        <td class="lt-val">0.00</td>
-                                        <td class="lt-val">0.00</td>
-                                    </tr>
-                                </table>
-                            </td>
+                        <tr class="leave-data">
+                            <td class="leave-type-name">Annual Leave</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>{{ $days_taken }}</td>
+                            <td class="value">0.00</td>
                         </tr>
-                        <tr class="subtotal">
-                            <td class="t-left">&nbsp;</td>
-                            <td class="t-right">&nbsp;</td>
+                        <tr class="leave-data">
+                            <td class="leave-type-name">Medical Leave</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>{{ $sick_days_taken }}</td>
+                            <td class="value">0.00</td>
+                        </tr>
+                        <tr class="leave-data">
+                            <td class="leave-type-name">Hospital leave </td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>{{ $hospitalization_days_taken }}</td>
+                            <td class="value">0.00</td>
                         </tr>
                     </table>
                 </td>
             </tr>
         </table>
 
-        <table class="stat">
+        <table class="stat-table" style="margin-top: 20px;">
             <thead>
                 <tr>
-                    <th class="t-left" style="text-align: left; width: 100px;"></th>
+                    <th align="left" width="80">Type</th>
                     <th>PCB</th>
                     <th>EPF ee</th>
                     <th>EPF er</th>
@@ -396,59 +313,45 @@
             </thead>
             <tbody>
                 <tr>
-                    <td class="t-left" style="text-align: left;">Mid. Paid</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
+                    <td align="left">Current Mth</td>
+                    <td>0.00</td>
+                    <td>{{ number_format($monthly_ee_epf ?? 0, 2) }}</td>
+                    <td>{{ number_format($monthly_er_epf ?? 0, 2) }}</td>
+                    <td>{{ number_format($monthly_ee_socso ?? 0, 2) }}</td>
+                    <td>{{ number_format($monthly_er_socso ?? 0, 2) }}</td>
+                    <td>{{ number_format($monthly_ee_eis ?? 0, 2) }}</td>
+                    <td>{{ number_format($monthly_er_eis ?? 0, 2) }}</td>
                 </tr>
                 <tr>
-                    <td class="t-left" style="text-align: left;">Current Mth</td>
-                    <td></td>
-                    <td>{{ number_format($epf_employer_monthly, 2) }}</td>
-                    <td>{{ number_format($epf, 2) }}</td>
-                    <td>{{ number_format($socso_employer_monthly, 2) }}</td>
-                    <td>{{ number_format($socso, 2) }}</td>
-                    <td>{{ number_format($eis_employer_monthly, 2) }}</td>
-                    <td>{{ number_format($eis, 2) }}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="t-left" style="text-align: left;">YTD</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
+                    <td align="left">YTD</td>
+                    <td>0.00</td>
+                    <td>{{ number_format($ytd_ee_epf ?? 0, 2) }}</td>
+                    <td>{{ number_format($ytd_er_epf ?? 0, 2) }}</td>
+                    <td>{{ number_format($ytd_ee_socso ?? 0, 2) }}</td>
+                    <td>{{ number_format($ytd_er_socso ?? 0, 2) }}</td>
+                    <td>{{ number_format($ytd_ee_eis ?? 0, 2) }}</td>
+                    <td>{{ number_format($ytd_er_eis ?? 0, 2) }}</td>
                 </tr>
             </tbody>
         </table>
 
-        <table class="footer">
+        <table style="margin-top: 40px;">
             <tr>
-                <td style="width: 33%; vertical-align: bottom;">
-                    <div class="small">ee : Employee<br>er : Employer<br><br>Notes:</div>
-                </td>
-                <td style="width: 34%; vertical-align: bottom;" class="t-center">
-                    <div style="display: inline-block;" class="net-pay">
-                        <table style="width: 100%;">
-                            <tr>
-                                <td class="t-left">Net Pay</td>
-                                <td class="t-right">RM {{ number_format((float) str_replace(',', '', $net_pay), 0) }}
-                                </td>
-                            </tr>
-                        </table>
+                <td width="33%">
+                    <div class="footer-note">
+                        ee : Employee | er : Employer<br><br>
+                        <strong>Notes:</strong><br>This is a computer-generated payslip.
                     </div>
                 </td>
-                <td style="width: 33%; vertical-align: bottom;">
-                    <table class="sig" style="width: 100%;">
+                <td width="34%" align="center">
+                    <div class="net-pay-container">
+                        Net Pay: RM {{ number_format(round($net_pay, 0) ?? 0, 0) }}
+                    </div>
+                </td>
+                <td width="33%">
+                    <table style="width: 200px; float: right;">
                         <tr>
-                            <td class="t-left bold">APPROVED BY :</td>
+                            <td class="value">APPROVED BY :</td>
                         </tr>
                         <tr>
                             <td>
@@ -456,7 +359,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="t-left bold">RECEIVED BY :</td>
+                            <td class="value" style="padding-top: 15px;">RECEIVED BY :</td>
                         </tr>
                         <tr>
                             <td>
@@ -468,7 +371,6 @@
             </tr>
         </table>
     </div>
-
 </body>
 
 </html>

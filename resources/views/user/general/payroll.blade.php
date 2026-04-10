@@ -15,13 +15,31 @@
 
                 {{-- Hidden inputs for data persistence --}}
                 <input type="hidden" name="user_name" value="{{ $user->name }}">
-                <input type="hidden" name="epf_amount" value="{{ $epf }}">
-                <input type="hidden" name="socso_amount" value="{{ $socso }}">
-                <input type="hidden" name="eis_amount" value="{{ $eis }}">
+                <input type="hidden" name="selected_month" value="{{ $selected_month }}">
+
+                <input type="hidden" name="basic_salary" value="{{ $basic_salary }}">
+                <input type="hidden" name="allowance" value="{{ $allowance }}">
                 <input type="hidden" name="net_pay_amount" value="{{ $net_pay }}">
-                <input type="hidden" name="epf_employer" value="{{ $epf_employer_monthly }}">
-                <input type="hidden" name="socso_employer" value="{{ $socso_employer_monthly }}">
-                <input type="hidden" name="eis_employer" value="{{ $eis_employer_monthly }}">
+
+                <input type="hidden" name="epf_amount" value="{{ $monthly_ee_epf }}">
+                <input type="hidden" name="socso_amount" value="{{ $monthly_ee_socso }}">
+                <input type="hidden" name="eis_amount" value="{{ $monthly_ee_eis }}">
+
+                <input type="hidden" name="epf_employer" value="{{ $monthly_er_epf }}">
+                <input type="hidden" name="socso_employer" value="{{ $monthly_er_socso }}">
+                <input type="hidden" name="eis_employer" value="{{ $monthly_er_eis }}">
+
+                <input type="hidden" name="ytd_ee_epf" value="{{ $ytd_ee_epf }}">
+                <input type="hidden" name="ytd_ee_socso" value="{{ $ytd_ee_socso }}">
+                <input type="hidden" name="ytd_ee_eis" value="{{ $ytd_ee_eis }}">
+
+                <input type="hidden" name="ytd_er_epf" value="{{ $ytd_er_epf }}">
+                <input type="hidden" name="ytd_er_socso" value="{{ $ytd_er_socso }}">
+                <input type="hidden" name="ytd_er_eis" value="{{ $ytd_er_eis }}">
+
+                <input type="hidden" name="total_epf" value="{{ $total_epf }}">
+                <input type="hidden" name="total_socso" value="{{ $total_socso }}">
+                <input type="hidden" name="total_eis" value="{{ $total_eis }}">
 
                 {{-- TOP HEADER BAR --}}
                 <div class="flex justify-between items-start p-6 border-b border-gray-100">
@@ -55,7 +73,8 @@
                             Reset this person's payroll
                         </button>
                         <div class="flex gap-2">
-                            <button type="submit" formaction="{{ route('payslip.download') }}"
+                            <button type="button"
+                                onclick="const btn = this; const form = btn.form; form.action='{{ route('payslip.download') }}'; form.submit();"
                                 class="bg-white border border-gray-300 text-gray-700 text-[10px] px-4 py-1.5 rounded font-black tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2">
                                 GENERATE PAYSLIP
                             </button>
@@ -107,15 +126,24 @@
                         <div class="mt-4 space-y-5">
                             <div class="flex justify-between">
                                 <span class="text-xs text-gray-600">EPF (11%)</span>
-                                <span class="text-xs font-bold text-gray-800">RM {{ number_format($epf, 2) }}</span>
+                                <span class="text-xs font-bold text-gray-800">RM
+                                    {{ number_format($monthly_ee_epf, 2) }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-xs text-gray-600">SOCSO</span>
-                                <span class="text-xs font-bold text-gray-800">RM {{ number_format($socso, 2) }}</span>
+                                <span class="text-xs font-bold text-gray-800">RM
+                                    {{ number_format($monthly_ee_socso, 2) }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-xs text-gray-600">EIS</span>
-                                <span class="text-xs font-bold text-gray-800">RM {{ number_format($eis, 2) }}</span>
+                                <span class="text-xs font-bold text-gray-800">RM
+                                    {{ number_format($monthly_ee_eis, 2) }}</span>
+                            </div>
+                           
+                            <div class="flex justify-between">
+                                <span class="text-xs text-gray-600">PCB</span>
+                                <span class="text-xs font-bold text-gray-800">RM
+                                    {{ number_format($monthly_ee_pcb, 2) }}</span>
                             </div>
                             <button type="submit"
                                 class="w-full py-2 border border-cyan-500 text-cyan-500 text-[10px] font-black tracking-widest hover:bg-cyan-50 transition-all">
@@ -135,7 +163,8 @@
                             </div>
                             <div class="py-4 border-b border-gray-100">
                                 <span class="text-[10px] uppercase font-bold text-gray-400">Net pay</span>
-                                <p class="text-3xl font-light text-cyan-400">RM {{ number_format($net_pay, 2) }}</p>
+                                <p class="text-3xl font-light text-cyan-400">RM {{ number_format(round($net_pay, 0), 2) }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -167,27 +196,27 @@
                             <tbody class="divide-y divide-gray-100 text-gray-600">
                                 <tr class="hover:bg-cyan-50/10 transition-colors">
                                     <td class="px-5 py-4 font-bold text-gray-700">EPF (KWSP)</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($epf, 2) }}</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($epf_employer_monthly, 2) }}
+                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_ee_epf, 2) }}</td>
+                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_er_epf, 2) }}
                                     </td>
                                     <td class="px-5 py-4 text-right font-bold text-gray-800">RM
-                                        {{ number_format($epf + $epf_employer_monthly, 2) }}</td>
+                                        {{ number_format($monthly_ee_epf + $monthly_er_epf, 2) }}</td>
                                 </tr>
                                 <tr class="hover:bg-cyan-50/10 transition-colors">
                                     <td class="px-5 py-4 font-bold text-gray-700">SOCSO (PERKESO)</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($socso, 2) }}</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($socso_employer_monthly, 2) }}
+                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_ee_socso, 2) }}</td>
+                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_er_socso, 2) }}
                                     </td>
                                     <td class="px-5 py-4 text-right font-bold text-gray-800">RM
-                                        {{ number_format($socso + $socso_employer_monthly, 2) }}</td>
+                                        {{ number_format($monthly_ee_socso + $monthly_er_socso, 2) }}</td>
                                 </tr>
                                 <tr class="hover:bg-cyan-50/10 transition-colors">
                                     <td class="px-5 py-4 font-bold text-gray-700">EIS (SIP)</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($eis, 2) }}</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($eis_employer_monthly, 2) }}
+                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_ee_eis, 2) }}</td>
+                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_er_eis, 2) }}
                                     </td>
                                     <td class="px-5 py-4 text-right font-bold text-gray-800">RM
-                                        {{ number_format($eis + $eis_employer_monthly, 2) }}</td>
+                                        {{ number_format($monthly_ee_eis + $monthly_er_eis, 2) }}</td>
                                 </tr>
                             </tbody>
                             <tfoot class="bg-gray-900 text-white">
@@ -198,7 +227,7 @@
                                         <span class="text-[10px] text-gray-400 mr-2 font-bold">TOTAL PORTAL PAYMENT:</span>
                                         <span class="text-xl font-light text-cyan-400">
                                             RM
-                                            {{ number_format($epf + $epf_employer_monthly + ($socso + $socso_employer_monthly) + ($eis + $eis_employer_monthly), 2) }}
+                                            {{ number_format($monthly_ee_epf + $monthly_er_epf + ($monthly_ee_socso + $monthly_er_socso) + ($monthly_ee_eis + $monthly_er_eis), 2) }}
                                         </span>
                                     </td>
                                 </tr>
