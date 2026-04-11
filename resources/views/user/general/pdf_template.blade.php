@@ -156,7 +156,10 @@
         // Ensure numeric values to prevent calculation errors
         $gross = (float) ($basic_salary ?? 0) + (float) ($allowance ?? 0);
         $total_deduct =
-            (float) ($monthly_ee_epf ?? 0) + (float) ($monthly_ee_socso ?? 0) + (float) ($monthly_ee_eis ?? 0);
+            (float) ($monthly_ee_epf ?? 0) +
+            (float) ($monthly_ee_socso ?? 0) +
+            (float) ($monthly_ee_eis ?? 0) +
+            (float) ($monthly_ee_pcb ?? 0);
     @endphp
 
     <div class="container">
@@ -251,6 +254,10 @@
                         <tr class="data-row">
                             <td>EIS Employee</td>
                             <td align="right">-{{ number_format($monthly_ee_eis ?? 0, 2) }}</td>
+                        </tr>
+                        <tr class="data-row">
+                            <td>PCB</td>
+                            <td align="right">-{{ number_format($monthly_ee_pcb ?? 0, 2) }}</td>
                         </tr>
                         <tr class="total-row">
                             <td>Total Deduction</td>

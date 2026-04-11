@@ -28,6 +28,7 @@
                 <input type="hidden" name="epf_employer" value="{{ $monthly_er_epf }}">
                 <input type="hidden" name="socso_employer" value="{{ $monthly_er_socso }}">
                 <input type="hidden" name="eis_employer" value="{{ $monthly_er_eis }}">
+                <input type="hidden" name="pcb_amount" value="{{ $monthly_ee_pcb }}">
 
                 <input type="hidden" name="ytd_ee_epf" value="{{ $ytd_ee_epf }}">
                 <input type="hidden" name="ytd_ee_socso" value="{{ $ytd_ee_socso }}">
@@ -139,7 +140,7 @@
                                 <span class="text-xs font-bold text-gray-800">RM
                                     {{ number_format($monthly_ee_eis, 2) }}</span>
                             </div>
-                           
+
                             <div class="flex justify-between">
                                 <span class="text-xs text-gray-600">PCB</span>
                                 <span class="text-xs font-bold text-gray-800">RM

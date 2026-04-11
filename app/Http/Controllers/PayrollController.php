@@ -286,6 +286,7 @@ class PayrollController extends Controller
             'monthly_ee_epf'   => (float) str_replace(',', '', $request->input('epf_amount', 0)),
             'monthly_ee_socso' => (float) str_replace(',', '', $request->input('socso_amount', 0)),
             'monthly_ee_eis'   => (float) str_replace(',', '', $request->input('eis_amount', 0)),
+            'monthly_ee_pcb'   => (float) str_replace(',', '', $request->input('pcb_amount', 0)),
 
             // --- 3. MONTHLY EMPLOYER (ER) CONTRIBUTIONS ---
             'monthly_er_epf'   => (float) str_replace(',', '', $request->input('epf_employer', 0)),
@@ -311,7 +312,7 @@ class PayrollController extends Controller
 
             'days_taken' => $user->getDetail('days_taken') ?? '0',
             'sick_days_taken' => $user->getDetail('sick_days_taken') ?? '0',
-            'hospitalization_days_taken' => $user->getDetail('hospitalization_days_taken') ?? '0',
+            'hospitalization_days_taken' => $user->getDetail('hospitalization_days') ?? '0',
         ];
 
         $pdf = Pdf::loadView('user.general.pdf_template', $data);
