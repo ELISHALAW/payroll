@@ -23,7 +23,9 @@ class PayrollController extends Controller
     {
         $user = Auth::user();
         $selected_month = (int) $request->input('selected_month', date('n'));
-        $selected_year = (int) date('Y');
+        $selected_year = (int) $request->input('selected_year', date('Y'));
+
+
 
 
         // 1. Fetch ALL data (including join_date)
@@ -70,7 +72,7 @@ class PayrollController extends Controller
         return view('user.general.payroll', [
             'user' => $user,
             'selected_month' => $selected_month,
-            'selected_year' => $selected_year,
+
 
             'basic_salary' => $basic,
             'allowance'    => $allowance,
@@ -102,11 +104,6 @@ class PayrollController extends Controller
             'total_eis'   => $ytd_ee['eis']   + $ytd_er['eis'],
         ]);
     }
-
-
-
-
-
 
     public function store(Request $request)
     {
@@ -162,12 +159,14 @@ class PayrollController extends Controller
     public function downloadPayslip(Request $request)
     {
         $monthNumber = (int) $request->input('selected_month', date('n'));
+        $selected_year = (int) $request->input('selected_year', date('Y'));
         $user = Auth::user();
         // We cast everything to float to ensure number_format() works in the PDF
         $data = [
             'user'           => $user,
             'name'           => $request->input('user_name', 'Employee'),
-            'selected_month' => Carbon::create()->month($monthNumber)->format('F Y'),
+            'selected_month' => Carbon::create()->month($monthNumber)->format('F'),
+            'selected_year'  => $selected_year,
 
             // --- 1. INCOME DATA ---
             'basic_salary'   => (float) str_replace(',', '', $request->input('basic_salary', 0)),

@@ -177,7 +177,7 @@
                     <div style="font-size: 10px;">(202101001051 (1401349-T))</div>
                 </td>
                 <td class="payslip-title">
-                    Payslip For<br>{{ $selected_month }} {{ $selected_year }}
+                    Payslip For<br> {{ $selected_month }}
                 </td>
             </tr>
         </table>

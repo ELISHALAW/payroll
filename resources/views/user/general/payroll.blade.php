@@ -16,7 +16,6 @@
                 {{-- Hidden inputs for data persistence --}}
                 <input type="hidden" name="user_name" value="{{ $user->name }}">
                 <input type="hidden" name="selected_month" value="{{ $selected_month }}">
-                <input type="hidden" name="selected_year" value="{{ $selected_year }}">
 
                 <input type="hidden" name="basic_salary" value="{{ $basic_salary }}">
                 <input type="hidden" name="allowance" value="{{ $allowance }}">
@@ -96,7 +95,8 @@
                         <h2 class="text-[11px] font-bold text-gray-400 uppercase tracking-tighter border-b pb-2">Basic
                             earnings</h2>
                         <div>
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Full amount (RM)</label>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Full amount
+                                (RM)</label>
                             <input type="number" name="basic_salary" value="{{ $basic_salary }}" step="0.01"
                                 class="w-full border-gray-300 rounded text-sm p-2 focus:ring-1 focus:ring-cyan-500">
                         </div>
