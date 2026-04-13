@@ -13,8 +13,9 @@ use App\Services\PayrollService;
 class PayrollController extends Controller
 {
     protected $payrollService;
-    
-    public function __construct(PayrollService $payrollService){
+
+    public function __construct(PayrollService $payrollService)
+    {
         $this->payrollService = $payrollService;
     }
 
@@ -23,6 +24,7 @@ class PayrollController extends Controller
         $user = Auth::user();
         $selected_month = (int) $request->input('selected_month', date('n'));
         $selected_year = (int) date('Y');
+
 
         // 1. Fetch ALL data (including join_date)
         $allSavedData = UserDetail::where('user_id', $user->id)->pluck('value', 'name');
@@ -62,12 +64,13 @@ class PayrollController extends Controller
         }
 
         // 5. Current Month Calculation
-        $calc = $this->calculatePayroll($basic, $allowance);
+        $calc = $this->payrollService->calculate($basic, $allowance);
 
         // 6. Return Data with specific naming conventions
         return view('user.general.payroll', [
             'user' => $user,
             'selected_month' => $selected_month,
+            'selected_year' => $selected_year,
 
             'basic_salary' => $basic,
             'allowance'    => $allowance,
@@ -100,128 +103,10 @@ class PayrollController extends Controller
         ]);
     }
 
-    private function calculatePayroll($basic, $allowance)
-    {
-        // 1. Determine the Gross amount used for statutory calculations
-        $calculation_base = $basic + $allowance;
-        $rates = config('payrollRates');
 
-        // Safety fallback rates if config is missing
-        $epfRate = $rates['epf'] ?? 0.11;
-        $epfErLowRate = $rates['epf_employer_low'] ?? 0.13;
-        $epfErHighRate = $rates['epf_employer_high'] ?? 0.12;
-        $socsoRate = $rates['socso'] ?? 0.005;
-        $socsoErRate = $rates['socso_employer'] ?? 0.0175;
-        $eisRate = $rates['eis'] ?? 0.002;
-        $eisErRate = $rates['eis_employer'] ?? 0.002;
-        $ceilingLimit = $rates['ceiling'] ?? 6000.00;
 
-        // 2. Calculate EPF
-        // Malaysian Rule: EPF contributions mathematically must be rounded UP to the nearest Ringgit (no cents).
-        $epf = ceil($calculation_base * $epfRate);
 
-        $epfErRateActual = ($calculation_base <= 5000) ? $epfErLowRate : $epfErHighRate;
-        $epf_employer = ceil($calculation_base * $epfErRateActual);
 
-        // 3. Calculate SOCSO & EIS
-        // Malaysian Rule: SOCSO and EIS are capped at the ceiling limit (currently RM 6,000)
-        $socsoEisBase = min($calculation_base, $ceilingLimit);
-
-        // Note: For absolute legal compliance down to the cent, SOCSO & EIS use bracket tables ("Jadual").
-        // This programmatic calculation is a close mathematical approximation for system convenience.
-        $socso = round($socsoEisBase * $socsoRate, 2);
-        $socso_employer = round($socsoEisBase * $socsoErRate, 2);
-
-        $eis = round($socsoEisBase * $eisRate, 2);
-        $eis_employer = round($socsoEisBase * $eisErRate, 2);
-
-        $pcb = $this->calculatePCB($calculation_base, $epf, $socso, $eis);
-        // 4. Totals
-        // Note: PCB (Income Tax) is excluded here as it requires complex LHDN formulas based on tax relief.
-        $total_deduction = $epf + $socso + $eis + $pcb;
-        $total_employer_contribution = $epf_employer + $socso_employer + $eis_employer;
-
-        // 5. Net Pay (Actual Basic + Allowance - Employee Deductions)
-        $net_pay = $calculation_base - $total_deduction;
-
-        return [
-            // Employee Portions (Monthly)
-
-            'epf'             => $epf,
-            'socso'           => $socso,
-            'eis'             => $eis,
-            'pcb'             => $pcb,
-            'total_deduction' => $total_deduction,
-
-            // Employer Portions (Monthly)
-            'epf_employer'    => $epf_employer,
-            'socso_employer'  => $socso_employer,
-            'eis_employer'    => $eis_employer,
-            'total_employer'  => $total_employer_contribution,
-
-            // Final Totals
-            'net_pay'         => round($net_pay, 2),
-            'gross_pay'       => $calculation_base,
-            'basic_salary'    => $basic,
-            'allowance'       => $allowance
-        ];
-    }
-
-    private function calculatePCB($gross, $epf_deduction, $socso_deduction, $eis_deduction)
-    {
-        $monthly_personal_relief = 750.00;
-        $monthly_epf_deduction = min($epf_deduction, 333.333);
-        $monthly_socso_deduction = min($socso_deduction, 29.17);
-        $monthly_eis_deduction = min($eis_deduction, 29.17);
-
-        $income_Tax = $gross - $monthly_personal_relief - $monthly_epf_deduction - $monthly_socso_deduction - $monthly_eis_deduction;
-
-        if ($income_Tax <= 0) {
-            return 0;
-        }
-
-        $annual_tax = $income_Tax * 12;
-
-        $tax_amount = $this->calculateTaxAmount($annual_tax);
-
-        if ($annual_tax <= 35000) {
-            $tax_amount = max(0, $tax_amount - 400);
-        }
-
-        return round($tax_amount / 12, 2);
-    }
-
-    private function calculateTaxAmount($annual_tax)
-    {
-        $tax_amount = 0;
-
-        if ($annual_tax <= 5000) {
-            $tax_amount = 0;
-        } elseif ($annual_tax <= 20000) {
-            // 5,001 - 20,000 档位
-            $tax_amount = ($annual_tax - 5000) * 0.01;
-        } elseif ($annual_tax <= 35000) {
-            // 20,001 - 35,000 档位 (底税 150)
-            $tax_amount = ($annual_tax - 20000) * 0.03 + 150;
-        } elseif ($annual_tax <= 50000) {
-            // 35,001 - 50,000 档位 (官方税率 6%, 底税 600)
-            $tax_amount = ($annual_tax - 35000) * 0.06 + 600;
-        } elseif ($annual_tax <= 70000) {
-            // 50,001 - 70,000 档位 (官方税率 11%, 底税 1500)
-            $tax_amount = ($annual_tax - 50000) * 0.11 + 1500;
-        } elseif ($annual_tax <= 100000) {
-            // 70,001 - 100,000 档位 (官方税率 19%, 底税 3700)
-            $tax_amount = ($annual_tax - 70000) * 0.19 + 3700;
-        } elseif ($annual_tax <= 400000) {
-            // 100,001 - 400,000 档位 (官方税率 25%, 底税 9400)
-            $tax_amount = ($annual_tax - 100000) * 0.25 + 9400;
-        } else {
-            // 超过 400,000 的部分
-            $tax_amount = ($annual_tax - 400000) * 0.28 + 84400;
-        }
-
-        return $tax_amount;
-    }
 
     public function store(Request $request)
     {
@@ -242,7 +127,7 @@ class PayrollController extends Controller
         $allowance = (float)($validated['allowance'] ?? 0);
 
         // 2. Re-calculate based on validated data
-        $payrollData = $this->calculatePayroll($basic, $allowance);
+        $payrollData = $this->payrollService->calculate($basic, $allowance);
 
         // 3. Prepare Data (mapped to your UserDetail 'name' keys)
         $dataToSave = [

@@ -16,6 +16,7 @@
                 {{-- Hidden inputs for data persistence --}}
                 <input type="hidden" name="user_name" value="{{ $user->name }}">
                 <input type="hidden" name="selected_month" value="{{ $selected_month }}">
+                <input type="hidden" name="selected_year" value="{{ $selected_year }}">
 
                 <input type="hidden" name="basic_salary" value="{{ $basic_salary }}">
                 <input type="hidden" name="allowance" value="{{ $allowance }}">
@@ -173,70 +174,7 @@
                 </div>
 
                 {{-- NEW STATUTORY SUMMARY TABLE (FULL WIDTH) --}}
-                <div class="border-t border-gray-200 bg-gray-50/50 p-6">
-                    <h2
-                        class="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-cyan-500" viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v7a1 1 0 102 0V8z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        Monthly Statutory Breakdown
-                    </h2>
 
-                    <div class="bg-white border border-gray-200 rounded-sm overflow-hidden shadow-sm">
-                        <table class="w-full text-left text-[11px]">
-                            <thead class="bg-gray-50 border-b border-gray-200 text-gray-400 uppercase font-bold">
-                                <tr>
-                                    <th class="px-5 py-3">Contribution</th>
-                                    <th class="px-5 py-3 text-center">Employee (EE)</th>
-                                    <th class="px-5 py-3 text-center">Employer (ER)</th>
-                                    <th class="px-5 py-3 text-right text-cyan-600">Total Payable</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 text-gray-600">
-                                <tr class="hover:bg-cyan-50/10 transition-colors">
-                                    <td class="px-5 py-4 font-bold text-gray-700">EPF (KWSP)</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_ee_epf, 2) }}</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_er_epf, 2) }}
-                                    </td>
-                                    <td class="px-5 py-4 text-right font-bold text-gray-800">RM
-                                        {{ number_format($monthly_ee_epf + $monthly_er_epf, 2) }}</td>
-                                </tr>
-                                <tr class="hover:bg-cyan-50/10 transition-colors">
-                                    <td class="px-5 py-4 font-bold text-gray-700">SOCSO (PERKESO)</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_ee_socso, 2) }}</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_er_socso, 2) }}
-                                    </td>
-                                    <td class="px-5 py-4 text-right font-bold text-gray-800">RM
-                                        {{ number_format($monthly_ee_socso + $monthly_er_socso, 2) }}</td>
-                                </tr>
-                                <tr class="hover:bg-cyan-50/10 transition-colors">
-                                    <td class="px-5 py-4 font-bold text-gray-700">EIS (SIP)</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_ee_eis, 2) }}</td>
-                                    <td class="px-5 py-4 text-center">RM {{ number_format($monthly_er_eis, 2) }}
-                                    </td>
-                                    <td class="px-5 py-4 text-right font-bold text-gray-800">RM
-                                        {{ number_format($monthly_ee_eis + $monthly_er_eis, 2) }}</td>
-                                </tr>
-                            </tbody>
-                            <tfoot class="bg-gray-900 text-white">
-                                <tr>
-                                    <td class="px-5 py-4 font-black uppercase italic tracking-widest">Total Monthly
-                                        Liability</td>
-                                    <td colspan="3" class="px-5 py-4 text-right">
-                                        <span class="text-[10px] text-gray-400 mr-2 font-bold">TOTAL PORTAL PAYMENT:</span>
-                                        <span class="text-xl font-light text-cyan-400">
-                                            RM
-                                            {{ number_format($monthly_ee_epf + $monthly_er_epf + ($monthly_ee_socso + $monthly_er_socso) + ($monthly_ee_eis + $monthly_er_eis), 2) }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
             </form>
         </div>
     </div>

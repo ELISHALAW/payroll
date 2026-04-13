@@ -160,6 +160,8 @@
             (float) ($monthly_ee_socso ?? 0) +
             (float) ($monthly_ee_eis ?? 0) +
             (float) ($monthly_ee_pcb ?? 0);
+
+        use Carbon\Carbon;
     @endphp
 
     <div class="container">
@@ -175,7 +177,7 @@
                     <div style="font-size: 10px;">(202101001051 (1401349-T))</div>
                 </td>
                 <td class="payslip-title">
-                    Payslip For<br>{{ strtoupper($selected_month ?? 'MONTH') }}
+                    Payslip For<br>{{ $selected_month }} {{ $selected_year }}
                 </td>
             </tr>
         </table>
