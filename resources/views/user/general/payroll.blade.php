@@ -41,6 +41,7 @@
                 <input type="hidden" name="total_epf" value="{{ $total_epf }}">
                 <input type="hidden" name="total_socso" value="{{ $total_socso }}">
                 <input type="hidden" name="total_eis" value="{{ $total_eis }}">
+                <input type="hidden" name='ytd_ee_pcb' value="{{ $ytd_ee_pcb }}">
 
                 {{-- TOP HEADER BAR --}}
                 <div class="flex justify-between items-start p-6 border-b border-gray-100">

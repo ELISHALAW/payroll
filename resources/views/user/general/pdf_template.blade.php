@@ -321,7 +321,7 @@
             <tbody>
                 <tr>
                     <td align="left">Current Mth</td>
-                    <td>0.00</td>
+                    <td>{{ number_format($monthly_ee_pcb ?? 0, 2) }}</td>
                     <td>{{ number_format($monthly_ee_epf ?? 0, 2) }}</td>
                     <td>{{ number_format($monthly_er_epf ?? 0, 2) }}</td>
                     <td>{{ number_format($monthly_ee_socso ?? 0, 2) }}</td>
@@ -331,7 +331,7 @@
                 </tr>
                 <tr>
                     <td align="left">YTD</td>
-                    <td>0.00</td>
+                    <td>{{ number_format($ytd_pcb ?? 0, 2) }}</td>
                     <td>{{ number_format($ytd_ee_epf ?? 0, 2) }}</td>
                     <td>{{ number_format($ytd_er_epf ?? 0, 2) }}</td>
                     <td>{{ number_format($ytd_ee_socso ?? 0, 2) }}</td>

@@ -8,12 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\PayrollService;
 
 class PayrollController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $payrollService;
+    
+    public function __construct(PayrollService $payrollService){
+        $this->payrollService = $payrollService;
+    }
+
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -43,13 +47,14 @@ class PayrollController extends Controller
 
         // 4. SEPARATED CUMULATIVE CALCULATION
         // Grouping into Employee (ee) and Employer (er)
-        $ytd_ee = ['epf' => 0, 'socso' => 0, 'eis' => 0];
+        $ytd_ee = ['epf' => 0, 'socso' => 0, 'eis' => 0, 'pcb' => 0];
         $ytd_er = ['epf' => 0, 'socso' => 0, 'eis' => 0];
 
         for ($m = $startMonth; $m <= $selected_month; $m++) {
             $ytd_ee['epf']   += (float)($allSavedData["month_{$m}_epf_employee"] ?? 0);
             $ytd_ee['socso'] += (float)($allSavedData["month_{$m}_socso_employee"] ?? 0);
             $ytd_ee['eis']   += (float)($allSavedData["month_{$m}_eis_employee"] ?? 0);
+            $ytd_ee['pcb']   += (float)($allSavedData["month_{$m}_pcb_employee"] ?? 0);
 
             $ytd_er['epf']   += (float)($allSavedData["month_{$m}_epf_employer"] ?? 0);
             $ytd_er['socso'] += (float)($allSavedData["month_{$m}_socso_employer"] ?? 0);
@@ -81,6 +86,7 @@ class PayrollController extends Controller
             'ytd_ee_epf'   => $ytd_ee['epf'],
             'ytd_ee_socso' => $ytd_ee['socso'],
             'ytd_ee_eis'   => $ytd_ee['eis'],
+            'ytd_ee_pcb'   => $ytd_ee['pcb'],
 
             // --- GROUP 3: CUMULATIVE (YTD - ER) ---
             'ytd_er_epf'   => $ytd_er['epf'],
@@ -292,6 +298,8 @@ class PayrollController extends Controller
             'monthly_er_epf'   => (float) str_replace(',', '', $request->input('epf_employer', 0)),
             'monthly_er_socso' => (float) str_replace(',', '', $request->input('socso_employer', 0)),
             'monthly_er_eis'   => (float) str_replace(',', '', $request->input('eis_employer', 0)),
+
+            'ytd_pcb'            => (float) str_replace(',', '', $request->input('ytd_ee_pcb', 0)),
 
             // --- 4. CUMULATIVE EMPLOYEE (EE) YTD ---
             'ytd_ee_epf'       => (float) str_replace(',', '', $request->input('ytd_ee_epf', 0)),
