@@ -105,8 +105,7 @@
                                 </svg>
                                 PAYSLIP
                             </button>
-                            <button type="submit"
-                                onclick="document.getElementById('formAction').value='calculate';"
+                            <button type="submit" onclick="document.getElementById('formAction').value='calculate';"
                                 class="flex-1 md:flex-none justify-center bg-slate-100 border border-slate-300 text-slate-600 text-xs px-5 py-2.5 rounded-lg font-bold tracking-wider hover:bg-slate-200 hover:border-slate-400 shadow-sm hover:shadow transition-all flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -313,7 +312,7 @@
                                     <p
                                         class="text-[32px] md:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-cyan-600 to-blue-700 flex items-baseline gap-1.5">
                                         <span class="text-base font-bold text-cyan-600 mr-1 pb-1">RM</span>
-                                        {{ number_format(round($net_pay, 2), 2) }}
+                                        {{ number_format(ceil($net_pay), 0) }}
                                     </p>
                                 </div>
                             </div>

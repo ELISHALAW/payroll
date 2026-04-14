@@ -19,6 +19,48 @@ class PayrollController extends Controller
         $this->payrollService = $payrollService;
     }
 
+
+    public function showAnnualEnt($joinDate)
+    {
+        if (!$joinDate) {
+            return 0.00; // No join date, no entitlement
+        }
+
+        $joinCarbon = Carbon::parse($joinDate);
+        $now = Carbon::now();
+
+        // Calculate years of service
+        $yearsOfService = $joinCarbon->diffInYears($now);
+
+        // Malaysian Employment Act Statutory Minimums:
+        if ($yearsOfService < 2) {
+            return 8.00;
+        } elseif ($yearsOfService < 5) {
+            return 12.00;
+        } else {
+            return 16.00;
+        }
+    }
+
+    public function showMedicalEnt($joinDate)
+    {
+        if (!$joinDate) {
+            return 0.00; // No join date, no entitlement
+        }
+
+        $joinDateCarbon = Carbon::parse($joinDate);
+
+        $yearOfService = $joinDateCarbon->diffInYears(Carbon::now());
+
+        if ($yearOfService < 2) {
+            return 14.00;
+        } elseif ($yearOfService < 5) {
+            return 18.00;
+        } else {
+            return 22.00;
+        }
+    }
+
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -98,6 +140,7 @@ class PayrollController extends Controller
             'monthly_er_eis'   => $calc['eis_employer'],
             'net_pay'          => $calc['net_pay'],
 
+
             // --- GROUP 2: CUMULATIVE (YTD - EE) ---
             'ytd_ee_epf'   => $ytd_ee['epf'],
             'ytd_ee_socso' => $ytd_ee['socso'],
@@ -172,12 +215,21 @@ class PayrollController extends Controller
         $monthNumber = (int) $request->input('selected_month', date('n'));
         $selected_year = (int) $request->input('selected_year', date('Y'));
         $user = Auth::user();
+
+        $annual_ent = $this->showAnnualEnt($user->getDetail('join_date'));
+        $medical_ent = $this->showMedicalEnt($user->getDetail('join_date'));
+
+
         // We cast everything to float to ensure number_format() works in the PDF
         $data = [
             'user'           => $user,
             'name'           => $request->input('user_name', 'Employee'),
             'selected_month' => Carbon::create()->month($monthNumber)->format('F'),
             'selected_year'  => $selected_year,
+
+            'annual_ent' => $annual_ent,
+            'medical_ent' => $medical_ent,
+            'hospital_ent' => number_format(60, 2),
 
             // --- 1. INCOME DATA ---
             'basic_salary'   => (float) str_replace(',', '', $request->input('basic_salary', 0)),

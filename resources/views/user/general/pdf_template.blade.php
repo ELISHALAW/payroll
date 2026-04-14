@@ -281,7 +281,7 @@
                         <tr class="leave-data">
                             <td class="leave-type-name">Annual Leave</td>
                             <td>0.00</td>
-                            <td>0.00</td>
+                            <td>{{ $annual_ent ?? 0 }}</td>
                             <td>0.00</td>
                             <td>{{ $days_taken }}</td>
                             <td class="value">0.00</td>
@@ -289,7 +289,7 @@
                         <tr class="leave-data">
                             <td class="leave-type-name">Medical Leave</td>
                             <td>0.00</td>
-                            <td>0.00</td>
+                            <td>{{ $medical_ent ?? 0 }}</td>
                             <td>0.00</td>
                             <td>{{ $sick_days_taken }}</td>
                             <td class="value">0.00</td>
@@ -297,7 +297,7 @@
                         <tr class="leave-data">
                             <td class="leave-type-name">Hospital leave </td>
                             <td>0.00</td>
-                            <td>0.00</td>
+                            <td>{{ $hospital_ent ?? 0 }}</td>
                             <td>0.00</td>
                             <td>{{ $hospitalization_days_taken }}</td>
                             <td class="value">0.00</td>
