@@ -354,7 +354,7 @@
                 </td>
                 <td width="34%" align="center">
                     <div class="net-pay-container">
-                        Net Pay: RM {{ number_format(round($net_pay, 0) ?? 0, 0) }}
+                        Net Pay: RM {{ number_format($net_pay ?? 0, 2) }}
                     </div>
                 </td>
                 <td width="33%">
