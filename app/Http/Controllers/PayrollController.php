@@ -61,6 +61,15 @@ class PayrollController extends Controller
         }
     }
 
+    public function showHospitalEnt($joinDate)
+    {
+        if (!$joinDate) {
+            return 0.00; // No join date, no entitlement
+        }
+
+        return 60.00;
+    }
+
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -229,7 +238,7 @@ class PayrollController extends Controller
 
             'annual_ent' => $annual_ent,
             'medical_ent' => $medical_ent,
-            'hospital_ent' => number_format(60, 2),
+            'hospital_ent' => number_format($this->showHospitalEnt($user->getDetail('join_date'))),
 
             // --- 1. INCOME DATA ---
             'basic_salary'   => (float) str_replace(',', '', $request->input('basic_salary', 0)),
