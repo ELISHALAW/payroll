@@ -54,7 +54,8 @@ class PayrollController extends Controller
         $ytd_ee = ['epf' => 0, 'socso' => 0, 'eis' => 0, 'pcb' => 0];
         $ytd_er = ['epf' => 0, 'socso' => 0, 'eis' => 0];
 
-        for ($m = $startMonth; $m <= $selected_month; $m++) {
+        // Sum up historically saved data for all months prior to the selected month
+        for ($m = $startMonth; $m < $selected_month; $m++) {
             $ytd_ee['epf']   += (float)($allSavedData["month_{$m}_epf_employee"] ?? 0);
             $ytd_ee['socso'] += (float)($allSavedData["month_{$m}_socso_employee"] ?? 0);
             $ytd_ee['eis']   += (float)($allSavedData["month_{$m}_eis_employee"] ?? 0);
@@ -67,6 +68,16 @@ class PayrollController extends Controller
 
         // 5. Current Month Calculation
         $calc = $this->payrollService->calculate($basic, $allowance);
+
+        // Add the current selected month's calculation to the YTD
+        $ytd_ee['epf']   += $calc['epf'];
+        $ytd_ee['socso'] += $calc['socso'];
+        $ytd_ee['eis']   += $calc['eis'];
+        $ytd_ee['pcb']   += $calc['pcb'];
+
+        $ytd_er['epf']   += $calc['epf_employer'];
+        $ytd_er['socso'] += $calc['socso_employer'];
+        $ytd_er['eis']   += $calc['eis_employer'];
 
         // 6. Return Data with specific naming conventions
         return view('user.general.payroll', [
