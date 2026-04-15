@@ -13,7 +13,7 @@
             font-size: 11px;
             color: #000;
             margin: 0;
-            padding: 0;
+            x padding: 0;
         }
 
         .container {
@@ -161,6 +161,10 @@
             (float) ($monthly_ee_eis ?? 0) +
             (float) ($monthly_ee_pcb ?? 0);
 
+        $ytd_annual = $annual_ent - $days_taken;
+        $ytd_medical = $medical_ent - $sick_days_taken;
+        $ytd_hospital = $hospital_ent - $hospitalization_days_taken;
+
         use Carbon\Carbon;
     @endphp
 
@@ -283,7 +287,7 @@
                             <td>0.00</td>
                             <td>{{ $annual_ent ?? 0 }}</td>
                             <td>0.00</td>
-                            <td>{{ $days_taken }}</td>
+                            <td>0.00</td>
                             <td class="value">0.00</td>
                         </tr>
                         <tr class="leave-data">
@@ -291,7 +295,7 @@
                             <td>0.00</td>
                             <td>{{ $medical_ent ?? 0 }}</td>
                             <td>0.00</td>
-                            <td>{{ $sick_days_taken }}</td>
+                            <td>0.00</td>
                             <td class="value">0.00</td>
                         </tr>
                         <tr class="leave-data">
@@ -299,7 +303,7 @@
                             <td>0.00</td>
                             <td>{{ $hospital_ent ?? 0 }}</td>
                             <td>0.00</td>
-                            <td>{{ $hospitalization_days_taken }}</td>
+                            <td>0.00</td>
                             <td class="value">0.00</td>
                         </tr>
                     </table>

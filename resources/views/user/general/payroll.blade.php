@@ -63,21 +63,36 @@
                                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Salary
                                     Type</span>
                                 <select
-                                    class="text-sm font-semibold border border-slate-200 rounded-lg py-2 px-4 w-32 bg-slate-50 text-slate-700 shadow-sm focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 appearance-none cursor-not-allowed"
+                                    class="text-sm font-semibold border border-slate-200 rounded-lg py-2 px-4 w-32 bg-slate-50 text-slate-700 shadow-sm appearance-none cursor-not-allowed"
                                     disabled>
                                     <option>Monthly</option>
                                 </select>
                             </div>
+
                             <div class="flex flex-col">
-                                <span
-                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 text-cyan-600">Active
+                                <span class="text-[10px] font-bold text-cyan-600 uppercase tracking-widest mb-1.5">Active
                                     Month</span>
                                 <select name="selected_month"
                                     onchange="document.getElementById('formAction').value='fetch'; this.form.submit()"
-                                    class="text-sm border-cyan-200 rounded-lg py-2 px-4 w-40 bg-cyan-50 text-cyan-700 font-bold shadow-sm focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all cursor-pointer hover:bg-cyan-100 outline-none">
+                                    class="text-sm border-cyan-200 rounded-lg py-2 px-4 w-40 bg-cyan-50 text-cyan-700 font-bold shadow-sm focus:ring-2 focus:ring-cyan-500 transition-all cursor-pointer hover:bg-cyan-100 outline-none">
                                     @foreach (range(1, 12) as $m)
                                         <option value="{{ $m }}" {{ $selected_month == $m ? 'selected' : '' }}>
                                             {{ Carbon::create()->month($m)->format('F') }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-bold text-cyan-600 uppercase tracking-widest mb-1.5">Active
+                                    Year</span>
+                                <select name="selected_year"
+                                    onchange="document.getElementById('formAction').value='fetch'; this.form.submit()"
+                                    class="text-sm border-cyan-200 rounded-lg py-2 px-4 w-32 bg-cyan-50 text-cyan-700 font-bold shadow-sm focus:ring-2 focus:ring-cyan-500 transition-all cursor-pointer hover:bg-cyan-100 outline-none">
+                                    @php $currentYear = date('Y'); @endphp
+                                    @foreach (range($currentYear - 5, $currentYear + 1) as $y)
+                                        <option value="{{ $y }}" {{ $selected_year == $y ? 'selected' : '' }}>
+                                            {{ $y }}
                                         </option>
                                     @endforeach
                                 </select>

@@ -49,7 +49,8 @@ class PayrollService
             'eis_employer' => $eisEmployer,
 
             'pcb' => $pcb,
-            'net_pay' => $net_pay
+            'net_pay' => $net_pay,
+
         ];
     }
 
@@ -120,5 +121,42 @@ class PayrollService
         }
 
         return $tax_amount;
+    }
+
+    public function calculateYTD($data, $selectedMonth, $year, $joinDate, $currentCalc)
+    {
+        $ytd_ee = ['epf' => 0, 'socso' => 0, 'eis' => 0, 'pcb' => 0];
+        $ytd_er = ['epf' => 0, 'socso' => 0, 'eis' => 0];
+
+        $startMonth = 1;
+        if ($joinDate) {
+            $join = \Carbon\Carbon::parse($joinDate);
+            $startMonth = ($join->year == $year) ? $join->month : 1;
+        }
+
+        // Dynamic Summing to keep code dry
+        for ($m = $startMonth; $m < $selectedMonth; $m++) {
+            foreach ($ytd_ee as $key => $val) {
+                $ytd_ee[$key] += (float)($data["month_{$m}_{$key}_employee"] ?? 0);
+            }
+            foreach ($ytd_er as $key => $val) {
+                $ytd_er[$key] += (float)($data["month_{$m}_{$key}_employer"] ?? 0);
+            }
+        }
+
+        // Add current month totals
+        return [
+            'ytd_ee_epf'   => $ytd_ee['epf']   + $currentCalc['epf'],
+            'ytd_ee_socso' => $ytd_ee['socso'] + $currentCalc['socso'],
+            'ytd_ee_eis'   => $ytd_ee['eis']   + $currentCalc['eis'],
+            'ytd_ee_pcb'   => $ytd_ee['pcb']   + $currentCalc['pcb'],
+            'ytd_er_epf'   => $ytd_er['epf']   + $currentCalc['epf_employer'],
+            'ytd_er_socso' => $ytd_er['socso'] + $currentCalc['socso_employer'],
+            'ytd_er_eis'   => $ytd_er['eis']   + $currentCalc['eis_employer'],
+            // Totals
+            'total_epf'    => $ytd_ee['epf']   + $currentCalc['epf']   + $ytd_er['epf']   + $currentCalc['epf_employer'],
+            'total_socso'  => $ytd_ee['socso'] + $currentCalc['socso'] + $ytd_er['socso'] + $currentCalc['socso_employer'],
+            'total_eis'    => $ytd_ee['eis']   + $currentCalc['eis']   + $ytd_er['eis']   + $currentCalc['eis_employer'],
+        ];
     }
 }

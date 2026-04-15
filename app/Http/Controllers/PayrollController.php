@@ -76,96 +76,37 @@ class PayrollController extends Controller
         $selected_month = (int) $request->input('selected_month', date('n'));
         $selected_year = (int) $request->input('selected_year', date('Y'));
 
-
-
-
         // 1. Fetch ALL data (including join_date)
-        $allSavedData = UserDetail::where('user_id', $user->id)->pluck('value', 'name');
+        $payrollData = UserDetail::where('user_id', $user->id)->whereYear('created_at', $selected_year)->pluck('value', 'name');
 
         // 2. Determine Start Month based on Join Date
-        $joinDateRaw = $allSavedData['join_date'] ?? null;
-        $startMonth = 1; // Default
-        if ($joinDateRaw) {
-            $carbonJoin = Carbon::parse($joinDateRaw);
-            // Start from join month only if they joined in the current year
-            $startMonth = ($carbonJoin->year == $selected_year) ? $carbonJoin->month : 1;
-        }
+        $joinDateRaw = UserDetail::where('user_id', $user->id)->where('name', 'join_date')->value('value');
+        $isFetch = $request->input('action') === 'fetch' || $request->isMethod('GET');
+        $basic = $isFetch ? $this->clean($payrollData["month_{$selected_month}_basic"] ?? 0) : $this->clean($request->input('basic_salary', 0));
+        $allowance = $isFetch ? $this->clean($payrollData["month_{$selected_month}_allowance"] ?? 0) : $this->clean($request->input('allowance', 0));
 
-        // 3. Current Month Logic (Fetching Basic & Allowance)
-        if ($request->input('action') === 'fetch' || $request->isMethod('GET')) {
-            $basic = (float) str_replace(',', '', $allSavedData["month_{$selected_month}_basic"] ?? 0);
-            $allowance = (float) str_replace(',', '', $allSavedData["month_{$selected_month}_allowance"] ?? 0);
-        } else {
-            $basic = (float) $request->input('basic_salary', 0);
-            $allowance = (float) $request->input('allowance', 0);
-        }
-
-        // 4. SEPARATED CUMULATIVE CALCULATION
-        // Grouping into Employee (ee) and Employer (er)
-        $ytd_ee = ['epf' => 0, 'socso' => 0, 'eis' => 0, 'pcb' => 0];
-        $ytd_er = ['epf' => 0, 'socso' => 0, 'eis' => 0];
-
-        // Sum up historically saved data for all months prior to the selected month
-        for ($m = $startMonth; $m < $selected_month; $m++) {
-            $ytd_ee['epf']   += (float)($allSavedData["month_{$m}_epf_employee"] ?? 0);
-            $ytd_ee['socso'] += (float)($allSavedData["month_{$m}_socso_employee"] ?? 0);
-            $ytd_ee['eis']   += (float)($allSavedData["month_{$m}_eis_employee"] ?? 0);
-            $ytd_ee['pcb']   += (float)($allSavedData["month_{$m}_pcb_employee"] ?? 0);
-
-            $ytd_er['epf']   += (float)($allSavedData["month_{$m}_epf_employer"] ?? 0);
-            $ytd_er['socso'] += (float)($allSavedData["month_{$m}_socso_employer"] ?? 0);
-            $ytd_er['eis']   += (float)($allSavedData["month_{$m}_eis_employer"] ?? 0);
-        }
-
-        // 5. Current Month Calculation
         $calc = $this->payrollService->calculate($basic, $allowance);
+        $ytd = $this->payrollService->calculateYTD($payrollData, $selected_month, $selected_year, $joinDateRaw, $calc);
 
-        // Add the current selected month's calculation to the YTD
-        $ytd_ee['epf']   += $calc['epf'];
-        $ytd_ee['socso'] += $calc['socso'];
-        $ytd_ee['eis']   += $calc['eis'];
-        $ytd_ee['pcb']   += $calc['pcb'];
-
-        $ytd_er['epf']   += $calc['epf_employer'];
-        $ytd_er['socso'] += $calc['socso_employer'];
-        $ytd_er['eis']   += $calc['eis_employer'];
-
-        // 6. Return Data with specific naming conventions
-        return view('user.general.payroll', [
+        return view('user.general.payroll', array_merge([
             'user' => $user,
             'selected_month' => $selected_month,
-
-
+            'selected_year' => $selected_year,
             'basic_salary' => $basic,
-            'allowance'    => $allowance,
-            // --- GROUP 1: MONTHLY (EE & ER) ---
+            'allowance' => $allowance,
+            'payrollData' => $payrollData,
+
             'monthly_ee_epf'   => $calc['epf'],
             'monthly_ee_socso' => $calc['socso'],
             'monthly_ee_eis'   => $calc['eis'],
             'monthly_ee_pcb'   => $calc['pcb'],
 
+            // Map Monthly (ER)
             'monthly_er_epf'   => $calc['epf_employer'],
             'monthly_er_socso' => $calc['socso_employer'],
             'monthly_er_eis'   => $calc['eis_employer'],
             'net_pay'          => $calc['net_pay'],
-
-
-            // --- GROUP 2: CUMULATIVE (YTD - EE) ---
-            'ytd_ee_epf'   => $ytd_ee['epf'],
-            'ytd_ee_socso' => $ytd_ee['socso'],
-            'ytd_ee_eis'   => $ytd_ee['eis'],
-            'ytd_ee_pcb'   => $ytd_ee['pcb'],
-
-            // --- GROUP 3: CUMULATIVE (YTD - ER) ---
-            'ytd_er_epf'   => $ytd_er['epf'],
-            'ytd_er_socso' => $ytd_er['socso'],
-            'ytd_er_eis'   => $ytd_er['eis'],
-
-            // --- GROUP 4: OVERALL (Combined Total) ---
-            'total_epf'   => $ytd_ee['epf']   + $ytd_er['epf'],
-            'total_socso' => $ytd_ee['socso'] + $ytd_er['socso'],
-            'total_eis'   => $ytd_ee['eis']   + $ytd_er['eis'],
-        ]);
+        ], $calc, $ytd));
     }
 
     public function store(Request $request)
@@ -227,60 +168,96 @@ class PayrollController extends Controller
 
         $annual_ent = $this->showAnnualEnt($user->getDetail('join_date'));
         $medical_ent = $this->showMedicalEnt($user->getDetail('join_date'));
+        $hospital_ent = $this->showHospitalEnt($user->getDetail('join_date'));
 
+        $allSavedData = UserDetail::where('user_id', $user->id)->pluck('value', 'name')->toArray();
 
-        // We cast everything to float to ensure number_format() works in the PDF
+        $basic = $this->clean($request->input('basic_salary', $allSavedData["month_{$monthNumber}_basic"] ?? 0));
+        $allowance = $this->clean($request->input('allowance', $allSavedData["month_{$monthNumber}_allowance"] ?? 0));
+
+        $calc = $this->payrollService->calculate($basic, $allowance);
+
+        $startMonth = 1;
+        $joinDateRaw = $allSavedData['join_date'] ?? null;
+        if ($joinDateRaw) {
+            $carbonJoin = Carbon::parse($joinDateRaw);
+            $startMonth = ($carbonJoin->year === $selected_year) ? $carbonJoin->month : 1;
+        }
+
+        $ytd_ee = ['epf' => 0, 'socso' => 0, 'eis' => 0, 'pcb' => 0];
+        $ytd_er = ['epf' => 0, 'socso' => 0, 'eis' => 0];
+
+        for ($m = $startMonth; $m < $monthNumber; $m++) {
+            $ytd_ee['epf']   += (float) ($allSavedData["month_{$m}_epf_employee"] ?? 0);
+            $ytd_ee['socso'] += (float) ($allSavedData["month_{$m}_socso_employee"] ?? 0);
+            $ytd_ee['eis']   += (float) ($allSavedData["month_{$m}_eis_employee"] ?? 0);
+            $ytd_ee['pcb']   += (float) ($allSavedData["month_{$m}_pcb_employee"] ?? 0);
+
+            $ytd_er['epf']   += (float) ($allSavedData["month_{$m}_epf_employer"] ?? 0);
+            $ytd_er['socso'] += (float) ($allSavedData["month_{$m}_socso_employer"] ?? 0);
+            $ytd_er['eis']   += (float) ($allSavedData["month_{$m}_eis_employer"] ?? 0);
+        }
+
+        $ytd_ee['epf']   += $calc['epf'];
+        $ytd_ee['socso'] += $calc['socso'];
+        $ytd_ee['eis']   += $calc['eis'];
+        $ytd_ee['pcb']   += $calc['pcb'];
+
+        $ytd_er['epf']   += $calc['epf_employer'];
+        $ytd_er['socso'] += $calc['socso_employer'];
+        $ytd_er['eis']   += $calc['eis_employer'];
+
         $data = [
             'user'           => $user,
-            'name'           => $request->input('user_name', 'Employee'),
+            'name'           => $request->input('user_name', $user->name),
             'selected_month' => Carbon::create()->month($monthNumber)->format('F'),
             'selected_year'  => $selected_year,
 
             'annual_ent' => $annual_ent,
             'medical_ent' => $medical_ent,
-            'hospital_ent' => number_format($this->showHospitalEnt($user->getDetail('join_date'))),
+            'hospital_ent' => $hospital_ent,
 
             // --- 1. INCOME DATA ---
-            'basic_salary'   => (float) str_replace(',', '', $request->input('basic_salary', 0)),
-            'allowance'      => (float) str_replace(',', '', $request->input('allowance', 0)),
+            'basic_salary' => $basic,
+            'allowance'    => $allowance,
 
             // --- 2. MONTHLY EMPLOYEE (EE) DEDUCTIONS ---
-            'monthly_ee_epf'   => (float) str_replace(',', '', $request->input('epf_amount', 0)),
-            'monthly_ee_socso' => (float) str_replace(',', '', $request->input('socso_amount', 0)),
-            'monthly_ee_eis'   => (float) str_replace(',', '', $request->input('eis_amount', 0)),
-            'monthly_ee_pcb'   => (float) str_replace(',', '', $request->input('pcb_amount', 0)),
+            'monthly_ee_epf'   => $calc['epf'],
+            'monthly_ee_socso' => $calc['socso'],
+            'monthly_ee_eis'   => $calc['eis'],
+            'monthly_ee_pcb'   => $calc['pcb'],
 
             // --- 3. MONTHLY EMPLOYER (ER) CONTRIBUTIONS ---
-            'monthly_er_epf'   => (float) str_replace(',', '', $request->input('epf_employer', 0)),
-            'monthly_er_socso' => (float) str_replace(',', '', $request->input('socso_employer', 0)),
-            'monthly_er_eis'   => (float) str_replace(',', '', $request->input('eis_employer', 0)),
+            'monthly_er_epf'   => $calc['epf_employer'],
+            'monthly_er_socso' => $calc['socso_employer'],
+            'monthly_er_eis'   => $calc['eis_employer'],
 
-            'ytd_pcb'            => (float) str_replace(',', '', $request->input('ytd_ee_pcb', 0)),
+            'ytd_pcb'          => $ytd_ee['pcb'],
+            'ytd_ee_epf'       => $ytd_ee['epf'],
+            'ytd_ee_socso'     => $ytd_ee['socso'],
+            'ytd_ee_eis'       => $ytd_ee['eis'],
+            'ytd_er_epf'       => $ytd_er['epf'],
+            'ytd_er_socso'     => $ytd_er['socso'],
+            'ytd_er_eis'       => $ytd_er['eis'],
 
-            // --- 4. CUMULATIVE EMPLOYEE (EE) YTD ---
-            'ytd_ee_epf'       => (float) str_replace(',', '', $request->input('ytd_ee_epf', 0)),
-            'ytd_ee_socso'     => (float) str_replace(',', '', $request->input('ytd_ee_socso', 0)),
-            'ytd_ee_eis'       => (float) str_replace(',', '', $request->input('ytd_ee_eis', 0)),
+            'overall_epf'      => $ytd_ee['epf'] + $ytd_er['epf'],
+            'overall_socso'    => $ytd_ee['socso'] + $ytd_er['socso'],
+            'overall_eis'      => $ytd_ee['eis'] + $ytd_er['eis'],
 
-            // --- 5. CUMULATIVE EMPLOYER (ER) YTD ---
-            'ytd_er_epf'       => (float) str_replace(',', '', $request->input('ytd_er_epf', 0)),
-            'ytd_er_socso'     => (float) str_replace(',', '', $request->input('ytd_er_socso', 0)),
-            'ytd_er_eis'       => (float) str_replace(',', '', $request->input('ytd_er_eis', 0)),
+            'net_pay'        => $calc['net_pay'],
 
-            // --- 6. OVERALL TOTALS (EE + ER COMBINED) ---
-            'overall_epf'      => (float) str_replace(',', '', $request->input('total_epf', 0)),
-            'overall_socso'    => (float) str_replace(',', '', $request->input('total_socso', 0)),
-            'overall_eis'      => (float) str_replace(',', '', $request->input('total_eis', 0)),
-
-            'net_pay'          => (float) str_replace(',', '', $request->input('net_pay_amount', 0)),
-
-            'days_taken' => $user->getDetail('days_taken') ?? '0',
-            'sick_days_taken' => $user->getDetail('sick_days_taken') ?? '0',
+            'days_taken'                 => $user->getDetail('days_taken') ?? '0',
+            'sick_days_taken'            => $user->getDetail('sick_days_taken') ?? '0',
             'hospitalization_days_taken' => $user->getDetail('hospitalization_days') ?? '0',
         ];
 
         $pdf = Pdf::loadView('user.general.pdf_template', $data);
 
-        return $pdf->download('payslip_' . $data['name'] . '.pdf');
+        return $pdf->download('payslip_' . str_replace(' ', '_', $data['name']) . '.pdf');
+    }
+
+    private function clean($value)
+    {
+        return (float) str_replace(',', '', $value ?? 0);
     }
 }
