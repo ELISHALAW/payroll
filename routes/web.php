@@ -83,5 +83,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payroll/save', [PayrollController::class, 'store'])->name('payroll.save');
 
     // Payslip download function
-    Route::post('/payroll/download',[PayrollController::class,'downloadPayslip'])->name('payslip.download');
+    Route::get('/payroll/download', [PayrollController::class, 'downloadPayslip'])->name('payslip.download');
 });

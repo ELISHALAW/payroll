@@ -246,9 +246,7 @@ class PayrollController extends Controller
 
             'net_pay'        => $calc['net_pay'],
 
-            'days_taken'                 => $user->getDetail('days_taken') ?? '0',
-            'sick_days_taken'            => $user->getDetail('sick_days_taken') ?? '0',
-            'hospitalization_days_taken' => $user->getDetail('hospitalization_days') ?? '0',
+
         ];
 
         $pdf = Pdf::loadView('user.general.pdf_template', $data);

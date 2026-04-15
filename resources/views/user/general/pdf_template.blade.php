@@ -161,10 +161,6 @@
             (float) ($monthly_ee_eis ?? 0) +
             (float) ($monthly_ee_pcb ?? 0);
 
-        $ytd_annual = $annual_ent - $days_taken;
-        $ytd_medical = $medical_ent - $sick_days_taken;
-        $ytd_hospital = $hospital_ent - $hospitalization_days_taken;
-
         use Carbon\Carbon;
     @endphp
 

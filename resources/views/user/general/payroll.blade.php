@@ -111,7 +111,7 @@
                             Reset payroll
                         </button>
                         <div class="flex gap-3 w-full md:w-auto mt-2 md:mt-0">
-                            <button type="submit" formaction="{{ route('payslip.download') }}"
+                            <a href="{{ route('payslip.download', ['id' => $user->id]) }}"
                                 class="flex-1 md:flex-none justify-center bg-white border border-slate-200 text-slate-700 text-xs px-5 py-2.5 rounded-lg font-bold tracking-wider hover:bg-slate-50 hover:border-slate-300 shadow-sm hover:shadow transition-all flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -119,7 +119,7 @@
                                         d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                                 PAYSLIP
-                            </button>
+                            </a>
                             <button type="submit" onclick="document.getElementById('formAction').value='calculate';"
                                 class="flex-1 md:flex-none justify-center bg-slate-100 border border-slate-300 text-slate-600 text-xs px-5 py-2.5 rounded-lg font-bold tracking-wider hover:bg-slate-200 hover:border-slate-400 shadow-sm hover:shadow transition-all flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500" fill="none"
