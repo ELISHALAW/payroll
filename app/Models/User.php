@@ -82,7 +82,7 @@ class User extends Authenticatable
 
     public function getOrgHistoryAttribute()
     {
-        return \App\Models\UserDetail::where('user_id', $this->id)
+        return UserDetail::where('user_id', $this->id)
             ->where('remark', 'like', 'Updated via Organizational History Modal%')
             ->get()
             ->groupBy(function ($item) {
@@ -150,4 +150,23 @@ class User extends Authenticatable
             }
         );
     }
+
+    public function getAccumulativeSalary()
+    {
+        return $this->hasMany(UserDetail::class)
+            ->where(function ($query) {
+                $query->where('name', 'LIKE', '%_basic');
+            })
+            ->sum('value');
+    }
+
+
+    public function getAccumulativeEpf()
+    {
+        return $this->hasMany(UserDetail::class)
+            ->where('name', 'LIKE', '%_epf_employee')
+            ->sum('value');
+    }
+    
+    
 }

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Services\PayrollService;
+use App\Models\User;
 
 class PayrollController extends Controller
 {
@@ -79,6 +80,17 @@ class PayrollController extends Controller
         // 1. Fetch ALL data (including join_date)
         $payrollData = UserDetail::where('user_id', $user->id)->whereYear('created_at', $selected_year)->pluck('value', 'name');
 
+        $lastCompletedMonth = now()->subMonth()->month;
+        $accumulatedEpf = DB::table('user_details')
+            ->where('user_id', $user->id)
+            ->where('name', 'LIKE', '%_epf_employee')
+            ->where(function ($query) use ($lastCompletedMonth) {
+                for ($i = 1; $i <= $lastCompletedMonth; $i++) {
+                    $query->orWhere('name', 'LIKE', "month_{$i}_%");
+                }
+            })
+            ->sum('value');
+
         // 2. Determine Start Month based on Join Date
         $joinDateRaw = UserDetail::where('user_id', $user->id)->where('name', 'join_date')->value('value');
         $isFetch = $request->input('action') === 'fetch' || $request->isMethod('GET');
@@ -95,6 +107,7 @@ class PayrollController extends Controller
             'basic_salary' => $basic,
             'allowance' => $allowance,
             'payrollData' => $payrollData,
+            'accumulatedEpf' => $accumulatedEpf,
 
             'monthly_ee_epf'   => $calc['epf'],
             'monthly_ee_socso' => $calc['socso'],
@@ -257,5 +270,94 @@ class PayrollController extends Controller
     private function clean($value)
     {
         return (float) str_replace(',', '', $value ?? 0);
+    }
+
+    public function showOnboardingChecklist()
+    {
+        $user = Auth::user();
+
+        $currentMonth = now()->month;
+
+        $previousMonth = range(1, $currentMonth - 1);
+
+        $payrollData = UserDetail::where('user_id', $user->id)->where(function ($query) use ($previousMonth) {
+            foreach ($previousMonth as $month) {
+                $query->orWhere('name', "month_{$month}_basic");
+            }
+        })->get();
+
+        $epfData = UserDetail::where('user_id', $user->id)->where(function ($query) use ($previousMonth) {
+            foreach ($previousMonth as $month) {
+                $query->orWhere('name', "month_{$month}_epf_employee");
+            }
+        })->get();
+
+        $epfTotalEr = UserDetail::where('user_id', $user->id)->where(function ($query) use ($previousMonth) {
+            foreach ($previousMonth as $month) {
+                $query->orWhere('name', "month_{$month}_epf_employer");
+            }
+        })->get();
+
+        $socsoTotalEe = UserDetail::where('user_id', $user->id)->where(function ($query) use ($previousMonth) {
+            foreach ($previousMonth as $month) {
+                $query->orWhere('name', "month_{$month}_socso_employee");
+            }
+        })->get();
+
+        $socsoTotalEr = UserDetail::where('user_id', $user->id)->where(function ($query) use ($previousMonth) {
+            foreach ($previousMonth as $month) {
+                $query->orWhere('name', "month_{$month}_socso_employer");
+            }
+        })->get();
+
+        $eisTotalEe = UserDetail::where('user_id', $user->id)->where(function ($query) use ($previousMonth) {
+            foreach ($previousMonth as $month) {
+                $query->orWhere('name', "month_{$month}_eis_employee");
+            }
+        })->get();
+
+        $allowanceTotal = UserDetail::where('user_id', $user->id)->where(function ($query) use ($previousMonth) {
+            foreach ($previousMonth as $month) {
+                $query->orWhere('name', "month_{$month}_allowance");
+            }
+        })->get();
+
+
+        $eisTotalEr = UserDetail::where('user_id', $user->id)->where(function ($query) use ($previousMonth) {
+            foreach ($previousMonth as $month) {
+                $query->orWhere('name', "month_{$month}_eis_employer");
+            }
+        })->get();
+
+        $pcbTotal = UserDetail::where('user_id', $user->id)->where(function ($query) use ($previousMonth) {
+            foreach ($previousMonth as $month) {
+                $query->orWhere('name', "month_{$month}_pcb_employee");
+            }
+        })->get();
+
+        $epfTotal = $epfData->sum('value');
+        $totalAccumulateSalary = $payrollData->sum('value');
+        $epfTotalErSum = $epfTotalEr->sum('value');
+        $socsoTotalErSum = $socsoTotalEr->sum('value');
+        $socsoTotalEeSum = $socsoTotalEe->sum('value');
+        $eisTotalEeSum = $eisTotalEe->sum('value');
+        $eisTotalErSum = $eisTotalEr->sum('value');
+        $allowanceTotalSum = $allowanceTotal->sum('value');
+        $pcbTotalEmployee = $pcbTotal->sum('value');
+        
+        return view('user.general.onboarding', [
+            'user' => $user,
+            'payrollData' => $payrollData,
+            'totalAccumulateSalary' => $totalAccumulateSalary,
+            'epfTotal' => $epfTotal,
+            'epfTotalErSum' => $epfTotalErSum,
+            'socsoTotalErSum' => $socsoTotalErSum,
+            'socsoTotalEeSum' => $socsoTotalEeSum,
+            'eisTotalEeSum' => $eisTotalEeSum,
+            'eisTotalErSum' => $eisTotalErSum,
+            'allowanceTotalSum' => $allowanceTotalSum,
+            'pcbTotalEmployee' => $pcbTotalEmployee,
+
+        ]);
     }
 }

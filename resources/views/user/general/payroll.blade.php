@@ -55,7 +55,9 @@
                             </div>
                             <div>
                                 <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">{{ $user->name }}</h1>
-                                <p class="text-xs font-semibold text-slate-400 mt-0.5">Payroll Processing</p>
+                                <p class="text-xs font-semibold text-slate-400 mt-0.5">{{ $user->getDetail('Position') }}
+                                </p>
+                                </p>
                             </div>
                         </div>
                         <div class="flex items-center gap-6 mt-4 md:mt-2 md:pl-[64px]">
@@ -110,6 +112,15 @@
                             </svg>
                             Reset payroll
                         </button>
+                        <a href="{{ route('payroll.onboarding') }}"
+                            class="flex-1 md:flex-none justify-center bg-white border border-slate-200 text-slate-700 text-xs px-5 py-2.5 rounded-lg font-bold tracking-wider hover:bg-slate-50 hover:border-slate-300 shadow-sm hover:shadow transition-all flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            FIRST TIME ONBOARDING
+                        </a>
                         <div class="flex gap-3 w-full md:w-auto mt-2 md:mt-0">
                             <a href="{{ route('payslip.download', ['id' => $user->id]) }}"
                                 class="flex-1 md:flex-none justify-center bg-white border border-slate-200 text-slate-700 text-xs px-5 py-2.5 rounded-lg font-bold tracking-wider hover:bg-slate-50 hover:border-slate-300 shadow-sm hover:shadow transition-all flex items-center gap-2">
@@ -195,11 +206,11 @@
                             </div>
                             <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Additions</h2>
                         </div>
-                        <div class="mt-6 space-y-4">
+                        <div class="mt-6 space-y-5">
                             <div
                                 class="flex justify-between items-center group p-4 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all hover:border-cyan-300">
-                                <div class="flex flex-col gap-0.5">
-                                    <span class="text-sm font-bold text-slate-700">Allowance</span>
+                                <div class="flex flex-col gap-1.0">
+                                    <span class="text-sm font-bold text-slate-700 mr-1">Allowance</span>
                                     <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">General
                                         Additions</span>
                                 </div>
