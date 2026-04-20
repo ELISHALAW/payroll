@@ -1,0 +1,1 @@
+@extends('output.settings')

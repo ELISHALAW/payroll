@@ -153,7 +153,7 @@
                                     <i class="las la-cog mr-3 text-lg opacity-70"></i>
                                     Reset Password
                                 </a>
-                                <a href="#"
+                                <a href="{{ route('user.setting.index') }}"
                                     class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
                                     <i class="las la-cog mr-3 text-lg opacity-70"></i>
                                     Settings

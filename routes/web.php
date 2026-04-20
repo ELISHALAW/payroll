@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\PayrollSettingController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -42,7 +43,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/edit-career-progression/{careerId}', [ProfileController::class, 'showEditCareerProgression'])
         ->name('user.careerProgression.editCareerProgression');
     Route::get('/edit-family/{familyId}', [ProfileController::class, 'showEditFamily'])->name('user.family.editFamily');
-    Route::get('/payroll/onboarding',[PayrollController::class, 'showOnboardingChecklist'])->name('payroll.onboarding');
+    Route::get('/payroll/onboarding', [PayrollController::class, 'showOnboardingChecklist'])->name('payroll.onboarding');
+    Route::get('/payroll/settings', [PayrollSettingController::class, 'index'])->name('user.setting.index');
     // Profile & Statutory Updates
     Route::post('/profile/update/{id}', [ProfileController::class, 'update'])->name('user.update');
     Route::post('/profile/update-email/{id}', [UserController::class, 'updateEmail'])->name('user.updateEmail');
